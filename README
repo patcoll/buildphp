@@ -1,0 +1,40 @@
+Build script for PHP 5.2+
+
+The goal is to create a script that will get, compile and install all dependencies of PHP 5.2+ in order they are required.
+
+Dependencies:
+
+sh
+wget
+ruby
+rake
+
+
+PHP dependencies for this build:
+
+bz2
+db4
+curl
+freetype
+png
+gd
+gettext
+imap
+kerberos
+ncurses
+gmp
+iconv
+jpeg
+ldap
+mysql
+openssl
+pgsql
+pspell
+xmlrpc
+pcre
+unixODBC
+xml
+expat
+dom
+xsl
+zlib
