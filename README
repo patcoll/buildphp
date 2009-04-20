@@ -13,28 +13,52 @@ rake
 PHP dependencies for this build:
 
 bz2
+	http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz
 db4
+	http://download.oracle.com/berkeley-db/db-4.7.25.tar.gz
 curl
+	http://curl.haxx.se/download/curl-7.19.4.tar.gz
 freetype
-png
+	http://nongnu.askapache.com/freetype/freetype-2.3.9.tar.gz
 gd
-gettext
-imap
-kerberos
-ncurses
-gmp
-iconv
+	http://www.libgd.org/releases/gd-2.0.35.tar.gz
 jpeg
+	ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
+png
+	ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.35.tar.gz
+gettext
+	http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz
+imap
+	ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
+# kerberos libraries not needed. built in.
+ncurses
+	ftp://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
+gmp
+	ftp://ftp.gnu.org/gnu/gmp/gmp-4.3.0.tar.gz
+iconv
+	http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.12.tar.gz
 ldap
+	ftp://ftp.openldap.org/pub/OpenLDAP/openldap-stable/openldap-stable-20090411.tgz
 mysql
+	http://mysql.mirrors.pair.com/Downloads/MySQL-5.1/mysql-5.1.33.tar.gz
+	42493187729677cf8f77faeeebd5b3c2
 openssl
+	http://www.openssl.org/source/openssl-0.9.8k.tar.gz
+	http://www.openssl.org/source/openssl-0.9.8k.tar.gz.md5
 pgsql
+	ftp://ftp5.us.postgresql.org/pub/PostgreSQL/source/v8.3.7/postgresql-8.3.7.tar.gz
 pspell
-xmlrpc
+	ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.tar.gz
+# xmlrpc libraries not needed. built in.
 pcre
+	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.9.tar.gz
 unixODBC
+	http://www.unixodbc.org/unixODBC-2.2.14.tar.gz
 xml
-expat
-dom
+	ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-2.6.30.tar.gz
+# expat libraries not needed. built in.
+# dom libraries not needed. built in.
 xsl
+	ftp://ftp.gnome.org/pub/GNOME/sources/libxslt/1.1/libxslt-1.1.22.tar.gz
 zlib
+	http://www.zlib.net/zlib-1.2.3.tar.gz
