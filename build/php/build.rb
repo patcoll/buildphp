@@ -1,75 +1,71 @@
 #
+require 'lib/build_task_abstract'
 
-@config = {
-  :package => 'php-5.2.9.tar.gz',
-  :src => File.join(Dir.pwd, 'local')
-}
+class Php < BuildTaskAbstract
+  @prefix = '[php] '
+  @config = {
+    :package => {
+      :depends_on => %w{mysql:install},#[],
+      :dir => 'php-5.2.9',
+      :name => 'php-5.2.9.tar.gz',
+      :location => 'http://www.php.net/distributions/php-5.2.9.tar.gz',
+      :md5 => '98b647561dc664adefe296106056cf11'
+    },
+    :extract => {
+      :dir => File.join(Dir.pwd, 'packages', 'php-5.2.9')
+    }
+  }
+  class << self
+    def get_build_string
+      install_dir = ENV['BUILDPHP_INSTALL_TO']
+      parts = %w{ ./configure }
+      # Apache2
+      # parts.push "--with-apxs2=#{install_dir}/sbin/apxs"
+      # FastCGI
+      parts << "--enable-fastcgi"
+      parts << "--enable-discard-path"
+      parts << "--enable-force-cgi-redirect"
+      # PHP stufz
+      parts << "--prefix=#{install_dir}"
+      parts << "--with-config-file-path=#{install_dir}/etc"
+      parts << "--with-config-file-scan-dir=#{install_dir}/etc/php.d"
+      parts << "--with-pear=#{install_dir}/share/pear"
+      parts << "--disable-debug"
+      parts << "--disable-rpath"
+      parts << "--enable-inline-optimization"
+      # Extensions
+      # parts.push "--with-db4=shared,/usr"
+      # parts.push "--with-freetype-dir=/opt/local"
+      parts << "--with-mysql=shared,#{install_dir}/mysql"
+      parts << "--with-mysqli=shared,#{install_dir}/mysql"
+      parts << "--with-pdo-mysql=shared,#{install_dir}/mysql"
+      parts.join(' ')
+    end
+  end
+end
 
-desc 'PHP'
 namespace :php do
-
-  desc 'Grab PHP from the server'
   task :get do
-    # puts this.config
-    # Dir.mkdir(build[:php]) unless File.exist?(build[:php])
-    Dir.chdir(build[:php]) do
-      sh "wget #{packages[:php]}"
-      sh "tar xfz #{File.basename(packages[:php])}"
-      # puts 
-      # `rm -rf #{packages[:php]}`
-    end
-  end
+    Php.get(self)
+  end # /get
   
-  desc 'Configure PHP'
-  task :configure => (%w{ mysql:install } + [:get]) do
-    require File.join(build[:php], '../', 'build.rb')
-    Dir.chdir(File.join(build[:php], get_dir_name(packages[:php]))) do
-      # puts Dir.pwd
-      # puts get_build_string(config[:install_dir])
-      # `#{get_build_string(config[:install_dir])}`
-    end
-  end
+  task :configure => (Php.config[:package][:depends_on] + [:get]) do
+    Php.configure(self)
+  end # /configure
 
-  desc 'Compile PHP'
   task :compile => :configure do
-    
-  end
+    Php.compile(self)
+  end # /compile
   
-  desc 'Install PHP'
   task :install => :compile do
-    # sh "rm -rf #{File.join(build[:php], '*')}"
-    puts config[:package]
-  end
-  
-  def get_build_string(install_dir)
-    parts = %w{ ./configure }
-    
-    # Apache2
-    # parts.push "--with-apxs2=#{install_dir}/sbin/apxs"
-    
-    # FastCGI
-    parts.push "--enable-fastcgi"
-    parts.push "--enable-discard-path"
-    parts.push "--enable-force-cgi-redirect"
-    
-    # install_dir
-    parts.push "--prefix=#{install_dir}"
-    parts.push "--with-config-file-path=#{install_dir}/etc"
-    parts.push "--with-config-file-scan-dir=#{install_dir}/etc/php.d"
-    parts.push "--with-pear=#{install_dir}/share/pear"
-    parts.push "--disable-debug"
-    parts.push "--disable-rpath"
-    parts.push "--enable-inline-optimization"
-    
-    
-    
-    parts.join(' ')
-  end
+    Php.install(self)
+  end # /install
 end
 
 
 
-
+# Valid for PHP 5.3.0beta1:
+# ./configure --prefix=/usr/local --with-config-file-path=/usr/local/etc --with-config-file-scan-dir=/usr/local/etc/php.d --disable-debug --enable-pic --disable-rpath --enable-inline-optimization --with-bz2=shared --with-db4=shared,/usr --with-curl=shared --with-freetype-dir=/opt/local --with-png-dir=/usr --with-gd=shared --enable-gd-native-ttf --without-gdbm --with-gettext=shared --with-ncurses=shared --with-gmp=shared --with-iconv=shared --with-jpeg-dir=/opt/local --with-openssl=shared --with-png-dir=/opt/local --with-pspell=shared,/opt/local --with-xml=shared --with-expat-dir=/usr --with-dom=shared,/usr --with-dom-xslt=shared,/usr --with-dom-exslt=shared,/usr --with-xmlrpc=shared --with-pcre-regex=/opt/local --with-zlib=shared --enable-bcmath --enable-exif --enable-ftp --enable-sockets --enable-sysvsem --enable-sysvshm --enable-track-vars --enable-trans-sid --enable-yp --enable-wddx --with-pear=/opt/local/pear --with-imap=shared,/opt/local/imap-2006h --with-imap-ssl=shared --with-kerberos --with-ldap=shared --with-mysql=shared,/opt/local/mysql --with-pdo-mysql=shared,/opt/local/mysql --with-pgsql=shared,/opt/local --with-pdo-pgsql=shared,/opt/local --enable-ucd-snmp-hack --with-unixODBC=shared,/usr --enable-memory-limit --enable-shmop --enable-calendar --enable-dbx --enable-dio --enable-mbstring --enable-mbstr-enc-trans --enable-mbregex --with-mime-magic=/usr/share/file/magic.mime --with-xsl=shared,/usr/local --enable-fastcgi --enable-discard-path --enable-force-cgi-redirect
 
 
 

@@ -1,36 +1,19 @@
+require 'digest/md5'
 Dir['build/*/build.rb'].each { |build_script| load build_script }
-# abort
 
-# config = {
-#   :install_dir => File.join(Dir.pwd, 'local')
-# }
+ENV['BUILDPHP_EXTRACT_TO'] = File.join(Dir.pwd, 'packages')
+ENV['BUILDPHP_INSTALL_TO'] = File.join(Dir.pwd, 'local')
 
-# packages = {
-#   :php => 'http://www.php.net/distributions/php-5.2.9.tar.gz',
-#   :mysql => 'http://mysql.mirrors.pair.com/Downloads/MySQL-5.1/mysql-5.1.33.tar.gz'
-# }
-
-# build = {
-#   :php => File.join(Dir.pwd, 'build', 'php', 'src'),
-#   :mysql => File.join(Dir.pwd, 'build', 'mysql', 'src')
-# }
-
-task :default do# => 'php:install' do
-  puts "Building PHP..."
-  puts config
+desc 'Download, configure, build and install PHP and all dependencies'
+task :default => [:clean, 'php:install'] do
 end
 
-# task :get do
-#   Dir.chdir('packages') do
-#     puts 
-#   end
-# end
-
-
-# def get_dir_name(path)
-#   first = File.basename(path, File.extname(File.basename(path)))
-#   # first
-#   second = File.basename(first, File.extname(first))
-#   second
-# end
-
+desc 'Delete all installed files (in local) and extracted archives (folders within packages)'
+task :clean do
+  # local dir
+  to_del = [ENV['BUILDPHP_INSTALL_TO']+'/*']
+  # all extracted archives
+  to_del += Dir[ENV['BUILDPHP_EXTRACT_TO']+'/*'].delete_if { |path| FileTest.file?(path) }.to_a
+  # delete them all!
+  sh "rm -rf #{to_del.join(' ')}"  
+end
