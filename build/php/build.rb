@@ -1,6 +1,46 @@
 #
 
+@config = {
+  :package => 'php-5.2.9.tar.gz',
+  :src => File.join(Dir.pwd, 'local')
+}
+
+desc 'PHP'
 namespace :php do
+
+  desc 'Grab PHP from the server'
+  task :get do
+    # puts this.config
+    # Dir.mkdir(build[:php]) unless File.exist?(build[:php])
+    Dir.chdir(build[:php]) do
+      sh "wget #{packages[:php]}"
+      sh "tar xfz #{File.basename(packages[:php])}"
+      # puts 
+      # `rm -rf #{packages[:php]}`
+    end
+  end
+  
+  desc 'Configure PHP'
+  task :configure => (%w{ mysql:install } + [:get]) do
+    require File.join(build[:php], '../', 'build.rb')
+    Dir.chdir(File.join(build[:php], get_dir_name(packages[:php]))) do
+      # puts Dir.pwd
+      # puts get_build_string(config[:install_dir])
+      # `#{get_build_string(config[:install_dir])}`
+    end
+  end
+
+  desc 'Compile PHP'
+  task :compile => :configure do
+    
+  end
+  
+  desc 'Install PHP'
+  task :install => :compile do
+    # sh "rm -rf #{File.join(build[:php], '*')}"
+    puts config[:package]
+  end
+  
   def get_build_string(install_dir)
     parts = %w{ ./configure }
     

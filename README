@@ -9,6 +9,8 @@ wget
 ruby
 rake
 
+php
+	http://www.php.net/distributions/php-5.2.9.tar.gz
 
 PHP dependencies for this build:
 
