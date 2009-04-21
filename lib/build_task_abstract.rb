@@ -57,10 +57,12 @@ class BuildTaskAbstract
     end # /compile
     
     def install(task)
-      Dir.chdir(config[:extract][:dir]) do
-        sh "make install" do |ok,res|
-          stop "install failed" if not ok
-          notice "install succeeded!"
+      if not is_installed
+        Dir.chdir(config[:extract][:dir]) do
+          sh "make install" do |ok,res|
+            stop "install failed" if not ok
+            notice "install succeeded!"
+          end
         end
       end
     end # /install

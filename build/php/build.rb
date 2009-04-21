@@ -41,6 +41,9 @@ class Php < BuildTaskAbstract
       parts << "--with-pdo-mysql=shared,#{install_dir}/mysql"
       parts.join(' ')
     end
+    def is_installed
+      File.exists?(File.join(ENV['BUILDPHP_INSTALL_TO'], 'include', 'php', 'php.h'))
+    end
   end
 end
 

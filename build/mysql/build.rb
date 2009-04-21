@@ -26,6 +26,9 @@ class Mysql < BuildTaskAbstract
       parts << "--with-extra-charsets=latin1"
       parts << "--without-uca"
       parts.join(' ')
+    end # /get_build_string
+    def is_installed
+      File.exists?(File.join(ENV['BUILDPHP_INSTALL_TO'], 'include', 'mysql', 'mysql.h'))
     end
   end
 end
