@@ -1,46 +1,61 @@
 class Php < BuildTaskAbstract
-  @prefix = '[php] '
+  @filename = 'php-5.2.9.tar.gz'
+  @dir = 'php-5.2.9'
   @config = {
     :package => {
-      :depends_on => %w{ bz2 mysql }.map! { |ext| ext + ':install' },#[],
-      :dir => 'php-5.2.9',
-      :name => 'php-5.2.9.tar.gz',
-      :location => 'http://www.php.net/distributions/php-5.2.9.tar.gz',
+      :depends_on => [
+        'bz2',
+        # 'mysql',
+      ],
+      :dir => dir,
+      :name => filename,
+      :location => "http://www.php.net/distributions/#{filename}",
       :md5 => '98b647561dc664adefe296106056cf11'
     },
     :extract => {
-      :dir => File.join(Dir.pwd, 'packages', 'php-5.2.9')
+      :dir => File.join(EXTRACT_TO, dir)
     }
   }
   class << self
     def get_build_string
-      install_dir = BuildTaskAbstract.install_dir
-      parts = %w{ ./configure }
+      parts = ["./configure"]
+
       # Apache2
-      # parts.push "--with-apxs2=#{install_dir}/sbin/apxs"
+      # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
       # FastCGI
-      parts << "--enable-fastcgi"
-      parts << "--enable-discard-path"
-      parts << "--enable-force-cgi-redirect"
+      parts += [
+        "--enable-fastcgi",
+        "--enable-discard-path",
+        "--enable-force-cgi-redirect",
+      ]
+
       # PHP stufz
-      parts << "--prefix=#{install_dir}"
-      parts << "--with-config-file-path=#{install_dir}/etc"
-      parts << "--with-config-file-scan-dir=#{install_dir}/etc/php.d"
-      parts << "--with-pear=#{install_dir}/share/pear"
-      parts << "--disable-debug"
-      parts << "--disable-rpath"
-      parts << "--enable-inline-optimization"
-      # Extensions
-      parts << "--with-bz2=shared,#{install_dir}"
-      # parts.push "--with-db4=shared,/usr"
-      # parts.push "--with-freetype-dir=/opt/local"
-      parts << "--with-mysql=shared,#{install_dir}"
-      parts << "--with-pdo-mysql=shared,#{install_dir}"
-      parts << "--with-mysqli=shared,#{install_dir}/bin/mysql_config"
+      parts += [
+        "--prefix=#{INSTALL_TO}",
+        "--with-config-file-path=#{INSTALL_TO}/etc",
+        "--with-config-file-scan-dir=#{INSTALL_TO}/etc/php.d",
+        "--with-pear=#{INSTALL_TO}/share/pear",
+        "--disable-debug",
+        "--disable-rpath",
+        "--enable-inline-optimization",
+      ]
+      
+      # Built-in Extensions
+      parts += [
+        "--enable-bcmath",
+        "--enable-calendar",
+      ]
+      
+      # Extensions that depend on external libraries
+      # Get config flags from dependencies
+      config[:package][:depends_on].map { |ext| Inflect.camelize(ext) }.each do |ext|
+        parts += Kernel.const_get(ext).config[:php_config_flags] || []
+      end
+      
       parts.join(' ')
     end
     def is_installed
-      File.exists?(File.join(BuildTaskAbstract.install_dir, 'bin', 'php'))
+      File.exists?(File.join(INSTALL_TO, 'bin', 'php'))
     end
   end
 end
@@ -50,7 +65,7 @@ namespace :php do
     Php.get()
   end
   
-  task :configure => (Php.config[:package][:depends_on] + [:get]) do
+  task :configure => (Php.config[:package][:depends_on].map { |ext| ext + ':install' } + [:get]) do
     Php.configure()
   end
 
@@ -126,96 +141,3 @@ end
 # --enable-mbregex
 # --with-xsl=shared,/usr/local
 # 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# # Build as Apache 2 module.
-# # parts.push '--with-apxs2=/usr/sbin/apxs'
-# 
-# # Build as FastCGI binary.
-# # parts.push '--enable-discard-path'
-# # parts.push '--enable-force-cgi-redirect'
-# 
-# # PHP Configuration
-# parts.push '--prefix=/usr/local'
-# parts.push '--with-config-file-path=/usr/local/etc'
-# parts.push '--with-config-file-scan-dir=/usr/local/etc/php.d'
-# parts.push '--with-pear=/usr/share/pear'
-# parts.push '--disable-debug'
-# parts.push '--disable-rpath'
-# parts.push '--enable-inline-optimization'
-# # parts.push '--enable-memory-limit'
-# 
-# # Database support
-# # parts.push '--with-db4=shared,/usr'
-# parts.push '--without-gdbm'
-# parts.push '--with-mysql=mysqlnd'
-# parts.push '--with-mysqli=mysqlnd'
-# parts.push '--with-pdo-mysql=mysqlnd'
-# # parts.push '--with-unixODBC=shared,/usr'
-# 
-# # Extensions
-# parts.push '--with-bz2=shared'
-# parts.push '--with-curl=shared'
-# parts.push '--with-freetype-dir=/opt/local'
-# parts.push '--with-png-dir=/usr'
-# parts.push '--with-gd=shared,/opt/local'
-# parts.push '--enable-gd-native-ttf'
-# # parts.push '--with-gettext=shared'
-# # parts.push '--with-ncurses=shared'
-# # parts.push '--with-gmp=shared'
-# parts.push '--with-iconv=shared'
-# parts.push '--enable-json'
-# # parts.push '--enable-intl'
-# parts.push '--with-jpeg-dir=/opt/local'
-# parts.push '--with-openssl=shared'
-# parts.push '--with-png-dir=/opt/local'
-# # parts.push '--with-pspell=shared,/opt/local'
-# # parts.push '--with-xml=shared'
-# # parts.push '--with-expat-dir=/usr'
-# # parts.push '--with-dom=shared,/usr'
-# # parts.push '--with-dom-xslt=shared,/usr'
-# # parts.push '--with-dom-exslt=shared,/usr'
-# parts.push '--with-xmlrpc=shared'
-# parts.push '--with-pcre-regex=/opt/local'
-# parts.push '--with-zlib=shared'
-# parts.push '--enable-bcmath'
-# parts.push '--enable-exif'
-# parts.push '--enable-ftp'
-# parts.push '--enable-sockets'
-# parts.push '--enable-sysvsem'
-# parts.push '--enable-sysvshm'
-# # parts.push '--enable-track-vars'
-# # parts.push '--enable-trans-sid'
-# # parts.push '--enable-yp'
-# parts.push '--enable-wddx'
-# parts.push '--with-kerberos'
-# parts.push '--with-ldap=shared'
-# parts.push '--enable-shmop'
-# parts.push '--enable-calendar'
-# # parts.push '--enable-dio'
-# # parts.push '--enable-dbx'
-# parts.push '--enable-mbstring'
-# # parts.push '--enable-mbstr-enc-trans'
-# parts.push '--enable-mbregex'
-# # parts.push '--with-mime-magic=/usr/share/file/magic.mime'
-# parts.push '--with-xsl=shared,/usr/local'
-# 
-# parts
-# 
-# # system(parts.join(' '))
-# 
-# # puts $?.exitstatus
-# 
-# # directorylist = %x[#{parts.join(' ')}]
-# 
-# # Open3.popen3() { |stdin, stdout, stderr| puts stdout }
-# 
-# # abort

@@ -1,20 +1,23 @@
 class Bz2 < BuildTaskAbstract
-  @prefix = '[bz2] '
+  @filename = 'bzip2-1.0.5.tar.gz'
+  @dir = 'bzip2-1.0.5'
   @config = {
     :package => {
-      :depends_on => [], # empty array for none.
-      :dir => 'bzip2-1.0.5',
-      :name => 'bzip2-1.0.5.tar.gz',
-      :location => 'http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz',
-      :md5 => '3c15a0c8d1d3ee1c46a1634d00617b1a'
+      :dir => dir,
+      :name => filename,
+      :location => "http://www.bzip.org/1.0.5/#{filename}",
+      :md5 => '3c15a0c8d1d3ee1c46a1634d00617b1a',
     },
     :extract => {
-      :dir => File.join(Dir.pwd, 'packages', 'bzip2-1.0.5')
-    }
+      :dir => File.join(EXTRACT_TO, dir),
+    },
+    :php_config_flags => [
+      "--with-bz2=shared,#{INSTALL_TO}",
+    ],
   }
   class << self
     def is_installed
-      File.exists?(File.join(BuildTaskAbstract.install_dir, 'include', 'bzlib.h'))
+      File.exists?(File.join(INSTALL_TO, 'include', 'bzlib.h'))
     end
   end
 end
@@ -24,11 +27,11 @@ namespace :bz2 do
     Bz2.get()
   end
   
-  task :compile => :get do
+  task :compile => ((Bz2.config[:package][:depends_on] || []) + [:get]) do
     Bz2.compile()
   end
   
   task :install => :compile do
-    Bz2.install("make install PREFIX=#{BuildTaskAbstract.install_dir}")
+    Bz2.install("make install PREFIX=#{INSTALL_TO}")
   end
 end

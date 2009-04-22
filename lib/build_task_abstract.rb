@@ -1,13 +1,16 @@
 class BuildTaskAbstract
-  @prefix = '[...] '
   @config = {}
-  @install_dir = ENV['BUILDPHP_INSTALL_TO']
   
   class << self
     attr_accessor :prefix
     attr_accessor :config
-    attr_accessor :install_dir
+    attr_accessor :filename
+    attr_accessor :dir
 
+    def prefix
+      "[#{Inflect.underscore(self.to_s)}] "
+    end
+    
     def stop(msg)
       abort prefix + msg
     end
@@ -22,9 +25,9 @@ class BuildTaskAbstract
     
     def get()
       if not is_installed
-        config[:package][:path] = File.join(ENV['BUILDPHP_EXTRACT_TO'], config[:package][:name])
+        config[:package][:path] = File.join(EXTRACT_TO, config[:package][:name])
 
-        Dir.chdir(ENV['BUILDPHP_EXTRACT_TO'])
+        Dir.chdir(EXTRACT_TO)
 
         if File.exists?(config[:package][:path]) && config[:package][:md5] == Digest::MD5.file(config[:package][:path]).hexdigest
           notice "package already downloaded"
