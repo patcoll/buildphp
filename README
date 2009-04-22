@@ -1,13 +1,29 @@
+BUILDPHP
+
 Build script for PHP 5.2+
 
-The goal is to create a script that will get, compile and install all dependencies of PHP 5.2+ in order they are required.
+The goal is to create a script that will get, compile and install PHP 5.2.9 and a list of desired dependencies.
 
 Dependencies:
 
-sh
-wget
+gcc
 ruby
 rake
+sh
+wget
+tar
+
+Tested on a 32-bit system with Mac OS X Leopard. I'd imagine some changes would be needed for compiling successfully on a 64-bit system.
+
+Instructions:
+
+To install PHP and all dependencies:
+
+$ rake
+
+That's it.
+
+---
 
 php
 	http://www.php.net/distributions/php-5.2.9.tar.gz

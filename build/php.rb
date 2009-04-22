@@ -38,6 +38,7 @@ class Php < BuildTaskAbstract
         "--disable-debug",
         "--disable-rpath",
         "--enable-inline-optimization",
+        "--enable-pic",
       ]
       
       # Built-in Extensions
