@@ -5,7 +5,7 @@ require 'digest/md5'
 require 'lib/build_task_abstract'
 require 'lib/inflect'
 
-Dir['build/*/build.rb'].each { |build_script| load build_script }
+Dir['build/*.rb'].each { |build_script| load build_script }
 
 desc 'Download, configure, build and install PHP and all dependencies'
 task :default => ['php:install']
