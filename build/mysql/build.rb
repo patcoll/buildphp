@@ -14,6 +14,7 @@ class Mysql < BuildTaskAbstract
   }
   class << self
     def get_build_string
+      install_dir = BuildTaskAbstract.install_dir
       parts = %w{ ./configure }
       parts << "--prefix=#{install_dir}"
       parts << "--with-plugins=max"

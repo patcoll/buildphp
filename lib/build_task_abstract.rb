@@ -1,7 +1,7 @@
 class BuildTaskAbstract
   @prefix = '[...] '
   @config = {}
-  @install_dir = File.join(Dir.pwd, 'local')
+  @install_dir = ENV['BUILDPHP_INSTALL_TO']
   
   class << self
     attr_accessor :prefix

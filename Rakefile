@@ -1,13 +1,14 @@
-File.expand_path(File.join(Dir.pwd, 'vendors'))
+# File.expand_path(File.join(Dir.pwd, 'vendors', 'activesupport'))
 
 ENV['BUILDPHP_EXTRACT_TO'] = File.join(Dir.pwd, 'packages')
 ENV['BUILDPHP_INSTALL_TO'] = File.join(Dir.pwd, 'local')
 
 require 'digest/md5'
 require 'lib/build_task_abstract'
-require 'activesupport'
+# require 'vendors/activesupport/active_support'
+# require File.join(Dir.pwd, 'vendors', 'activesupport')
 
-Inflector = ActiveSupport::Inflector
+# Inflector = ActiveSupport::Inflector
 
 Dir['build/*/build.rb'].each { |build_script| load build_script }
 

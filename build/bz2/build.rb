@@ -13,11 +13,6 @@ class Bz2 < BuildTaskAbstract
     }
   }
   class << self
-    def get_build_string
-      parts = %w{ ./configure }
-      parts << "--prefix=#{install_dir}"
-      parts.join(' ')
-    end # /get_build_string
     def is_installed
       File.exists?(File.join(BuildTaskAbstract.install_dir, 'include', 'bzlib.h'))
     end
@@ -34,6 +29,6 @@ namespace :bz2 do
   end
   
   task :install => :compile do
-    Bz2.install("make install PREFIX=#{Bz2.install_dir}")
+    Bz2.install("make install PREFIX=#{BuildTaskAbstract.install_dir}")
   end
 end
