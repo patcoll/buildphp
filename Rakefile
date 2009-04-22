@@ -17,5 +17,5 @@ task :clean do
   # all extracted archives
   to_del += Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a
   # delete them all!
-  sh "rm -rf #{to_del.join(' ')}"  
+  sh "rm -rf #{to_del.join(' ')}"
 end

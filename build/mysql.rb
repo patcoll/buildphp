@@ -19,13 +19,16 @@ class Mysql < BuildTaskAbstract
   }
   class << self
     def get_build_string
-      parts = %w{ ./configure }
-      parts << "--prefix=#{INSTALL_TO}"
-      parts << "--with-plugins=max"
-      parts << "--with-charset=utf8"
-      parts << "--with-collation=utf8_general_ci"
-      parts << "--with-extra-charsets=latin1"
-      parts << "--without-uca"
+      parts = [
+        # flags,
+        "./configure",
+        "--prefix=#{INSTALL_TO}",
+        "--with-plugins=max",
+        "--with-charset=utf8",
+        "--with-collation=utf8_general_ci",
+        "--with-extra-charsets=latin1",
+        "--without-uca",
+      ]
       parts.join(' ')
     end # /get_build_string
     def is_installed

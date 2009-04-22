@@ -3,12 +3,27 @@ class BuildTaskAbstract
   
   class << self
     attr_accessor :prefix
+    attr_accessor :flags
     attr_accessor :config
     attr_accessor :filename
     attr_accessor :dir
 
     def prefix
       "[#{Inflect.underscore(self.to_s)}] "
+    end
+    
+    def flags
+      f = ''
+      
+      # Mac Universal Binary flags? TODO: not tested
+      # flags = "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
+      
+      # enable PIC
+      # f += " -fPIC"
+      # -fno-common enables PIC on Darwin
+      # f += " -fno-common"
+      
+      "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}'"
     end
     
     def stop(msg)
@@ -57,7 +72,7 @@ class BuildTaskAbstract
       end
     end # /configure
     
-    def compile(cmd = 'make')
+    def compile(cmd='make')
       if not is_installed
         Dir.chdir(config[:extract][:dir]) do
           sh cmd do |ok,res|
@@ -67,7 +82,7 @@ class BuildTaskAbstract
       end
     end # /compile
     
-    def install(cmd = 'make install')
+    def install(cmd='make install')
       if not is_installed
         Dir.chdir(config[:extract][:dir]) do
           sh cmd do |ok,res|

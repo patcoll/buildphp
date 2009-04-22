@@ -18,7 +18,9 @@ class Php < BuildTaskAbstract
   }
   class << self
     def get_build_string
-      parts = ["./configure"]
+      parts = []
+      # parts << flags
+      parts << "./configure"
 
       # Apache2
       # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
@@ -38,8 +40,11 @@ class Php < BuildTaskAbstract
         "--disable-debug",
         "--disable-rpath",
         "--enable-inline-optimization",
-        "--enable-pic",
       ]
+      
+      if not `uname -a`.index("x86_64") == nil
+        parts << "--with-pic"
+      end
       
       # Built-in Extensions
       parts += [
