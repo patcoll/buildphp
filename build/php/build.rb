@@ -1,11 +1,8 @@
-#
-require 'lib/build_task_abstract'
-
 class Php < BuildTaskAbstract
   @prefix = '[php] '
   @config = {
     :package => {
-      :depends_on => %w{mysql:install},#[],
+      :depends_on => %w{ bz2 mysql }.map! { |ext| ext + ':install' },#[],
       :dir => 'php-5.2.9',
       :name => 'php-5.2.9.tar.gz',
       :location => 'http://www.php.net/distributions/php-5.2.9.tar.gz',
@@ -17,7 +14,7 @@ class Php < BuildTaskAbstract
   }
   class << self
     def get_build_string
-      install_dir = ENV['BUILDPHP_INSTALL_TO']
+      install_dir = BuildTaskAbstract.install_dir
       parts = %w{ ./configure }
       # Apache2
       # parts.push "--with-apxs2=#{install_dir}/sbin/apxs"
@@ -34,35 +31,36 @@ class Php < BuildTaskAbstract
       parts << "--disable-rpath"
       parts << "--enable-inline-optimization"
       # Extensions
+      parts << "--with-bz2=shared,#{install_dir}"
       # parts.push "--with-db4=shared,/usr"
       # parts.push "--with-freetype-dir=/opt/local"
-      parts << "--with-mysql=shared,#{install_dir}/mysql"
-      parts << "--with-mysqli=shared,#{install_dir}/mysql"
-      parts << "--with-pdo-mysql=shared,#{install_dir}/mysql"
+      parts << "--with-mysql=shared,#{install_dir}"
+      parts << "--with-pdo-mysql=shared,#{install_dir}"
+      parts << "--with-mysqli=shared,#{install_dir}/bin/mysql_config"
       parts.join(' ')
     end
     def is_installed
-      File.exists?(File.join(ENV['BUILDPHP_INSTALL_TO'], 'include', 'php', 'php.h'))
+      File.exists?(File.join(BuildTaskAbstract.install_dir, 'bin', 'php'))
     end
   end
 end
 
 namespace :php do
   task :get do
-    Php.get(self)
-  end # /get
+    Php.get()
+  end
   
   task :configure => (Php.config[:package][:depends_on] + [:get]) do
-    Php.configure(self)
-  end # /configure
+    Php.configure()
+  end
 
   task :compile => :configure do
-    Php.compile(self)
-  end # /compile
+    Php.compile()
+  end
   
   task :install => :compile do
-    Php.install(self)
-  end # /install
+    Php.install()
+  end
 end
 
 

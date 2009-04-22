@@ -1,6 +1,3 @@
-#
-require 'lib/build_task_abstract'
-
 class Mysql < BuildTaskAbstract
   @prefix = '[mysql] '
   @config = {
@@ -17,7 +14,6 @@ class Mysql < BuildTaskAbstract
   }
   class << self
     def get_build_string
-      install_dir = ENV['BUILDPHP_INSTALL_TO']
       parts = %w{ ./configure }
       parts << "--prefix=#{install_dir}"
       parts << "--with-plugins=max"
@@ -28,25 +24,25 @@ class Mysql < BuildTaskAbstract
       parts.join(' ')
     end # /get_build_string
     def is_installed
-      File.exists?(File.join(ENV['BUILDPHP_INSTALL_TO'], 'include', 'mysql', 'mysql.h'))
+      File.exists?(File.join(BuildTaskAbstract.install_dir, 'include', 'mysql', 'mysql.h'))
     end
   end
 end
 
 namespace :mysql do
   task :get do
-    Mysql.get(self)
+    Mysql.get()
   end
   
   task :configure => (Mysql.config[:package][:depends_on] + [:get]) do
-    Mysql.configure(self)
+    Mysql.configure()
   end
 
   task :compile => :configure do
-    Mysql.compile(self)
+    Mysql.compile()
   end
   
   task :install => :compile do
-    Mysql.install(self)
+    Mysql.install()
   end
 end

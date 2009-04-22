@@ -1,11 +1,18 @@
-require 'digest/md5'
-Dir['build/*/build.rb'].each { |build_script| load build_script }
+File.expand_path(File.join(Dir.pwd, 'vendors'))
 
 ENV['BUILDPHP_EXTRACT_TO'] = File.join(Dir.pwd, 'packages')
 ENV['BUILDPHP_INSTALL_TO'] = File.join(Dir.pwd, 'local')
 
+require 'digest/md5'
+require 'lib/build_task_abstract'
+require 'activesupport'
+
+Inflector = ActiveSupport::Inflector
+
+Dir['build/*/build.rb'].each { |build_script| load build_script }
+
 desc 'Download, configure, build and install PHP and all dependencies'
-task :default => [:clean, 'php:install'] do
+task :default => ['php:install'] do
 end
 
 desc 'Delete all installed files (in local) and extracted archives (folders within packages)'
