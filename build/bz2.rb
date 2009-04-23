@@ -31,7 +31,7 @@ namespace :bz2 do
     cmd = "make"
     sys = `uname -a`
     if sys.index("x86_64") != nil and sys.downcase.index("linux") != nil
-      cmd = "sed -r -i bak -e 's/^(CFLAGS=)(.+)$/\1-fPIC \2/' Makefile; make"
+      cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile; make"
     end
     Bz2.compile(cmd)
     # Bz2.compile()
