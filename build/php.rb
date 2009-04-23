@@ -33,16 +33,16 @@ class Php < BuildTaskAbstract
 
       # PHP stufz
       parts += [
-        "--prefix=#{INSTALL_TO}",
-        "--with-config-file-path=#{INSTALL_TO}/etc",
-        "--with-config-file-scan-dir=#{INSTALL_TO}/etc/php.d",
-        "--with-pear=#{INSTALL_TO}/share/pear",
+        "--prefix=#{INSTALL_TO}/php5",
+        "--with-config-file-path=#{INSTALL_TO}/php5/etc",
+        "--with-config-file-scan-dir=#{INSTALL_TO}/php5/etc/php.d",
+        "--with-pear=#{INSTALL_TO}/php5/share/pear",
         "--disable-debug",
         "--disable-rpath",
         "--enable-inline-optimization",
       ]
       
-      if not `uname -a`.index("x86_64") == nil
+      if RUBY_PLATFORM == 'x86_64-linux'
         parts << "--with-pic"
       end
       
@@ -80,7 +80,7 @@ namespace :php do
   end
   
   task :install => :compile do
-    Php.install("make PHP_PEAR_DOWNLOAD_DIR=\"#{Dir.pwd}/tmp\" install")
+    Php.install("make install PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\"")
   end
 end
 

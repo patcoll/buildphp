@@ -12,9 +12,9 @@ class Mysql < BuildTaskAbstract
       :dir => File.join(EXTRACT_TO, dir),
     },
     :php_config_flags => [
-      "--with-mysql=shared,#{INSTALL_TO}",
-      "--with-pdo-mysql=shared,#{INSTALL_TO}",
-      "--with-mysqli=shared,#{INSTALL_TO}/bin/mysql_config",
+      "--with-mysql=shared,#{INSTALL_TO}/mysql",
+      "--with-pdo-mysql=shared,#{INSTALL_TO}/mysql",
+      "--with-mysqli=shared,#{INSTALL_TO}/mysql/bin/mysql_config",
     ],
   }
   class << self
@@ -22,7 +22,7 @@ class Mysql < BuildTaskAbstract
       parts = [
         # flags,
         "./configure",
-        "--prefix=#{INSTALL_TO}",
+        "--prefix=#{INSTALL_TO}/mysql",
         "--with-plugins=max",
         "--with-charset=utf8",
         "--with-collation=utf8_general_ci",

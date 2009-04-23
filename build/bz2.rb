@@ -29,12 +29,18 @@ namespace :bz2 do
   
   task :compile => ((Bz2.config[:package][:depends_on] || []) + [:get]) do
     cmd = "make"
-    sys = `uname -a`
-    if sys.index("x86_64") != nil and sys.downcase.index("linux") != nil
+    # bz2 does not detect whether to compile with position-independent code (PIC) or not, so we must decide that.
+    # If we detect x86_64-linux as the platform, prepend -fPIC flag to gcc compile options to enable PIC.
+    # http://en.wikipedia.org/wiki/Position_independent_code
+    # 
+    # Ideally, we should detect the platform and use the appropriate PIC flag for that platform.
+    # 
+    # If we don't do this, while compiling PHP will complain that bz2 was not compiled with PIC.
+    if RUBY_PLATFORM == 'x86_64-linux'
+      # use GNU sed options because we're on linux
       cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile; make"
     end
     Bz2.compile(cmd)
-    # Bz2.compile()
   end
   
   task :install => :compile do
