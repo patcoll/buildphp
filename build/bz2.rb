@@ -28,7 +28,12 @@ namespace :bz2 do
   end
   
   task :compile => ((Bz2.config[:package][:depends_on] || []) + [:get]) do
-    Bz2.compile()
+    cmd = "make"
+    if `uname -a`.index("x86_64") != nil
+      cmd = "sed -E -i bak -e 's/^(CFLAGS=)(.+)$/\1-fPIC \2/' Makefile; make"
+    end
+    Bz2.compile(cmd)
+    # Bz2.compile()
   end
   
   task :install => :compile do
