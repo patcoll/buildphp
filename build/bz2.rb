@@ -38,7 +38,7 @@ namespace :bz2 do
     # If we don't do this, while compiling PHP will complain that bz2 was not compiled with PIC.
     if RUBY_PLATFORM == 'x86_64-linux'
       # use GNU sed options because we're on linux
-      cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile; make"
+      cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile && make"
     end
     Bz2.compile(cmd)
   end

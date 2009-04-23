@@ -80,7 +80,7 @@ namespace :php do
   end
   
   task :install => :compile do
-    Php.install("make install PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\"")
+    Php.install("make install PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\" && make install-cli PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\"")
   end
 end
 

@@ -12,12 +12,22 @@ Dir['build/*.rb'].each { |build_script| load build_script }
 desc 'Download, configure, build and install PHP and all dependencies'
 task :default => ['php:install']
 
-desc 'Delete all installed files (in local) and extracted archives (folders within packages)'
+desc 'Clean out extracted packages and tmp'
 task :clean do
-  # local & tmp dirs
-  to_del = [INSTALL_TO+'/*', TMP_DIR+'/*']
+  # tmp dir
+  to_del = [TMP_DIR+'/*']
   # all extracted archives
   to_del += Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a
   # delete them all!
   sh "rm -rf #{to_del.join(' ')}"
+end
+
+namespace :clean do
+  desc "Delete all installed files in #{INSTALL_TO} (only if you know what you're doing)"
+  task :installed do
+    sh "rm -rf #{INSTALL_TO+'/*'}"
+  end
+  
+  desc "Clean out extracted packages, tmp AND local (only if you know what you're doing)"
+  task :all => [:clean, 'clean:installed']
 end
