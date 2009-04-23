@@ -13,15 +13,20 @@ class BuildTaskAbstract
     end
     
     def flags
-      f = ''
+      f = []
       
       # Mac Universal Binary flags? TODO: not tested
       # flags = "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
       
       # enable PIC
-      # f += " -fPIC"
+      if not `uname -a`.index("x86_64") == nil
+        f << "-fPIC"
+      end
+      # 
       # -fno-common enables PIC on Darwin
-      # f += " -fno-common"
+      # f << "-fno-common"
+      
+      f = f.join(' ')
       
       "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}'"
     end

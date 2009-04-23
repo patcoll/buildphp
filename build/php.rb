@@ -19,7 +19,7 @@ class Php < BuildTaskAbstract
   class << self
     def get_build_string
       parts = []
-      # parts << flags
+      parts << flags
       parts << "./configure"
 
       # Apache2
