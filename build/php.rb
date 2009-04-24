@@ -1,6 +1,6 @@
 class Php < BuildTaskAbstract
-  @filename = 'php-5.2.9.tar.gz'
-  @dir = 'php-5.2.9'
+  @filename = 'php-5.2.8.tar.gz'
+  @dir = 'php-5.2.8'
   @config = {
     :package => {
       :depends_on => [
@@ -9,12 +9,13 @@ class Php < BuildTaskAbstract
       ],
       :dir => dir,
       :name => filename,
-      :location => "http://www.php.net/distributions/#{filename}",
-      :md5 => '98b647561dc664adefe296106056cf11'
+      :location => "http://www.php.net/get/#{filename}/from/this/mirror",
+      :md5 => 'e748cace3cfecb66fb6de9a945f98e2a',
     },
     :extract => {
-      :dir => File.join(EXTRACT_TO, dir)
-    }
+      :dir => File.join(EXTRACT_TO, dir),
+      :cmd => "tar xfz #{filename}",
+    },
   }
   class << self
     def get_build_string
@@ -71,7 +72,13 @@ namespace :php do
     Php.get()
   end
   
-  task :configure => (Php.config[:package][:depends_on].map { |ext| ext + ':install' } + [:get]) do
+  task :configure => (Php.config[:package][:depends_on].map { |ext| ext + ':install' } + [
+    :get, 
+    # PHP-FPM: Baked-in FastCGI process management for PHP
+    # Homepage: http://php-fpm.anight.org/
+    # Explanation: http://interfacelab.com/nginx-php-fpm-apc-awesome/
+    'php_fpm:install',
+  ]) do
     Php.configure()
   end
 

@@ -10,6 +10,7 @@ class Mysql < BuildTaskAbstract
     },
     :extract => {
       :dir => File.join(EXTRACT_TO, dir),
+      :cmd => "tar xfz #{filename}",
     },
     :php_config_flags => [
       "--with-mysql=shared,#{INSTALL_TO}/mysql",

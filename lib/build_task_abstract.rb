@@ -59,10 +59,10 @@ class BuildTaskAbstract
         end
 
         # remove folder if already extracted.
-        sh "rm -rf #{config[:extract][:dir]}" if File.exists?(config[:extract][:dir])
+        sh "rm -rf #{config[:extract][:dir]}" if config[:extract][:dir] and File.exists?(config[:extract][:dir])
 
         # extract archive
-        sh "tar xfz #{config[:package][:path]}"
+        sh config[:extract][:cmd]
       end
     end # /get
     

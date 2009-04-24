@@ -29,5 +29,5 @@ namespace :clean do
   end
   
   desc "Clean out extracted packages, tmp AND local (only if you know what you're doing)"
-  task :all => [:clean, 'clean:installed']
+  task :all => ['clean:installed', :clean]
 end

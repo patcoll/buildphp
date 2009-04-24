@@ -10,6 +10,7 @@ class Bz2 < BuildTaskAbstract
     },
     :extract => {
       :dir => File.join(EXTRACT_TO, dir),
+      :cmd => "tar xfz #{filename}",
     },
     :php_config_flags => [
       "--with-bz2=shared,#{INSTALL_TO}",
