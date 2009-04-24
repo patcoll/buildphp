@@ -9,6 +9,9 @@ class PhpFpm < BuildTaskAbstract
     :extract => {
       :cmd => "gzip -cd #{filename} | patch -d #{Php.dir} -p1 && echo '' > #{filename}.installed",
     },
+    :php_config_flags => [
+      "--enable-fpm",
+    ],
   }
   class << self
     def is_installed

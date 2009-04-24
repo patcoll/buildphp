@@ -18,6 +18,7 @@ task :clean do
   to_del = [TMP_DIR+'/*']
   # all extracted archives
   to_del += Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a
+  to_del << EXTRACT_TO + "/#{PhpFpm.filename}.installed" if Php.config[:fpm]
   # delete them all!
   sh "rm -rf #{to_del.join(' ')}"
 end

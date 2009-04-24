@@ -2,6 +2,10 @@ class Php < BuildTaskAbstract
   @filename = 'php-5.2.8.tar.gz'
   @dir = 'php-5.2.8'
   @config = {
+    # PHP-FPM: Baked-in FastCGI process management for PHP
+    # Wiki: http://php-fpm.com/wiki/Main_Page
+    # Explanation: http://interfacelab.com/nginx-php-fpm-apc-awesome/
+    :fpm => true, # true or false
     :package => {
       :depends_on => [
         'bz2',
@@ -53,6 +57,9 @@ class Php < BuildTaskAbstract
         "--enable-calendar",
       ]
       
+      # PHP-FPM
+      parts += PhpFpm.config[:php_config_flags] if config[:fpm]
+      
       # Extensions that depend on external libraries
       # Get config flags from dependencies
       config[:package][:depends_on].map { |ext| Inflect.camelize(ext) }.each do |ext|
@@ -64,6 +71,13 @@ class Php < BuildTaskAbstract
     def is_installed
       File.exists?(File.join(INSTALL_TO, 'bin', 'php'))
     end
+    def dependencies
+      dependencies = config[:package][:depends_on].map { |ext| ext + ':install' } + [:get]
+      dependencies += ['php_fpm:get'] if config[:fpm]
+      dependencies
+      # p dependencies
+      # abort
+    end
   end
 end
 
@@ -72,13 +86,7 @@ namespace :php do
     Php.get()
   end
   
-  task :configure => (Php.config[:package][:depends_on].map { |ext| ext + ':install' } + [
-    :get, 
-    # PHP-FPM: Baked-in FastCGI process management for PHP
-    # Homepage: http://php-fpm.anight.org/
-    # Explanation: http://interfacelab.com/nginx-php-fpm-apc-awesome/
-    'php_fpm:install',
-  ]) do
+  task :configure => Php.dependencies do
     Php.configure()
   end
 
