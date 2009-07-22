@@ -5,7 +5,7 @@ class Php < BuildTaskAbstract
     # PHP-FPM: Baked-in FastCGI process management for PHP
     # Wiki: http://php-fpm.com/wiki/Main_Page
     # Explanation: http://interfacelab.com/nginx-php-fpm-apc-awesome/
-    :fpm => true, # true or false
+    :fpm => false, # true or false
     :package => {
       :depends_on => [
         'bz2',
