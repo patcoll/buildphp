@@ -3,7 +3,7 @@ buildphp
 
 Build script for PHP 5.2+
 
-The goal is to create a script that will get, compile and install PHP 5.2+ and a list of desired dependencies.
+The goal is to create a script that will get, compile and install PHP 5.2+ and a list of desired dependencies. It was written to allow rapid builds of PHP and PHP modules.
 
 By default, script builds PHP as a FastCGI binary, though this can obviously be changed by editing PHP's configuration flags.
 
