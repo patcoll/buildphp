@@ -12,24 +12,9 @@ Dir['build/*.rb'].each { |build_script| load build_script }
 desc 'Download, configure, build and install PHP and all dependencies'
 task :default => ['php:install']
 
-desc 'Clean out extracted packages and tmp'
-task :clean do
-  # tmp dir
-  to_del = [TMP_DIR+'/*']
-  # all extracted archives
-  to_del += Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a
-  # php-fpm
-  to_del << EXTRACT_TO + "/#{PhpFpm.filename}.installed" if Php.config[:fpm]
-  # delete them all!
-  sh "rm -rf #{to_del.join(' ')}"
-end
+require 'rake/clean'
 
-namespace :clean do
-  desc "Delete all installed files in #{INSTALL_TO} (only if you know what you're doing)"
-  task :installed do
-    sh "rm -rf #{INSTALL_TO+'/*'}"
-  end
-  
-  desc "Clean out extracted packages, tmp AND local (only if you know what you're doing)"
-  task :all => ['clean:installed', :clean]
-end
+CLEAN.add(TMP_DIR+'/*', Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a)
+CLEAN.add(EXTRACT_TO + "/#{PhpFpm.filename}.installed") if Php.config[:fpm]
+
+CLOBBER.add(INSTALL_TO+'/*')

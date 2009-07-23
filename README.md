@@ -38,7 +38,7 @@ To clean up source (folders within "packages") and temporary (everything within 
     
 To clean up source (folders within "packages"), temporary (everything within "tmp") and installed (everything within "local") files:
 
-    rake clean:all
+    rake clobber
 
 That's it.
 
