@@ -1,103 +1,117 @@
 class Php < BuildTaskAbstract
-  @filename = 'php-5.2.8.tar.gz'
-  @dir = 'php-5.2.8'
-  @config = {
-    # PHP-FPM: Baked-in FastCGI process management for PHP
-    # Wiki: http://php-fpm.com/wiki/Main_Page
-    # Explanation: http://interfacelab.com/nginx-php-fpm-apc-awesome/
-    :fpm => false, # true or false
-    :package => {
-      :depends_on => [
-        'bz2',
-        # 'mysql',
-      ],
-      :dir => dir,
-      :name => filename,
-      :location => "http://www.php.net/get/#{filename}/from/this/mirror",
-      :md5 => 'e748cace3cfecb66fb6de9a945f98e2a',
-    },
-    :extract => {
-      :dir => File.join(EXTRACT_TO, dir),
-      :cmd => "tar xfz #{filename}",
-    },
-  }
-  class << self
-    def get_build_string
-      parts = []
-      parts << flags
-      parts << "./configure"
+  VERSION = '5.3.0'
+  
+  def versions
+    {
+      '5.2.8' => { :md5 => 'e748cace3cfecb66fb6de9a945f98e2a' },
+      '5.3.0' => { :md5 => 'f4905eca4497da3f0beb5c96863196b4' },
+    }
+  end
+  
+  # enable PHP-FPM?
+  def fpm
+    false
+  end
+  
+  def filename
+    'php-%s.tar.gz'
+  end
+  
+  def dir
+    'php-%s'
+  end
+  
+  def location
+    'http://www.php.net/get/%s/from/this/mirror'
+  end
+  
+  def php_modules
+    [
+      'bz2',
+      # 'mysql',
+    ]
+  end
+  
+  def package_depends_on
+    dependencies = php_modules.map { |ext| ext + ':install' } + [:get]
+    dependencies << 'php_fpm:get' if fpm
+    dependencies
+  end
+  
+  def get_build_string
+    parts = []
+    parts << flags
+    parts << "./configure"
 
-      # Apache2
-      # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
-      # FastCGI
-      parts += [
-        "--enable-fastcgi",
-        "--enable-discard-path",
-        "--enable-force-cgi-redirect",
-      ]
+    # Apache2
+    # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
+    # FastCGI
+    parts += [
+      "--enable-fastcgi",
+      "--enable-discard-path",
+      "--enable-force-cgi-redirect",
+    ]
 
-      # PHP stufz
-      parts += [
-        "--prefix=#{INSTALL_TO}/php5",
-        "--with-config-file-path=#{INSTALL_TO}/php5/etc",
-        "--with-config-file-scan-dir=#{INSTALL_TO}/php5/etc/php.d",
-        "--with-pear=#{INSTALL_TO}/php5/share/pear",
-        "--disable-debug",
-        "--disable-rpath",
-        "--enable-inline-optimization",
-      ]
-      
-      if RUBY_PLATFORM == 'x86_64-linux'
-        parts << "--with-pic"
-      end
-      
-      # Built-in Extensions
-      parts += [
-        "--enable-bcmath",
-        "--enable-calendar",
-      ]
-      
-      # PHP-FPM
-      parts += PhpFpm.config[:php_config_flags] if config[:fpm]
-      
-      # Extensions that depend on external libraries
-      # Get config flags from dependencies
-      config[:package][:depends_on].map { |ext| Inflect.camelize(ext) }.each do |ext|
-        parts += Kernel.const_get(ext).config[:php_config_flags] || []
-      end
-      
-      parts.join(' ')
+    # PHP stufz
+    parts += [
+      "--prefix=#{INSTALL_TO}/php5",
+      "--with-config-file-path=#{INSTALL_TO}/php5/etc",
+      "--with-config-file-scan-dir=#{INSTALL_TO}/php5/etc/php.d",
+      "--with-pear=#{INSTALL_TO}/php5/share/pear",
+      "--disable-debug",
+      "--disable-rpath",
+      "--enable-inline-optimization",
+    ]
+    
+    if RUBY_PLATFORM == 'x86_64-linux'
+      parts << "--with-pic"
     end
-    def is_installed
-      File.exists?(File.join(INSTALL_TO, 'bin', 'php'))
+    
+    # Built-in Extensions
+    parts += [
+      "--enable-bcmath",
+      "--enable-calendar",
+    ]
+    
+    # PHP-FPM
+    parts += FACTORY.get('PhpFpm').php_config_flags if fpm
+    
+    # Extensions that depend on external libraries
+    # Get config flags from dependencies
+    php_modules.map { |ext| Inflect.camelize(ext) }.each do |ext|
+      parts += FACTORY.get(ext).php_config_flags || []
     end
-    def dependencies
-      dependencies = config[:package][:depends_on].map { |ext| ext + ':install' } + [:get]
-      dependencies += ['php_fpm:get'] if config[:fpm]
-      dependencies
-      # p dependencies
-      # abort
-    end
+    
+    parts.join(' ')
+  end
+  
+  def is_installed
+    File.exists?(File.join(INSTALL_TO, 'bin', 'php'))
   end
 end
+
+FACTORY.add(Php.new(Php::VERSION))
 
 namespace :php do
   task :get do
-    Php.get()
+    FACTORY.get('Php').get()
   end
   
-  task :configure => Php.dependencies do
-    Php.configure()
+  task :configure => FACTORY.get('Php').package_depends_on do
+    FACTORY.get('Php').configure()
   end
 
   task :compile => :configure do
-    Php.compile()
+    FACTORY.get('Php').compile()
   end
   
   task :install => :compile do
-    Php.install("make install PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\" && make install-cli PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\"")
+    FACTORY.get('Php').install("make install PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\" && make install-cli PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\"")
   end
+  
+  task :default => :install
 end
+
 
 
 

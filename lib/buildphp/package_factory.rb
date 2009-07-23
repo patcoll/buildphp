@@ -1,0 +1,15 @@
+class PackageFactory
+  attr_reader :packages
+  def initialize
+    @packages = []
+  end
+  def add(package)
+    nil if not package.is_a?(BuildTaskAbstract)
+    @packages.push(package)
+  end
+  def get(class_name)
+    @packages.detect do |package|
+      package.class.to_s == class_name.to_s || package.class.to_s == Inflect.underscore(class_name.to_s)
+    end
+  end
+end

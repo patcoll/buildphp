@@ -45,6 +45,40 @@ That's it.
 Features
 --------
 
+### Isolation
+
+buildphp was designed to provide a build environment that operates as isolated as possible from the rest of the system. Of course if your system has common libraries such as `zlib` and your configuration flags don't explicitly disable functionality that depend on such libraries, then the configure scripts will pick up on those system-wide libraries, which may lead to unexpected results.
+
+The good news is that it is relatively trivial to add build scripts for these sorts of libraries and then have the version of PHP you're compiling depend on your compiled version of that library instead of the system version. See the existing build scripts for examples. Further detailed documentation is forthcoming.
+
+### Custom Path Configuration
+
+Some environment variables you can tweak:
+
+`BUILDPHP_TMP_DIR`
+
+You may change `BUILDPHP_TMP_DIR` if you wish to change where temporary files are stored. Current this is only used for grabbing PEAR packages for installation. Default is the "tmp" folder, which is empty in a standard distribution of buildphp. Another good option could be "/tmp".
+
+`BUILDPHP_EXTRACT_TO`
+
+You may change `BUILDPHP_EXTRACT_TO` if you wish to change which directory packages are downloaded to and extracted. Default is the "packages" folder, which is empty in a standard distribution of buildphp.
+
+`BUILDPHP_INSTALL_TO`
+
+You may change `BUILDPHP_INSTALL_TO` if you wish to change which directory buildphp installs all packages into. *There is currently no support for per-package installation directories.* Default is the "local" folder, which is empty in a standard distribution of buildphp.
+
+For example, to install all files into `/usr/local`:
+
+`BUILDPHP_INSTALL_TO=/usr/local sudo rake`
+
+This should be run only by those who know what they're doing. See boring disclaimer above.
+
+**Please note:** It is also possible to perform installations of dependencies individually as well. For example, it is possible to install the configured MySQL package in `/usr/local` by doing the following:
+
+`BUILDPHP_INSTALL_TO=/usr/local sudo rake mysql:install`
+
+Your mileage may very. Disclaimer.
+
 ### Package Detection
 
 We remove the need for downloading packages multiple times by allowing archives to stay in the "packages" folder. As long as the package matches the `@filename` property and passes an MD5 digest check, it can stay. If developers package all necessary source packages with a buildphp distribution, it can significantly reduce network load when using buildphp to execute multiple builds at once.
