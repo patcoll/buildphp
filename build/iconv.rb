@@ -20,13 +20,10 @@ class Iconv < BuildTaskAbstract
     'http://ftp.gnu.org/pub/gnu/libiconv/%s' % package_name
   end
   
-  def get_build_string
-    "./configure --prefix=#{INSTALL_TO}"
-  end
-  
   def php_config_flags
     [
-      "--with-iconv-dir=shared,#{INSTALL_TO}",
+      "--with-iconv=shared",
+      "--with-iconv-dir=#{INSTALL_TO}",
     ]
   end
   

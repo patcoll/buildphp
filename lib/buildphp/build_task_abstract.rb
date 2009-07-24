@@ -106,7 +106,7 @@ class BuildTaskAbstract
   end
   
   def get_build_string
-    './configure'
+    "./configure --prefix=#{INSTALL_TO}"
   end
   
   def get()

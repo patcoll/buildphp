@@ -30,6 +30,7 @@ class Php < BuildTaskAbstract
       'xml',
       'iconv',
       'bz2',
+      'zlib',
       # 'mysql',
     ]
   end
@@ -48,11 +49,12 @@ class Php < BuildTaskAbstract
     # Apache2
     # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
     # FastCGI
-    parts += [
-      "--enable-fastcgi",
-      "--enable-discard-path",
-      "--enable-force-cgi-redirect",
-    ]
+    # It also seems you don't need these for 5.3+
+    # parts += [
+    #   "--enable-fastcgi",
+    #   "--enable-discard-path",
+    #   "--enable-force-cgi-redirect",
+    # ]
 
     # PHP stufz
     parts += [

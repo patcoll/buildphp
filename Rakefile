@@ -18,6 +18,7 @@ FACTORY.add(Mysql.new(Mysql::VERSION))
 FACTORY.add(Php.new(Php::VERSION))
 FACTORY.add(PhpFpm.new(Php::VERSION))
 FACTORY.add(Xml.new(Xml::VERSION))
+FACTORY.add(Zlib.new(Zlib::VERSION))
 
 Dir['build/*.rake'].each { |rake_task| load rake_task }
 
