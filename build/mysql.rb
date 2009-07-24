@@ -7,16 +7,16 @@ class Mysql < BuildTaskAbstract
     }
   end
   
-  def filename
-    'mysql-%s.tar.gz'
+  def package_name
+    'mysql-%s.tar.gz' % @version
   end
   
-  def dir
-    'mysql-%s'
+  def package_dir
+    'mysql-%s' % @version
   end
   
-  def location
-    'http://mysql.mirrors.pair.com/Downloads/MySQL-5.1/%s'
+  def package_location
+    'http://mysql.mirrors.pair.com/Downloads/MySQL-5.1/%s' % package_name
   end
   
   def php_config_flags
@@ -46,24 +46,3 @@ class Mysql < BuildTaskAbstract
   end
 end
 
-FACTORY.add(Mysql.new(Mysql::VERSION))
-
-namespace :mysql do
-  task :get do
-    FACTORY.get('Mysql').get()
-  end
-  
-  task :configure => ((FACTORY.get('Mysql').package_depends_on || []) + [:get]) do
-    FACTORY.get('Mysql').configure()
-  end
-  
-  task :compile => :configure do
-    FACTORY.get('Mysql').compile()
-  end
-  
-  task :install => :compile do
-    FACTORY.get('Mysql').install()
-  end
-  
-  task :default => :install
-end

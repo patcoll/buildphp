@@ -13,28 +13,30 @@ class Php < BuildTaskAbstract
     false
   end
   
-  def filename
-    'php-%s.tar.gz'
+  def package_name
+    'php-%s.tar.gz' % @version
   end
   
-  def dir
-    'php-%s'
+  def package_dir
+    'php-%s' % @version
   end
   
-  def location
-    'http://www.php.net/get/%s/from/this/mirror'
+  def package_location
+    'http://www.php.net/get/%s/from/this/mirror' % package_name
   end
   
   def php_modules
     [
+      'xml',
+      'iconv',
       'bz2',
       # 'mysql',
     ]
   end
   
   def package_depends_on
-    dependencies = php_modules.map { |ext| ext + ':install' } + [:get]
-    dependencies << 'php_fpm:get' if fpm
+    dependencies = php_modules + [:get]
+    dependencies << 'php_fpm' if fpm
     dependencies
   end
   
@@ -90,27 +92,6 @@ class Php < BuildTaskAbstract
   end
 end
 
-FACTORY.add(Php.new(Php::VERSION))
-
-namespace :php do
-  task :get do
-    FACTORY.get('Php').get()
-  end
-  
-  task :configure => FACTORY.get('Php').package_depends_on do
-    FACTORY.get('Php').configure()
-  end
-
-  task :compile => :configure do
-    FACTORY.get('Php').compile()
-  end
-  
-  task :install => :compile do
-    FACTORY.get('Php').install("make install PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\" && make install-cli PHP_PEAR_DOWNLOAD_DIR=\"#{TMP_DIR}\"")
-  end
-  
-  task :default => :install
-end
 
 
 

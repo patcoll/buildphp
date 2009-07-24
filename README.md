@@ -75,7 +75,7 @@ This should be run only by those who know what they're doing. See boring disclai
 
 **Please note:** It is also possible to perform installations of dependencies individually as well. For example, it is possible to install the configured MySQL package in `/usr/local` by doing the following:
 
-`BUILDPHP_INSTALL_TO=/usr/local sudo rake mysql:install`
+`BUILDPHP_INSTALL_TO=/usr/local sudo rake mysql`
 
 Your mileage may very. Disclaimer.
 

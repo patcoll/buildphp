@@ -1,11 +1,13 @@
+require 'digest/md5'
+
 class BuildTaskAbstract
   attr_reader :prefix
   attr_reader :flags
   
-  attr_reader :versions
-  attr_reader :filename
-  attr_reader :dir
-  attr_reader :location
+  # attr_reader :versions
+  # attr_reader :filename
+  # attr_reader :dir
+  # attr_reader :location
   attr_reader :php_config_flags
   
   attr_reader :version
@@ -18,32 +20,18 @@ class BuildTaskAbstract
   attr_reader :extract_cmd
   
   def initialize(version)
-    @version = version
+    @version = VERSION if VERSION
+    @version = version if version
+    nil if not @version
     @package_path = File.join(EXTRACT_TO, package_name)
   end
   
   def to_s
-    self.class
+    self.class.to_s
   end
   
   def versions
     {}
-  end
-  
-  def filename
-    ''
-  end
-  
-  def dir
-    ''
-  end
-  
-  def location
-    ''
-  end
-  
-  def php_config_flags
-    []
   end
   
   def package_depends_on
@@ -51,19 +39,26 @@ class BuildTaskAbstract
   end
   
   def package_name
-    filename % @version
+    nil
+    # filename % @version
   end
   
   def package_dir
-    dir % @version
+    nil
+    # dir % @version
   end
   
   def package_location
-    location % package_name
+    nil
+    # location % package_name
   end
   
   def package_md5
     versions[@version][:md5]
+  end
+  
+  def php_config_flags
+    []
   end
   
   def extract_dir
