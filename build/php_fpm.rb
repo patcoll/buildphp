@@ -1,4 +1,6 @@
 class PhpFpm < BuildTaskAbstract
+  VERSION = '5.3.0'
+
   def versions
     {
       '5.2.8' => { :md5 => '7104c76e2891612af636104e0f6d60d4' },
@@ -41,7 +43,7 @@ class PhpFpm < BuildTaskAbstract
   end
 end
 
-FACTORY.add(PhpFpm.new(Php::VERSION))
+FACTORY.add(PhpFpm.new(PhpFpm::VERSION))
 
 namespace :php_fpm do
   task :get do
