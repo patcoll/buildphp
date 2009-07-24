@@ -31,7 +31,7 @@ class Php < BuildTaskAbstract
       'iconv',
       'bz2',
       'zlib',
-      # 'mysql',
+      'mysql',
     ]
   end
   

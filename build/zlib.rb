@@ -19,6 +19,10 @@ class Zlib < BuildTaskAbstract
     'http://www.zlib.net/%s' % package_name
   end
   
+  def get_build_string
+    "./configure --shared --prefix=#{INSTALL_TO}"
+  end
+  
   def php_config_flags
     [
       "--with-zlib=shared",

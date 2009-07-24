@@ -42,11 +42,6 @@ class Mysql < BuildTaskAbstract
     parts.join(' ')
   end
   
-  def get_build_string
-    
-    parts.join(' ')
-  end
-  
   def is_installed
     File.exists?(File.join(INSTALL_TO, 'mysql', 'include', 'mysql', 'mysql.h'))
   end
