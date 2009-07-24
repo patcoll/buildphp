@@ -23,6 +23,7 @@ class Libtool < BuildTaskAbstract
   
   def get_build_string
     parts = []
+    parts << flags
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
     parts << "--prefix=#{INSTALL_TO}"
