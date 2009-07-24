@@ -28,9 +28,10 @@ class Mysql < BuildTaskAbstract
   end
   
   def get_build_string
-    parts = [
-      # flags,
-      "./configure",
+    parts = []
+    parts << './configure'
+    parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
+    parts += [
       "--prefix=#{INSTALL_TO}/mysql",
       "--with-plugins=max",
       "--with-charset=utf8",
@@ -41,8 +42,13 @@ class Mysql < BuildTaskAbstract
     parts.join(' ')
   end
   
+  def get_build_string
+    
+    parts.join(' ')
+  end
+  
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'include', 'mysql', 'mysql.h'))
+    File.exists?(File.join(INSTALL_TO, 'mysql', 'include', 'mysql', 'mysql.h'))
   end
 end
 

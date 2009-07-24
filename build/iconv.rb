@@ -20,6 +20,14 @@ class Iconv < BuildTaskAbstract
     'http://ftp.gnu.org/pub/gnu/libiconv/%s' % package_name
   end
   
+  def get_build_string
+    parts = []
+    parts << './configure'
+    parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
+    parts << "--prefix=#{INSTALL_TO}"
+    parts.join(' ')
+  end
+  
   def php_config_flags
     [
       "--with-iconv=shared",

@@ -46,6 +46,8 @@ class Php < BuildTaskAbstract
     parts << flags
     parts << "./configure"
 
+    parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
+
     # Apache2
     # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
     # FastCGI
@@ -66,10 +68,6 @@ class Php < BuildTaskAbstract
       "--disable-rpath",
       "--enable-inline-optimization",
     ]
-    
-    # if RUBY_PLATFORM == 'x86_64-linux'
-    #   parts << "--with-pic"
-    # end
     
     # Built-in Extensions
     parts += [

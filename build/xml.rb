@@ -27,7 +27,13 @@ class Xml < BuildTaskAbstract
   end
   
   def get_build_string
-    "./configure --prefix=#{INSTALL_TO} --with-iconv=#{INSTALL_TO} --with-zlib=#{INSTALL_TO}"
+    parts = []
+    parts << './configure'
+    parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
+    parts << "--prefix=#{INSTALL_TO}"
+    parts << "--with-iconv=#{INSTALL_TO}"
+    parts << "--with-zlib=#{INSTALL_TO}"
+    parts.join(' ')
   end
   
   def php_config_flags
