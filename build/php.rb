@@ -67,9 +67,9 @@ class Php < BuildTaskAbstract
       "--enable-inline-optimization",
     ]
     
-    if RUBY_PLATFORM == 'x86_64-linux'
-      parts << "--with-pic"
-    end
+    # if RUBY_PLATFORM == 'x86_64-linux'
+    #   parts << "--with-pic"
+    # end
     
     # Built-in Extensions
     parts += [
@@ -90,7 +90,7 @@ class Php < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'bin', 'php'))
+    File.exists?(File.join(INSTALL_TO, 'php5', 'bin', 'php'))
   end
 end
 

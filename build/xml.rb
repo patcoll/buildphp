@@ -10,6 +10,7 @@ class Xml < BuildTaskAbstract
   def package_depends_on
     [
       'iconv',
+      'zlib',
     ]
   end
   
@@ -26,7 +27,7 @@ class Xml < BuildTaskAbstract
   end
   
   def get_build_string
-    "./configure --prefix=#{INSTALL_TO} --with-iconv=#{INSTALL_TO}"
+    "./configure --prefix=#{INSTALL_TO} --with-iconv=#{INSTALL_TO} --with-zlib=#{INSTALL_TO}"
   end
   
   def php_config_flags
