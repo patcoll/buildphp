@@ -94,7 +94,7 @@ class BuildTaskAbstract
     
     f = f.join(' ')
     
-    "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}'"
+    "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}' PATH=\"#{INSTALL_TO}/bin\":$PATH"
   end
   
   def stop(msg)

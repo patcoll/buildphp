@@ -14,6 +14,7 @@ Dir['build/*.rb'].each { |build_task| load build_task }
 # TODO: automate instantiation of all classes that (directly) extend BuildTaskAbstract
 FACTORY.add(Bz2.new(Bz2::VERSION))
 FACTORY.add(Iconv.new(Iconv::VERSION))
+FACTORY.add(Libtool.new(Libtool::VERSION))
 FACTORY.add(Mysql.new(Mysql::VERSION))
 FACTORY.add(Ncurses.new(Ncurses::VERSION))
 FACTORY.add(Php.new(Php::VERSION))

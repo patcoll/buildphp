@@ -9,6 +9,12 @@ class Ncurses < BuildTaskAbstract
     }
   end
   
+  def package_depends_on
+    [
+      'libtool',
+    ]
+  end
+  
   def package_name
     'ncurses-%s.tar.gz' % @version
   end
