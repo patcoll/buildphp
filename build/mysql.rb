@@ -7,6 +7,14 @@ class Mysql < BuildTaskAbstract
     }
   end
   
+  def package_depends_on
+    [
+      'zlib',
+      'ncurses',
+    ]
+  end
+  
+  
   def package_name
     'mysql-%s.tar.gz' % @version
   end
@@ -38,6 +46,8 @@ class Mysql < BuildTaskAbstract
       "--with-collation=utf8_general_ci",
       "--with-extra-charsets=latin1",
       "--without-uca",
+      "--with-zlib-dir=#{INSTALL_TO}",
+      "--with-named-curses-libs=#{INSTALL_TO}/lib/libncurses.a",
     ]
     parts.join(' ')
   end
