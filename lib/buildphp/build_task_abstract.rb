@@ -76,7 +76,7 @@ class BuildTaskAbstract
     # flags = "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
     
     # enable PIC
-    if not `uname -a`.index("x86_64") == nil
+    if RUBY_PLATFORM.index("x86_64") != nil
       f << "-fPIC"
     end
     # 

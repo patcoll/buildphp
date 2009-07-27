@@ -23,7 +23,7 @@ class Libtool < BuildTaskAbstract
     parts = []
     parts << flags
     parts << './configure'
-    parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
+    parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
     parts << "--prefix=#{INSTALL_TO}"
     parts.join(' ')
   end

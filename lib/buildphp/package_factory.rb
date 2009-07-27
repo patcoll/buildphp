@@ -9,7 +9,7 @@ class PackageFactory
   end
   def get(class_name)
     @packages.detect do |package|
-      package.class.to_s == class_name.to_s || package.class.to_s == Inflect.underscore(class_name.to_s)
+      package.class.to_s == class_name.to_s || Inflect.underscore(package.class.to_s) == Inflect.underscore(class_name.to_s)
     end
   end
 end

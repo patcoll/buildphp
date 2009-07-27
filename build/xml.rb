@@ -28,8 +28,9 @@ class Xml < BuildTaskAbstract
   
   def get_build_string
     parts = []
+    parts << flags
     parts << './configure'
-    parts << "--with-pic" if RUBY_PLATFORM == 'x86_64-linux'
+    parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
     parts << "--prefix=#{INSTALL_TO}"
     parts << "--with-iconv=#{INSTALL_TO}"
     parts << "--with-zlib=#{INSTALL_TO}"
@@ -46,6 +47,6 @@ class Xml < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'bin', 'xml2-config'))
+    File.exists?(File.join(INSTALL_TO, 'lib', 'libxml2.a'))
   end
 end

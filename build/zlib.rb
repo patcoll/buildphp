@@ -20,7 +20,12 @@ class Zlib < BuildTaskAbstract
   end
   
   def get_build_string
-    "./configure --shared --prefix=#{INSTALL_TO}"
+    parts = []
+    parts << flags
+    parts << './configure'
+    parts << "--shared"
+    parts << "--prefix=#{INSTALL_TO}"
+    parts.join(' ')
   end
   
   def php_config_flags

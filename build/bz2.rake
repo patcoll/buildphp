@@ -12,7 +12,7 @@ namespace :bz2 do
     # Ideally, we should detect the platform and use the appropriate PIC flag for that platform.
     # 
     # If we don't do this, while compiling PHP will complain that bz2 was not compiled with PIC.
-    if RUBY_PLATFORM == 'x86_64-linux'
+    if RUBY_PLATFORM.index("x86_64") != nil
       # use GNU sed options because we're on linux
       cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile && make"
     end
