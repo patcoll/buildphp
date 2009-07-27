@@ -1,5 +1,5 @@
 class Zlib < BuildTaskAbstract
-  VERSION = '1.2.3'
+  PACKAGE_VERSION = '1.2.3'
   
   def versions
     {

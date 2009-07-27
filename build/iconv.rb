@@ -1,6 +1,5 @@
-# http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.12.tar.gz
 class Iconv < BuildTaskAbstract
-  VERSION = '1.12'
+  PACKAGE_VERSION = '1.12'
   
   def versions
     {

@@ -15,6 +15,7 @@ Dependencies
 Typical POSIX stuff:
 
   * gcc
+  * g++
   * sh
   * tar
   * wget

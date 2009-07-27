@@ -1,5 +1,5 @@
 class Xml < BuildTaskAbstract
-  VERSION = '2.6.30'
+  PACKAGE_VERSION = '2.6.30'
   
   def versions
     {

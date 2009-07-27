@@ -1,4 +1,6 @@
 class PhpFpm < BuildTaskAbstract
+  PACKAGE_VERSION = Php::PACKAGE_VERSION
+  
   def versions
     {
       '5.2.8' => { :md5 => '7104c76e2891612af636104e0f6d60d4' },

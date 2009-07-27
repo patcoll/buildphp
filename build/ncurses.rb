@@ -1,7 +1,5 @@
-# http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
-
 class Ncurses < BuildTaskAbstract
-  VERSION = '5.7'
+  PACKAGE_VERSION = '5.7'
   
   def versions
     {
@@ -35,8 +33,8 @@ class Ncurses < BuildTaskAbstract
     parts << "--prefix=#{INSTALL_TO}"
     parts << "--without-debug"
     parts << "--with-shared"
-    parts << "--without-cxx"
-    parts << "--without-cxx-binding"
+    # parts << "--without-cxx"
+    # parts << "--without-cxx-binding"
     parts << "--with-libtool"
     parts << "--enable-termcap"
     parts.join(' ')

@@ -4,7 +4,7 @@ class PackageFactory
     @packages = []
   end
   def add(package)
-    nil if not package.is_a?(BuildTaskAbstract)
+    return nil if not package.is_a?(BuildTaskAbstract)
     @packages.push(package)
   end
   def get(class_name)

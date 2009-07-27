@@ -1,5 +1,5 @@
 class Bz2 < BuildTaskAbstract
-  VERSION = '1.0.5'
+  PACKAGE_VERSION = '1.0.5'
   
   def versions
     {
@@ -16,7 +16,7 @@ class Bz2 < BuildTaskAbstract
   end
   
   def package_location
-    'http://www.bzip.org/1.0.5/%s' % package_name
+    'http://www.bzip.org/%s/%s' % [@version, package_name]
   end
   
   def php_config_flags

@@ -1,5 +1,5 @@
 class Mysql < BuildTaskAbstract
-  VERSION = '5.1.36'
+  PACKAGE_VERSION = '5.1.36'
   
   def versions
     {

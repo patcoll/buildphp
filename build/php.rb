@@ -1,5 +1,5 @@
 class Php < BuildTaskAbstract
-  VERSION = '5.3.0'
+  PACKAGE_VERSION = '5.3.0'
   
   def versions
     {

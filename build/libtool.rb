@@ -1,7 +1,5 @@
-# http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz
-
 class Libtool < BuildTaskAbstract
-  VERSION = '2.2.6a'
+  PACKAGE_VERSION = '2.2.6a'
   
   def versions
     {
@@ -31,6 +29,6 @@ class Libtool < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'lib', 'libtoolwhat.a'))
+    File.exists?(File.join(INSTALL_TO, 'bin', 'libtool'))
   end
 end

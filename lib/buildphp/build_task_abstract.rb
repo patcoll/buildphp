@@ -4,10 +4,6 @@ class BuildTaskAbstract
   attr_reader :prefix
   attr_reader :flags
   
-  # attr_reader :versions
-  # attr_reader :filename
-  # attr_reader :dir
-  # attr_reader :location
   attr_reader :php_config_flags
   
   attr_reader :version
@@ -19,10 +15,8 @@ class BuildTaskAbstract
   attr_reader :extract_dir
   attr_reader :extract_cmd
   
-  def initialize(version)
-    @version = VERSION if VERSION
+  def initialize(version=nil)
     @version = version if version
-    nil if not @version
     @package_path = File.join(EXTRACT_TO, package_name)
   end
   
@@ -40,17 +34,14 @@ class BuildTaskAbstract
   
   def package_name
     nil
-    # filename % @version
   end
   
   def package_dir
     nil
-    # dir % @version
   end
   
   def package_location
     nil
-    # location % package_name
   end
   
   def package_md5
@@ -94,7 +85,11 @@ class BuildTaskAbstract
     
     f = f.join(' ')
     
-    "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}' PATH=\"#{INSTALL_TO}/bin\":$PATH"
+    out = []
+    out << %{ CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}' } if f
+    out << %{ PATH="#{INSTALL_TO}/bin":$PATH }
+    
+    out.join(' ')
   end
   
   def stop(msg)
