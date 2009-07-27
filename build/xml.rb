@@ -40,9 +40,8 @@ class Xml < BuildTaskAbstract
   def php_config_flags
     [
       "--enable-xml=shared",
-      "--with-xmlrpc=shared",
-      "--enable-libxml=shared",
       "--with-libxml-dir=#{INSTALL_TO}",
+      "--enable-libxml",
     ]
   end
   
