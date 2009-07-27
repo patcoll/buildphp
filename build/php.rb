@@ -67,14 +67,37 @@ class Php < BuildTaskAbstract
       "--with-config-file-scan-dir=#{INSTALL_TO}/php5/etc/php.d",
       "--with-pear=#{INSTALL_TO}/php5/share/pear",
       "--disable-debug",
-      "--disable-rpath",
-      "--enable-inline-optimization",
     ]
     
-    # Built-in Extensions
+    # Built-in Extensions we must explicitly turn on b/c of --disable-all
     parts += [
+      "--disable-all",
+      "--enable-rpath",
+      "--enable-inline-optimization",
+      "--enable-libxml",
+      "--enable-ctype",
+      "--enable-inifile",
+      "--enable-flatfile",
+      "--enable-dom",
+      "--enable-fileinfo",
+      "--enable-filter",
+      "--enable-hash",
+      "--enable-json",
+      "--enable-mbregex",
+      "--enable-mbregex-backtrack",
+      "--enable-pdo",
+      "--enable-phar",
+      "--enable-posix",
+      "--enable-session",
+      "--enable-simplexml",
+      "--enable-tokenizer",
+      "--enable-xml",
+      "--enable-xmlreader",
+      "--enable-xmlwriter",
+      "--enable-libtool-lock",
       "--enable-bcmath",
       "--enable-calendar",
+      "--enable-pdo",
     ]
     
     # PHP-FPM
