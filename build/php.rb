@@ -27,13 +27,13 @@ class Php < BuildTaskAbstract
   
   def php_modules
     [
+      'bz2',
+      'iconv',
+      # 'icu',
+      'mysql',
       'xml',
       'xsl',
-      'iconv',
-      'bz2',
       'zlib',
-      'mysql',
-      'icu',
     ]
   end
   
@@ -51,7 +51,7 @@ class Php < BuildTaskAbstract
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
 
     # Apache2
-    # parts.push "--with-apxs2=#{INSTALL_TO}/sbin/apxs"
+    # parts.push "--with-apxs2=/Applications/MAMP/Library/bin/apxs"
     # FastCGI
     # It also seems you don't need these for 5.3+
     # parts += [

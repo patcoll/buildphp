@@ -123,6 +123,7 @@ class BuildTaskAbstract
       # extract archive
       sh extract_cmd
     end
+    return true
   end # /get
   
   def configure()
@@ -134,6 +135,7 @@ class BuildTaskAbstract
         end
       end
     end
+    return true
   end # /configure
   
   def compile(cmd='make')
@@ -144,6 +146,7 @@ class BuildTaskAbstract
         end
       end
     end
+    return true
   end # /compile
   
   def install(cmd='make install')
@@ -157,5 +160,6 @@ class BuildTaskAbstract
     else
       notice "already installed"
     end
+    return true
   end # /install
 end
