@@ -11,7 +11,7 @@ class Ncurses < BuildTaskAbstract
   
   def package_depends_on
     [
-      # 'libtool',
+      'libtool',
     ]
   end
   
@@ -35,7 +35,9 @@ class Ncurses < BuildTaskAbstract
     parts << "--prefix=#{INSTALL_TO}"
     parts << "--without-debug"
     parts << "--with-shared"
-    # parts << "--with-libtool"
+    parts << "--without-cxx"
+    parts << "--without-cxx-binding"
+    parts << "--with-libtool"
     parts << "--enable-termcap"
     parts.join(' ')
   end
