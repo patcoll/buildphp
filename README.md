@@ -43,6 +43,8 @@ To clean up source (folders within "packages"), temporary (everything within "tm
 
 That's it.
 
+Possible TODO: "remove" method that could remove individual package's files. each package would need to implement a diff to enable removal of files later.
+
 Features
 --------
 
