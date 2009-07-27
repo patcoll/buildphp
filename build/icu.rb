@@ -24,8 +24,13 @@ class Icu < BuildTaskAbstract
     parts = []
     parts << flags
     parts << './configure'
-    parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
     parts << "--prefix=#{INSTALL_TO}"
+    parts << "--enable-64bit-libs" if RUBY_PLATFORM.index("x86_64") != nil
+    parts << "--enable-shared"
+    parts << "--disable-threads"
+    parts << "--enable-extras"
+    parts << "--enable-icuio"
+    parts << "--enable-layout"
     parts.join(' ')
   end
   
@@ -36,6 +41,6 @@ class Icu < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'lib', 'libicui18n.dylib'))
+    File.exists?(File.join(INSTALL_TO, 'lib', 'icu'))
   end
 end
