@@ -26,9 +26,6 @@ class Icu < BuildTaskAbstract
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
     parts << "--prefix=#{INSTALL_TO}"
-    # parts << "--with-libxml-prefix=#{INSTALL_TO}"
-    # parts << "--with-libxml-include-prefix=#{INSTALL_TO}/include"
-    # parts << "--with-libxml-libs-prefix=#{INSTALL_TO}/lib"
     parts.join(' ')
   end
   
@@ -39,6 +36,6 @@ class Icu < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'lib', 'sdadasdasdasda.a'))
+    File.exists?(File.join(INSTALL_TO, 'lib', 'libicui18n.dylib'))
   end
 end
