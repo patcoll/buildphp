@@ -1,5 +1,5 @@
 class PhpFpm < BuildTaskAbstract
-  PACKAGE_VERSION = Php::PACKAGE_VERSION
+  PACKAGE_VERSION = '5.3.0'
   
   def versions
     {
