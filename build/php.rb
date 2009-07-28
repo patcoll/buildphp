@@ -29,7 +29,6 @@ class Php < BuildTaskAbstract
     [
       'bz2',
       'iconv',
-      # 'icu',
       'mysql',
       'xml',
       'xsl',
