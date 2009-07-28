@@ -1,0 +1,36 @@
+# http://hpux.connect.org.uk/ftp/hpux/X11/Graphics/libXpm-3.5.7/libXpm-3.5.7-src-11.11.tar.gz
+class Xpm < Package
+  PACKAGE_VERSION = '3.5.7'
+  # PACKAGE_PREFIX = "/Applications/MAMP/Library"
+  
+  def versions
+    {
+      '3.5.7' => { :md5 => '72796ae1412bbab196fee577be61a556' },
+    }
+  end
+  
+  def package_name
+    'libXpm-%s-src-11.11.tar.gz' % @version
+  end
+  
+  def package_dir
+    'libXpm-%s' % @version
+  end
+  
+  def package_location
+    'http://hpux.connect.org.uk/ftp/hpux/X11/Graphics/%s/%s' % [package_dir, package_name]
+  end
+  
+  def get_build_string
+    parts = []
+    parts << flags
+    parts << './configure'
+    parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
+    parts << "--prefix=#{PACKAGE_PREFIX}"
+    parts.join(' ')
+  end
+  
+  def is_installed
+    not FileList["#{PACKAGE_PREFIX}/lib/libXpm.*"].empty?
+  end
+end

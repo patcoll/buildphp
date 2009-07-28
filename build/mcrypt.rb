@@ -36,6 +36,6 @@ class Mcrypt < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libmcrypt.la')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libmcrypt.dylib'))
+    not FileList["#{PACKAGE_PREFIX}/lib/libmcrypt.*"].empty?
   end
 end

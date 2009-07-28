@@ -24,8 +24,10 @@ package_classes.each do |class_name|
   FACTORY.get(class_name).rake if FACTORY.get(class_name).respond_to?(:rake)
 end
 
-desc 'Download, configure, build and install PHP and all configured dependencies'
+desc 'Download, configure and build PHP and install all dependencies'
 task :default => :php
+desc 'Download, configure, build and install PHP and all dependencies'
+task :install => 'php:install'
 
 # clean all "tmp" files and directories in the "packages" directory
 CLEAN.add(TMP_DIR+'/*', Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a)

@@ -26,7 +26,7 @@ class Bz2 < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'include', 'bzlib.h'))
+    not FileList["#{PACKAGE_PREFIX}/lib/libbz2.*"].empty?
   end
   
   def rake

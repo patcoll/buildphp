@@ -46,6 +46,6 @@ class Xsl < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libxslt.la'))
+    not FileList["#{PACKAGE_PREFIX}/lib/libxslt.*"].empty?
   end
 end

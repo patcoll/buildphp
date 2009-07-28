@@ -55,7 +55,7 @@ class Mysql < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'mysql', 'libmysqlclient.dylib')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'mysql', 'libmysqlclient.la'))
+    not FileList["#{PACKAGE_PREFIX}/lib/mysql/libmysqlclient.*"].empty?
   end
 end
 

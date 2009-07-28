@@ -1,23 +1,24 @@
-class Mhash < Package
-  PACKAGE_VERSION = '0.9.9.9'
+# http://www.ijg.org/files/jpegsrc.v7.tar.gz
+class Jpeg < Package
+  PACKAGE_VERSION = '7'
   # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
-      '0.9.9.9' => { :md5 => 'ee66b7d5947deb760aeff3f028e27d25' },
+      '7' => { :md5 => '382ef33b339c299b56baf1296cda9785' },
     }
   end
   
   def package_name
-    'mhash-%s.tar.gz' % @version
+    'jpegsrc.v%s.tar.gz' % @version
   end
   
   def package_dir
-    'mhash-%s' % @version
+    'jpeg-%s' % @version
   end
   
   def package_location
-    'http://downloads.sourceforge.net/project/mhash/mhash/%s/%s' % [@version, package_name]
+    'http://www.ijg.org/files/%s' % package_name
   end
   
   def get_build_string
@@ -29,13 +30,7 @@ class Mhash < Package
     parts.join(' ')
   end
   
-  def php_config_flags
-    [
-      "--with-mhash=shared,#{PACKAGE_PREFIX}",
-    ]
-  end
-  
   def is_installed
-    not FileList["#{PACKAGE_PREFIX}/lib/libmhash.*"].empty?
+    not FileList["#{PACKAGE_PREFIX}/lib/libjpeg.*"].empty?
   end
 end

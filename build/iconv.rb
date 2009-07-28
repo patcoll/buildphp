@@ -37,6 +37,6 @@ class Iconv < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libiconv.la')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libiconv.dylib'))
+    not FileList["#{PACKAGE_PREFIX}/lib/libiconv.*"].empty?
   end
 end

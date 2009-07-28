@@ -44,6 +44,7 @@ class Xml < Package
       "--enable-xml=shared",
       "--with-libxml-dir=#{PACKAGE_PREFIX}",
       "--enable-libxml",
+      "--with-xmlrpc=shared",
       "--enable-dom",
       "--enable-simplexml",
       "--enable-xmlreader",
@@ -52,6 +53,6 @@ class Xml < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libxml2.la'))
+    not FileList["#{PACKAGE_PREFIX}/lib/libxml2.*"].empty?
   end
 end

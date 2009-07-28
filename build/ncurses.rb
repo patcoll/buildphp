@@ -43,6 +43,6 @@ class Ncurses < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libncurses.a')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libncurses.dylib'))
+    not FileList["#{PACKAGE_PREFIX}/lib/libncurses.*"].empty?
   end
 end

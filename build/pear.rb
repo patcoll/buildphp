@@ -9,7 +9,7 @@ class Pear < Package
   
   def php_config_flags
     [
-      "--with-pear=#{FACTORY.get('php')::PACKAGE_PREFIX}/share/pear",
+      "--with-pear=#{Php::PACKAGE_PREFIX}/share/pear",
     ]
   end
   
