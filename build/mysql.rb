@@ -48,8 +48,8 @@ class Mysql < Package
       "--with-collation=utf8_general_ci",
       "--with-extra-charsets=latin1",
       "--without-uca",
-      "--with-zlib-dir=#{FACTORY.get('zlib')::PACKAGE_PREFIX}",
-      "--with-named-curses-libs=#{FACTORY.get('ncurses')::PACKAGE_PREFIX}/lib/libncurses.a",
+      "--with-zlib-dir=#{Zlib::PACKAGE_PREFIX}",
+      "--with-named-curses-libs=#{Ncurses::PACKAGE_PREFIX}/lib/libncurses.a",
     ]
     parts.join(' ')
   end
