@@ -1,5 +1,6 @@
-class Zlib < BuildTaskAbstract
+class Zlib < Package
   PACKAGE_VERSION = '1.2.3'
+  # PACKAGE_PREFIX = "/usr"
   
   def versions
     {
@@ -24,18 +25,18 @@ class Zlib < BuildTaskAbstract
     parts << flags
     parts << './configure'
     parts << "--shared"
-    parts << "--prefix=#{INSTALL_TO}"
+    parts << "--prefix=#{PACKAGE_PREFIX}"
     parts.join(' ')
   end
   
   def php_config_flags
     [
       "--with-zlib=shared",
-      "--with-zlib-dir=#{INSTALL_TO}",
+      "--with-zlib-dir=#{PACKAGE_PREFIX}",
     ]
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'include', 'zlib.h'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libz.dylib'))
   end
 end

@@ -1,23 +1,23 @@
-class Iconv < Package
-  PACKAGE_VERSION = '1.12'
+class Mhash < Package
+  PACKAGE_VERSION = '0.9.9.9'
   # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
-      '1.12' => { :md5 => 'c2be282595751535a618ae0edeb8f648' },
+      '0.9.9.9' => { :md5 => 'ee66b7d5947deb760aeff3f028e27d25' },
     }
   end
   
   def package_name
-    'libiconv-%s.tar.gz' % @version
+    'mhash-%s.tar.gz' % @version
   end
   
   def package_dir
-    'libiconv-%s' % @version
+    'mhash-%s' % @version
   end
   
   def package_location
-    'http://ftp.gnu.org/pub/gnu/libiconv/%s' % package_name
+    'http://downloads.sourceforge.net/project/mhash/mhash/%s/%s' % [@version, package_name]
   end
   
   def get_build_string
@@ -31,12 +31,11 @@ class Iconv < Package
   
   def php_config_flags
     [
-      "--with-iconv=shared",
-      "--with-iconv-dir=#{PACKAGE_PREFIX}",
+      "--with-mhash=shared,#{PACKAGE_PREFIX}",
     ]
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libiconv.la')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libiconv.dylib'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libmhash.la')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libmhash.dylib'))
   end
 end

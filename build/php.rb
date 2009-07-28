@@ -1,5 +1,9 @@
-class Php < BuildTaskAbstract
+class Php < Package
   PACKAGE_VERSION = '5.3.0'
+  PACKAGE_PREFIX = "#{INSTALL_TO}/php5"
+  CONFIG_FILE_PATH = "#{PACKAGE_PREFIX}/etc"
+  CONFIG_FILE_SCAN_DIR = "#{CONFIG_FILE_PATH}/php.d"
+  PHP_INI = "#{CONFIG_FILE_PATH}/php.ini"
   
   def versions
     {
@@ -27,12 +31,15 @@ class Php < BuildTaskAbstract
   
   def php_modules
     [
-      'bz2',
-      'iconv',
-      'mysql',
-      'xml',
-      'xsl',
-      'zlib',
+      # 'bz2',
+      # 'iconv',
+      # 'mysql', # requires zlib, ncurses
+      # 'mcrypt',
+      # 'mhash',
+      # 'pear', # requires xml
+      # 'xml', # requires iconv, zlib
+      # 'xsl', # requires xml
+      # 'zlib',
     ]
   end
   
@@ -51,8 +58,9 @@ class Php < BuildTaskAbstract
 
     # Apache2
     # parts.push "--with-apxs2=/Applications/MAMP/Library/bin/apxs"
+    
     # FastCGI
-    # It also seems you don't need these for 5.3+
+    # It seems you don't need these for 5.3+
     # parts += [
     #   "--enable-fastcgi",
     #   "--enable-discard-path",
@@ -61,10 +69,9 @@ class Php < BuildTaskAbstract
 
     # PHP stufz
     parts += [
-      "--prefix=#{INSTALL_TO}/php5",
-      "--with-config-file-path=#{INSTALL_TO}/php5/etc",
-      "--with-config-file-scan-dir=#{INSTALL_TO}/php5/etc/php.d",
-      "--with-pear=#{INSTALL_TO}/php5/share/pear",
+      "--prefix=#{PACKAGE_PREFIX}",
+      "--with-config-file-path=#{CONFIG_FILE_PATH}",
+      "--with-config-file-scan-dir=#{CONFIG_FILE_SCAN_DIR}",
       "--disable-debug",
     ]
     
@@ -73,30 +80,26 @@ class Php < BuildTaskAbstract
       "--disable-all",
       "--enable-rpath",
       "--enable-inline-optimization",
-      "--enable-libxml",
+      "--enable-libtool-lock",
+      "--enable-bcmath",
+      # "--enable-calendar",
       "--enable-ctype",
       "--enable-inifile",
       "--enable-flatfile",
-      "--enable-dom",
       "--enable-fileinfo",
       "--enable-filter",
       "--enable-hash",
       "--enable-json",
       "--enable-mbregex",
       "--enable-mbregex-backtrack",
+      "--enable-mbstring",
       "--enable-pdo",
       "--enable-phar",
       "--enable-posix",
       "--enable-session",
-      "--enable-simplexml",
       "--enable-tokenizer",
-      "--enable-xml",
-      "--enable-xmlreader",
-      "--enable-xmlwriter",
-      "--enable-libtool-lock",
-      "--enable-bcmath",
-      "--enable-calendar",
-      "--enable-pdo",
+      "--enable-zend-multibyte",
+      "--enable-zip=shared",
     ]
     
     # PHP-FPM
@@ -112,7 +115,44 @@ class Php < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'php5', 'bin', 'php'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'bin', 'php'))
+  end
+  
+  def rake
+    namespace to_sym do
+      task :get do
+        get
+      end
+
+      task :configure => package_depends_on do
+        configure
+      end
+
+      task :compile => :configure do
+        compile
+      end
+
+      task :install => :compile do
+        install_cmd = %{ make install PHP_PEAR_DOWNLOAD_DIR="#{TMP_DIR}" && make install-cli PHP_PEAR_DOWNLOAD_DIR="#{TMP_DIR}" }
+        if install(install_cmd) and not File.exists?(PHP_INI) then
+          notice "no php.ini detected. installing ..."
+          extension_dir = Dir["#{PACKAGE_PREFIX}/lib/php/extensions/*"][0]
+          sh %{ mkdir -p #{CONFIG_FILE_PATH} #{CONFIG_FILE_SCAN_DIR} }
+          sh %{ cp "#{extract_dir}/php.ini-production" "#{PHP_INI}" }
+          notice "enabling compiled modules ..."
+          new_config_file = "#{CONFIG_FILE_SCAN_DIR}/modules.ini"
+          sh %{ echo '; Extension directory (buildphp)' >> #{new_config_file} }
+          sh %{ echo 'extension_dir="#{extension_dir}/"' >> #{new_config_file} }
+          sh %{ echo '' >> #{new_config_file} }
+          sh %{ echo '; Shared modules (buildphp)' >> #{new_config_file} }
+          FileList["#{extension_dir}/*.so"].map{ |file| File.basename(file) }.each do |file|
+            sh %{ echo 'extension=#{file}' >> #{new_config_file} }
+          end
+        end
+      end
+    end
+
+    task to_sym => "#{underscored}:install"
   end
 end
 

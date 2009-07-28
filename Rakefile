@@ -8,25 +8,28 @@ require 'buildphp'
 require 'rake/clean'
 
 FACTORY = PackageFactory.new
-oldconst = Module.constants
+oldmods = Module.constants
 Dir['build/*.rb'].each { |build_task| load build_task }
-newconst = Module.constants
+newmods = Module.constants
+package_classes = (newmods - oldmods)
 
-# automate instantiation of all classes that extend BuildTaskAbstract
-(newconst - oldconst).each do |class_name|
+# automate instantiation of all package classes
+package_classes.each do |class_name|
   klass = Module.const_get(class_name)
   abort "Could not instantiate #{klass}." if not FACTORY.add(klass.new(klass::PACKAGE_VERSION))
 end
 
-Dir['build/*.rake'].each { |rake_task| load rake_task }
+# load rake tasks for each package
+package_classes.each do |class_name|
+  FACTORY.get(class_name).rake if FACTORY.get(class_name).respond_to?(:rake)
+end
 
-desc 'Download, configure, build and install PHP and all dependencies'
-task :build => :php
-desc 'Download, configure, build and install PHP and all dependencies'
-task :default => :build
+desc 'Download, configure, build and install PHP and all configured dependencies'
+task :default => :php
 
 # clean all "tmp" files and directories in the "packages" directory
 CLEAN.add(TMP_DIR+'/*', Dir[EXTRACT_TO+'/*'].delete_if { |path| FileTest.file?(path) }.to_a)
+
 # clean out "installed" status of PHP-FPM
 PHPFPM_INSTALL_FILE = EXTRACT_TO + "/#{FACTORY.get('PhpFpm').package_name}.installed"
 CLEAN.add(PHPFPM_INSTALL_FILE) if File.exists?(PHPFPM_INSTALL_FILE)

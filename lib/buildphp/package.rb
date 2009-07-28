@@ -1,27 +1,27 @@
 require 'digest/md5'
 
-class BuildTaskAbstract
-  attr_reader :prefix
-  attr_reader :flags
-  
-  attr_reader :php_config_flags
-  
-  attr_reader :version
-  attr_reader :package_depends_on
-  attr_reader :package_dir
-  attr_reader :package_name
-  attr_reader :package_location
-  attr_reader :package_md5
-  attr_reader :extract_dir
-  attr_reader :extract_cmd
+class Package
+  PACKAGE_PREFIX = INSTALL_TO
   
   def initialize(version=nil)
     @version = version if version
-    @package_path = File.join(EXTRACT_TO, package_name)
+    @package_path = File.join(EXTRACT_TO, package_name) if package_name
   end
   
   def to_s
     self.class.to_s
+  end
+  
+  def underscored
+    Inflect.underscore(self.to_s)
+  end
+  
+  def to_sym
+    underscored.to_sym
+  end
+
+  def prefix
+    "[#{underscored}] "
   end
   
   def versions
@@ -65,10 +65,6 @@ class BuildTaskAbstract
     false
   end
   
-  def prefix
-    "[#{Inflect.underscore(self.to_s)}] "
-  end
-  
   def flags
     f = []
     
@@ -79,7 +75,7 @@ class BuildTaskAbstract
     if RUBY_PLATFORM.index("x86_64") != nil
       f << "-fPIC"
     end
-    # 
+    
     # -fno-common enables PIC on Darwin
     # f << "-fno-common"
     
@@ -101,10 +97,10 @@ class BuildTaskAbstract
   end
   
   def get_build_string
-    "./configure --prefix=#{INSTALL_TO}"
+    "./configure --prefix=#{PACKAGE_PREFIX}"
   end
   
-  def get()
+  def get
     if not is_installed
       Dir.chdir(EXTRACT_TO)
 
@@ -126,7 +122,7 @@ class BuildTaskAbstract
     return true
   end # /get
   
-  def configure()
+  def configure
     if not is_installed
       stop "extract folder does not exist" if not File.exists?(extract_dir)
       Dir.chdir(extract_dir) do
@@ -162,4 +158,26 @@ class BuildTaskAbstract
     end
     return true
   end # /install
+  
+  def rake
+    namespace to_sym do
+      task :get do
+        get
+      end
+
+      task :configure => ((package_depends_on || []) + [:get]) do
+        configure
+      end
+
+      task :compile => :configure do
+        compile
+      end
+
+      task :install => :compile do
+        install
+      end
+    end
+
+    task to_sym => "#{underscored}:install"
+  end
 end

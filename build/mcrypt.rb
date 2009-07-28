@@ -1,23 +1,23 @@
-class Iconv < Package
-  PACKAGE_VERSION = '1.12'
+class Mcrypt < Package
+  PACKAGE_VERSION = '2.5.8'
   # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
-      '1.12' => { :md5 => 'c2be282595751535a618ae0edeb8f648' },
+      '2.5.8' => { :md5 => '0821830d930a86a5c69110837c55b7da' },
     }
   end
   
   def package_name
-    'libiconv-%s.tar.gz' % @version
+    'libmcrypt-%s.tar.gz' % @version
   end
   
   def package_dir
-    'libiconv-%s' % @version
+    'libmcrypt-%s' % @version
   end
   
   def package_location
-    'http://ftp.gnu.org/pub/gnu/libiconv/%s' % package_name
+    'http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/%s/%s' % [@version, package_name]
   end
   
   def get_build_string
@@ -31,12 +31,11 @@ class Iconv < Package
   
   def php_config_flags
     [
-      "--with-iconv=shared",
-      "--with-iconv-dir=#{PACKAGE_PREFIX}",
+      "--with-mcrypt=shared,#{PACKAGE_PREFIX}",
     ]
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libiconv.la')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libiconv.dylib'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libmcrypt.la')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libmcrypt.dylib'))
   end
 end

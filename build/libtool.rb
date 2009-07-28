@@ -1,5 +1,6 @@
-class Libtool < BuildTaskAbstract
+class Libtool < Package
   PACKAGE_VERSION = '2.2.6a'
+  # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
@@ -24,11 +25,11 @@ class Libtool < BuildTaskAbstract
     parts << flags
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-    parts << "--prefix=#{INSTALL_TO}"
+    parts << "--prefix=#{PACKAGE_PREFIX}"
     parts.join(' ')
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'bin', 'libtool'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'bin', 'libtool'))
   end
 end

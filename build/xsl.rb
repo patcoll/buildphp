@@ -1,5 +1,6 @@
-class Xsl < BuildTaskAbstract
+class Xsl < Package
   PACKAGE_VERSION = '1.1.22'
+  # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
@@ -30,20 +31,21 @@ class Xsl < BuildTaskAbstract
     parts << flags
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-    parts << "--prefix=#{INSTALL_TO}"
-    parts << "--with-libxml-prefix=#{INSTALL_TO}"
-    parts << "--with-libxml-include-prefix=#{INSTALL_TO}/include"
-    parts << "--with-libxml-libs-prefix=#{INSTALL_TO}/lib"
+    parts << "--prefix=#{PACKAGE_PREFIX}"
+    parts << "--with-libxml-prefix=#{PACKAGE_PREFIX}"
+    parts << "--with-libxml-include-prefix=#{PACKAGE_PREFIX}/include"
+    parts << "--with-libxml-libs-prefix=#{PACKAGE_PREFIX}/lib"
+    parts << "--without-python"
     parts.join(' ')
   end
   
   def php_config_flags
     [
-      "--with-xsl=shared,#{INSTALL_TO}",
+      "--with-xsl=shared,#{PACKAGE_PREFIX}",
     ]
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'lib', 'libxslt.a'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libxslt.la'))
   end
 end

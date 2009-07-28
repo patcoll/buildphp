@@ -1,4 +1,4 @@
-class PhpFpm < BuildTaskAbstract
+class PhpFpm < Package
   PACKAGE_VERSION = '5.3.0'
   
   def versions
@@ -36,6 +36,16 @@ class PhpFpm < BuildTaskAbstract
 
   def is_installed
     File.exists?(File.join(EXTRACT_TO, "#{package_name}.installed"))
+  end
+  
+  def rake
+    namespace to_sym do
+      task :get do
+        get
+      end
+    end
+
+    task to_sym => "#{underscored}:install"
   end
 end
 

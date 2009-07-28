@@ -1,4 +1,4 @@
-class Bz2 < BuildTaskAbstract
+class Bz2 < Package
   PACKAGE_VERSION = '1.0.5'
   
   def versions
@@ -21,12 +21,42 @@ class Bz2 < BuildTaskAbstract
   
   def php_config_flags
     [
-      "--with-bz2=shared,#{INSTALL_TO}",
+      "--with-bz2=shared,#{PACKAGE_PREFIX}",
     ]
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'include', 'bzlib.h'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'include', 'bzlib.h'))
+  end
+  
+  def rake
+    namespace to_sym do
+      task :get do
+        get
+      end
+
+      task :compile => ((package_depends_on || []) + [:get]) do
+        cmd = "make"
+        # bz2 does not detect whether to compile with position-independent code (PIC) or not, so we must decide that.
+        # If we detect x86_64-linux as the platform, prepend -fPIC flag to gcc compile options to enable PIC.
+        # http://en.wikipedia.org/wiki/Position_independent_code
+        # 
+        # Ideally, we should detect the platform and use the appropriate PIC flag for that platform.
+        # 
+        # If we don't do this, while compiling PHP will complain that bz2 was not compiled with PIC.
+        if RUBY_PLATFORM.index("x86_64") != nil
+          # use GNU sed options because we're on linux
+          cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile && make"
+        end
+        compile(cmd)
+      end
+
+      task :install => :compile do
+        install("make install PREFIX=#{PACKAGE_PREFIX}")
+      end
+    end
+
+    task to_sym => "#{underscored}:install"
   end
 end
 

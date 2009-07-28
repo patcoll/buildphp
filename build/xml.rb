@@ -1,5 +1,6 @@
-class Xml < BuildTaskAbstract
+class Xml < Package
   PACKAGE_VERSION = '2.6.30'
+  # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
@@ -31,21 +32,26 @@ class Xml < BuildTaskAbstract
     parts << flags
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-    parts << "--prefix=#{INSTALL_TO}"
-    parts << "--with-iconv=#{INSTALL_TO}"
-    parts << "--with-zlib=#{INSTALL_TO}"
+    parts << "--prefix=#{PACKAGE_PREFIX}"
+    parts << "--with-iconv=#{PACKAGE_PREFIX}"
+    parts << "--with-zlib=#{PACKAGE_PREFIX}"
+    parts << "--without-python"
     parts.join(' ')
   end
   
   def php_config_flags
     [
       "--enable-xml=shared",
-      "--with-libxml-dir=#{INSTALL_TO}",
+      "--with-libxml-dir=#{PACKAGE_PREFIX}",
       "--enable-libxml",
+      "--enable-dom",
+      "--enable-simplexml",
+      "--enable-xmlreader",
+      "--enable-xmlwriter",
     ]
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'lib', 'libxml2.a'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libxml2.la'))
   end
 end

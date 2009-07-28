@@ -1,5 +1,6 @@
-class Ncurses < BuildTaskAbstract
+class Ncurses < Package
   PACKAGE_VERSION = '5.7'
+  # PACKAGE_PREFIX = "/usr"
   
   def versions
     {
@@ -30,9 +31,10 @@ class Ncurses < BuildTaskAbstract
     parts << flags
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-    parts << "--prefix=#{INSTALL_TO}"
+    parts << "--prefix=#{PACKAGE_PREFIX}"
     parts << "--without-debug"
     parts << "--with-shared"
+    # disable c++ support
     # parts << "--without-cxx"
     # parts << "--without-cxx-binding"
     parts << "--with-libtool"
@@ -41,6 +43,6 @@ class Ncurses < BuildTaskAbstract
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'lib', 'libncurses.a'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libncurses.a')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libncurses.dylib'))
   end
 end

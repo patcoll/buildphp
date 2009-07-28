@@ -1,5 +1,7 @@
-class Mysql < BuildTaskAbstract
+class Mysql < Package
   PACKAGE_VERSION = '5.1.36'
+  # PACKAGE_PREFIX = "#{INSTALL_TO}/mysql"
+  # PACKAGE_PREFIX = "/Applications/MAMP/Library"
   
   def versions
     {
@@ -28,9 +30,9 @@ class Mysql < BuildTaskAbstract
   
   def php_config_flags
     [
-      "--with-mysql=shared,#{INSTALL_TO}/mysql",
-      "--with-pdo-mysql=shared,#{INSTALL_TO}/mysql",
-      "--with-mysqli=shared,#{INSTALL_TO}/mysql/bin/mysql_config",
+      "--with-mysql=shared,#{PACKAGE_PREFIX}",
+      "--with-pdo-mysql=shared,#{PACKAGE_PREFIX}",
+      "--with-mysqli=shared,#{PACKAGE_PREFIX}/bin/mysql_config",
     ]
   end
   
@@ -40,20 +42,20 @@ class Mysql < BuildTaskAbstract
     parts << './configure'
     parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
     parts += [
-      "--prefix=#{INSTALL_TO}/mysql",
+      "--prefix=#{PACKAGE_PREFIX}",
       "--with-plugins=max",
       "--with-charset=utf8",
       "--with-collation=utf8_general_ci",
       "--with-extra-charsets=latin1",
       "--without-uca",
-      "--with-zlib-dir=#{INSTALL_TO}",
-      "--with-named-curses-libs=#{INSTALL_TO}/lib/libncurses.a",
+      "--with-zlib-dir=#{FACTORY.get('zlib')::PACKAGE_PREFIX}",
+      "--with-named-curses-libs=#{FACTORY.get('ncurses')::PACKAGE_PREFIX}/lib/libncurses.a",
     ]
     parts.join(' ')
   end
   
   def is_installed
-    File.exists?(File.join(INSTALL_TO, 'mysql', 'include', 'mysql', 'mysql.h'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'mysql', 'libmysqlclient.dylib')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'mysql', 'libmysqlclient.la'))
   end
 end
 
