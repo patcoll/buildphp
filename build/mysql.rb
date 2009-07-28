@@ -14,7 +14,6 @@ class Mysql < BuildTaskAbstract
     ]
   end
   
-  
   def package_name
     'mysql-%s.tar.gz' % @version
   end
