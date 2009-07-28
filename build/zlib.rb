@@ -37,6 +37,6 @@ class Zlib < Package
   end
   
   def is_installed
-    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libz.dylib'))
+    File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libz.dylib')) or File.exists?(File.join(PACKAGE_PREFIX, 'lib', 'libz.so'))
   end
 end
