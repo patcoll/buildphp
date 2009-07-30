@@ -1,9 +1,9 @@
-# http://us2.php.net/manual/en/intro.pcre.php
+# http://us2.php.net/manual/en/intro.zip.php
 module Buildphp
-  class Pcre < Package
+  class Zip < Package
     def php_config_flags
       [
-        "--with-pcre-regex",
+        "--enable-zip=shared",
       ]
     end
     

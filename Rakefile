@@ -2,21 +2,22 @@ $:.unshift File.join(File.dirname(__FILE__), 'lib')
 
 TMP_DIR = ENV['BUILDPHP_TMP_DIR'] || File.join(File.dirname(__FILE__), 'tmp')
 EXTRACT_TO = ENV['BUILDPHP_EXTRACT_TO'] || File.join(File.dirname(__FILE__), 'packages')
-INSTALL_TO = ENV['BUILDPHP_INSTALL_TO'] || File.join(File.dirname(__FILE__), 'local')
+INSTALL_TO = ENV['BUILDPHP_INSTALL_TO'] || '/buildphp' # || File.join(File.dirname(__FILE__), 'local')
+MAMP_MODE = ENV['MAMP']
 
 require 'buildphp'
 require 'rake/clean'
 
-FACTORY = PackageFactory.new
-oldmods = Module.constants
+FACTORY = Buildphp::PackageFactory.new
+oldmods = Buildphp.constants
 Dir['build/*.rb'].each { |build_task| load build_task }
-newmods = Module.constants
+newmods = Buildphp.constants
 package_classes = (newmods - oldmods)
 
 # automate instantiation of all package classes
 package_classes.each do |class_name|
-  klass = Module.const_get(class_name)
-  abort "Could not instantiate #{klass}." if not FACTORY.add(klass.new(klass::PACKAGE_VERSION))
+  klass = Buildphp.const_get(class_name)
+  abort "Could not instantiate #{klass}." if not FACTORY.add(klass.new)
 end
 
 # load rake tasks for each package

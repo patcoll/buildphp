@@ -1,9 +1,9 @@
-# http://us2.php.net/manual/en/intro.pcre.php
+# http://us2.php.net/manual/en/intro.hash.php
 module Buildphp
-  class Pcre < Package
+  class Hash < Package
     def php_config_flags
       [
-        "--with-pcre-regex",
+        "--enable-hash",
       ]
     end
     

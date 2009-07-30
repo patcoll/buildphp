@@ -1,9 +1,9 @@
-# http://us2.php.net/manual/en/intro.pcre.php
+# http://us2.php.net/manual/en/intro.json.php
 module Buildphp
-  class Pcre < Package
+  class Json < Package
     def php_config_flags
       [
-        "--with-pcre-regex",
+        "--enable-json",
       ]
     end
     

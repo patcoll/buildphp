@@ -1,9 +1,9 @@
-# http://us2.php.net/manual/en/intro.pcre.php
+# http://us2.php.net/manual/en/intro.calendar.php
 module Buildphp
-  class Pcre < Package
+  class Calendar < Package
     def php_config_flags
       [
-        "--with-pcre-regex",
+        "--enable-calendar",
       ]
     end
     
