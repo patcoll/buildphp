@@ -1,13 +1,13 @@
 # http://mirror.its.uidaho.edu/pub/savannah/freetype/freetype-2.3.9.tar.gz
 module Buildphp
   class Freetype < Package
-    PACKAGE_VERSION = '2.3.9'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '2.3.9'
+      @versions = {
         '2.3.9' => { :md5 => '9c2744f1aa72fe755adda33663aa3fad' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

@@ -1,13 +1,13 @@
 module Buildphp
   class Mysql < Package
-    PACKAGE_VERSION = '5.1.36'
-    PACKAGE_PREFIX = "#{INSTALL_TO}/mysql"
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '5.1.36'
+      @versions = {
         '5.1.36' => { :md5 => '18e694c4ecbe851fe8e21e1668116c46' },
       }
+      @prefix = "#{INSTALL_TO}/mysql"
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_depends_on

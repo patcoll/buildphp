@@ -1,15 +1,15 @@
 # http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=voxel
 module Buildphp
   class Expat < Package
-    PACKAGE_VERSION = '2.0.1'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '2.0.1'
+      @versions = {
         '2.0.1' => { :md5 => 'ee8b492592568805593f81f8cdf2a04c' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
-  
+    
     def package_name
       'expat-%s.tar.gz' % @version
     end

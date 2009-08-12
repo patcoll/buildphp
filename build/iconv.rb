@@ -1,12 +1,12 @@
 module Buildphp
   class Iconv < Package
-    PACKAGE_VERSION = '1.12'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '1.12'
+      @versions = {
         '1.12' => { :md5 => 'c2be282595751535a618ae0edeb8f648' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

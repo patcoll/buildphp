@@ -1,13 +1,13 @@
 # http://www.libgd.org/releases/gd-2.0.35.tar.gz
 module Buildphp
   class Gd < Package
-    PACKAGE_VERSION = '2.0.35'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '2.0.35'
+      @versions = {
         '2.0.35' => { :md5 => '982963448dc36f20cb79b6e9ba6fdede' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_depends_on

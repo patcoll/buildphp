@@ -9,6 +9,7 @@ module Buildphp
     attr_accessor :prefix
 
     def initialize
+      @versions = {}
       @version = self.class::PACKAGE_VERSION if self.class.const_defined?('PACKAGE_VERSION')
       @prefix = self.class::PACKAGE_PREFIX
     end
@@ -27,10 +28,6 @@ module Buildphp
 
     def console_prefix
       "[#{underscored}] "
-    end
-  
-    def versions
-      {}
     end
   
     def package_depends_on

@@ -1,12 +1,12 @@
 module Buildphp
   class Mcrypt < Package
-    PACKAGE_VERSION = '2.5.8'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '2.5.8'
+      @versions = {
         '2.5.8' => { :md5 => '0821830d930a86a5c69110837c55b7da' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

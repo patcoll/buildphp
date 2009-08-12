@@ -1,10 +1,11 @@
 # # ftp://ftp.OpenLDAP.org/pub/OpenLDAP/openldap-release/openldap-2.4.17.tgz
 # class Ldap < Package
-#   PACKAGE_VERSION = '2.4.17'
 #   # PACKAGE_PREFIX = "/Applications/MAMP/Library"
 #   
-#   def versions
-#     {
+#   def initialize
+#     super
+#     @version = '2.4.17'
+#     @versions = {
 #       '2.4.17' => { :md5 => '5e82103780f8cfc2b2fbd0f77c47c158' },
 #     }
 #   end

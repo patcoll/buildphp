@@ -1,13 +1,12 @@
-# http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.38/libpng-1.2.38.tar.gz?use_mirror=voxel
 module Buildphp
   class Png < Package
-    PACKAGE_VERSION = '1.2.38'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '1.2.38'
+      @versions = {
         '1.2.38' => { :md5 => '99900634a47041607a031aa597d51e65' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

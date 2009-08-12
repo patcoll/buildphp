@@ -1,13 +1,13 @@
 # http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz
 module Buildphp
   class Gettext < Package
-    PACKAGE_VERSION = '0.17'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '0.17'
+      @versions = {
         '0.17' => { :md5 => '58a2bc6d39c0ba57823034d55d65d606' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_depends_on

@@ -1,9 +1,9 @@
 module Buildphp
   class PhpFpm < Package
-    PACKAGE_VERSION = '5.3.0'
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '5.3.0'
+      @versions = {
         '5.2.8' => { :md5 => '7104c76e2891612af636104e0f6d60d4' },
         '5.3.0' => { :md5 => 'ed0c29aa55a2d233cd9be6ece3ad1ba1' },
       }

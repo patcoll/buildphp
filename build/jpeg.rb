@@ -1,13 +1,13 @@
 # http://www.ijg.org/files/jpegsrc.v7.tar.gz
 module Buildphp
   class Jpeg < Package
-    PACKAGE_VERSION = '7'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '7'
+      @versions = {
         '7' => { :md5 => '382ef33b339c299b56baf1296cda9785' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

@@ -1,9 +1,9 @@
 module Buildphp
   class Bz2 < Package
-    PACKAGE_VERSION = '1.0.5'
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '1.0.5'
+      @versions = {
         '1.0.5' => { :md5 => '3c15a0c8d1d3ee1c46a1634d00617b1a' },
       }
     end

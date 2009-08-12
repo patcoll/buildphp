@@ -1,12 +1,12 @@
 module Buildphp
   class Zlib < Package
-    PACKAGE_VERSION = '1.2.3'
-    # PACKAGE_PREFIX = "/usr"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '1.2.3'
+      @versions = {
         '1.2.3' => { :md5 => 'debc62758716a169df9f62e6ab2bc634' },
       }
+      # @prefix = "/usr"
     end
   
     def package_name

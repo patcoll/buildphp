@@ -1,12 +1,11 @@
 module Buildphp
   class Php < Package
-    
     attr_reader :fpm
     attr_accessor :php_modules
     
     def initialize
       super
-      @version = '5.2.10'
+      @version = '5.3.0'
       @versions = {
         '5.2.8' => { :md5 => 'e748cace3cfecb66fb6de9a945f98e2a' },
         '5.2.9' => { :md5 => '98b647561dc664adefe296106056cf11' },
@@ -25,19 +24,19 @@ module Buildphp
         # 'ctype', # The functions provided by this extension check whether a character or string falls into a certain character class according to the current locale (see also setlocale()).
         # 'dba', # These functions build the foundation for accessing Berkeley DB style databases.
         # 'exif', # With the exif extension you are able to work with image meta data. For example, you may use exif functions to read meta data of pictures taken from digital cameras by working with information stored in the headers of the JPEG and TIFF images.
-        'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
+        # 'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
         # 'filter', # This extension filters data by either validating or sanitizing it. This is especially useful when the data source contains unknown (or foreign) data, like user supplied input. For example, this data may come from an HTML form.
-        'gettext', # requires expat, iconv, ncurses, xml
-        'gd', # requires iconv, freetype, jpeg, png, zlib, xpm
+        # 'gettext', # requires expat, iconv, ncurses, xml
+        # 'gd', # requires iconv, freetype, jpeg, png, zlib, xpm
         'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
         # 'iconv',
         'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
-        'mbstring', # builtin
+        # 'mbstring', # builtin
         # 'mysql', # requires zlib, ncurses
         'mysqlnd', # builtin mysql native php driver
-        'mcrypt',
-        'mhash',
-        'openssl',
+        # 'mcrypt',
+        # 'mhash',
+        # 'openssl',
         'pear', # requires xml explicitly (uncomment the xml line below)
         # 'sqlite', # builtin
         'soap',
@@ -168,30 +167,46 @@ module Buildphp
           if is_installed and not File.file?(php_ini)
             notice "no php.ini detected. installing ..."
             extension_dir = Dir["#{@prefix}/lib/php/extensions/*"][0]
-            sh %{ mkdir -p #{config_file_path} #{config_file_scan_dir} }
-            sh %{ cp "#{extract_dir}/php.ini-production" "#{php_ini}" }
+            sh %{
+              mkdir -p #{config_file_path} #{config_file_scan_dir}
+              cp "#{extract_dir}/php.ini-production" "#{php_ini}"
+            }
             notice "enabling compiled modules ..."
-            new_config_file = "#{config_file_scan_dir}/modules.ini"
-            sh %{ rm -f #{new_config_file} }
-            sh %{ echo '; Extension directory (buildphp)' >> #{new_config_file} }
-            sh %{ echo 'extension_dir="#{extension_dir}/"' >> #{new_config_file} }
-            sh %{ echo '' >> #{new_config_file} }
-            sh %{ echo '; Shared modules (buildphp)' >> #{new_config_file} }
+            new_modules_config = "#{config_file_scan_dir}/modules.ini"
+            sh %{
+rm -f #{new_modules_config}
+echo '; Extension directory (buildphp)' >> #{new_modules_config}
+echo 'extension_dir="#{extension_dir}/"' >> #{new_modules_config}
+echo '' >> #{new_modules_config}
+echo '; Shared modules (buildphp)' >> #{new_modules_config}
+            }
             FileList["#{extension_dir}/*.so"].map{ |file| File.basename(file) }.each do |file|
-              sh %{ echo 'extension=#{file}' >> #{new_config_file} }
+              sh "echo 'extension=#{file}' >> #{new_modules_config}"
             end
+            
+            new_default_config = "#{config_file_scan_dir}/defaults.ini"
+            sh %{
+rm -f #{new_default_config}
+echo 'realpath_cache_size = 1024k' >> #{new_default_config}
+echo 'realpath_cache_ttl = 600' >> #{new_default_config}
+echo '' >> #{new_default_config}
+echo 'memory_limit = -1' >> #{new_default_config}
+echo '' >> #{new_default_config}
+echo 'short_open_tag = On' >> #{new_default_config}
+            }
+            
 
             # create fastcgi wrapper script
             sh %{
-              rm -f #{INSTALL_TO}/php5.fcgi
-              echo '#!/bin/bash' >> #{INSTALL_TO}/php5.fcgi
-              echo 'PHPRC="#{config_file_path}"' >> #{INSTALL_TO}/php5.fcgi
-              echo 'export PHPRC' >> #{INSTALL_TO}/php5.fcgi
-              echo 'PHP_FCGI_CHILDREN=5' >> #{INSTALL_TO}/php5.fcgi
-              echo 'export PHP_FCGI_CHILDREN' >> #{INSTALL_TO}/php5.fcgi
-              echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{INSTALL_TO}/php5.fcgi
-              echo 'export PHP_FCGI_MAX_REQUESTS' >> #{INSTALL_TO}/php5.fcgi
-              echo 'exec "#{@prefix}/bin/php-cgi"' >> #{INSTALL_TO}/php5.fcgi
+rm -f #{INSTALL_TO}/php5.fcgi
+echo '#!/bin/bash' >> #{INSTALL_TO}/php5.fcgi
+echo 'PHPRC="#{config_file_path}"' >> #{INSTALL_TO}/php5.fcgi
+echo 'export PHPRC' >> #{INSTALL_TO}/php5.fcgi
+echo 'PHP_FCGI_CHILDREN=5' >> #{INSTALL_TO}/php5.fcgi
+echo 'export PHP_FCGI_CHILDREN' >> #{INSTALL_TO}/php5.fcgi
+echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{INSTALL_TO}/php5.fcgi
+echo 'export PHP_FCGI_MAX_REQUESTS' >> #{INSTALL_TO}/php5.fcgi
+echo 'exec "#{@prefix}/bin/php-cgi"' >> #{INSTALL_TO}/php5.fcgi
             }
           end
         end

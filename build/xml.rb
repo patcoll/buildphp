@@ -1,12 +1,12 @@
 module Buildphp
   class Xml < Package
-    PACKAGE_VERSION = '2.6.30'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '2.6.30'
+      @versions = {
         '2.6.30' => { :md5 => '460e6d853e824da700d698532e57316b' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_depends_on

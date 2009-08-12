@@ -1,12 +1,12 @@
 module Buildphp
   class Xsl < Package
-    PACKAGE_VERSION = '1.1.22'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '1.1.22'
+      @versions = {
         '1.1.22' => { :md5 => 'd6a9a020a76a3db17848d769d6c9c8a9' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_depends_on

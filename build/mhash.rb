@@ -1,12 +1,12 @@
 module Buildphp
   class Mhash < Package
-    PACKAGE_VERSION = '0.9.9.9'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '0.9.9.9'
+      @versions = {
         '0.9.9.9' => { :md5 => 'ee66b7d5947deb760aeff3f028e27d25' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

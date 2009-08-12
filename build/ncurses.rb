@@ -1,12 +1,12 @@
 module Buildphp
   class Ncurses < Package
-    PACKAGE_VERSION = '5.7'
-    # PACKAGE_PREFIX = "/usr"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '5.7'
+      @versions = {
         '5.7' => { :md5 => 'cce05daf61a64501ef6cd8da1f727ec6' },
       }
+      # @prefix = '/usr'
     end
   
     def package_depends_on

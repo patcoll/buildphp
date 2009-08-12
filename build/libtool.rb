@@ -1,12 +1,12 @@
 module Buildphp
   class Libtool < Package
-    PACKAGE_VERSION = '2.2.6a'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '2.2.6a'
+      @versions = {
         '2.2.6a' => { :md5 => '8ca1ea241cd27ff9832e045fe9afe4fd' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

@@ -1,13 +1,12 @@
-# http://www.openssl.org/source/openssl-0.9.8k.tar.gz
 module Buildphp
   class Openssl < Package
-    PACKAGE_VERSION = '0.9.8k'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '0.9.8k'
+      @versions = {
         '0.9.8k' => { :md5 => 'e555c6d58d276aec7fdc53363e338ab3' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_depends_on

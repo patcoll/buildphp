@@ -1,13 +1,13 @@
 # http://web.mit.edu/kerberos/dist/krb5/1.7/krb5-1.7-signed.tar
 module Buildphp
   class Kerberos < Package
-    PACKAGE_VERSION = '1.7'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '1.7'
+      @versions = {
         '1.7' => { :md5 => '9f7b3402b4731a7fa543db193bf1b564' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name

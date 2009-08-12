@@ -1,13 +1,12 @@
-# http://hpux.connect.org.uk/ftp/hpux/X11/Graphics/libXpm-3.5.7/libXpm-3.5.7-src-11.11.tar.gz
 module Buildphp
   class Xpm < Package
-    PACKAGE_VERSION = '3.5.7'
-    # PACKAGE_PREFIX = "/Applications/MAMP/Library"
-  
-    def versions
-      {
+    def initialize
+      super
+      @version = '3.5.7'
+      @versions = {
         '3.5.7' => { :md5 => '72796ae1412bbab196fee577be61a556' },
       }
+      # @prefix = "/Applications/MAMP/Library"
     end
   
     def package_name
