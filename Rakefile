@@ -2,7 +2,7 @@ $:.unshift File.join(File.dirname(__FILE__), 'lib')
 
 TMP_DIR = ENV['BUILDPHP_TMP_DIR'] || File.join(File.dirname(__FILE__), 'tmp')
 EXTRACT_TO = ENV['BUILDPHP_EXTRACT_TO'] || File.join(File.dirname(__FILE__), 'packages')
-INSTALL_TO = ENV['BUILDPHP_INSTALL_TO'] || '/buildphp' # || File.join(File.dirname(__FILE__), 'local')
+INSTALL_TO = ENV['BUILDPHP_INSTALL_TO'] || File.join(File.dirname(__FILE__), 'local')
 MAMP_MODE = ENV['MAMP']
 
 require 'buildphp'
