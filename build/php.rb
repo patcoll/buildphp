@@ -5,7 +5,7 @@ module Buildphp
     attr_accessor :php_modules
     
     def initialize
-      # super
+      super
       @version = '5.2.10'
       @versions = {
         '5.2.8' => { :md5 => 'e748cace3cfecb66fb6de9a945f98e2a' },
@@ -13,9 +13,9 @@ module Buildphp
         '5.2.10' => { :md5 => '85753ba2909ac9fae5bca516adbda9e9' },
         '5.3.0' => { :md5 => 'f4905eca4497da3f0beb5c96863196b4' },
       }
-      # install paths
+      # install prefix
       @prefix = "#{INSTALL_TO}/php5"
-      # enable PHP-FPM?
+      # enable PHP-FPM? -- http://php-fpm.org/
       @fpm = false
       # php modules to enable
       @php_modules = [
@@ -53,7 +53,7 @@ module Buildphp
       # supported options:
       #   :fastcgi
       #   :apache2
-      @sapi = :apache2
+      @sapi = :fastcgi
     end
   
     def sapi_flags

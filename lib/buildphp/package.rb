@@ -150,18 +150,19 @@ module Buildphp
               notice "download succeeded!"
             end
           end
-
           # verify
           stop 'md5 does not match' if not is_md5_verified
-
-          # remove folder if already extracted.
-          # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
-
-          # extract archive if not already extracted.
-          sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
         end
       else
         notice "already downloaded"
+      end
+      # if we get here we know the package has been downloaded
+      Dir.chdir(EXTRACT_TO) do
+        # remove folder if already extracted.
+        # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
+        
+        # only extract archive if not already extracted.
+        sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
       end
       return true
     end # /get

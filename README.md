@@ -7,6 +7,8 @@ The goal is to create a script that will get, compile and install PHP 5.2+ and a
 
 By default, script builds PHP as a FastCGI binary, though this can obviously be changed by editing PHP's configuration flags.
 
+Tested on an Intel Core 2 Duo iMac with Mac OS X Leopard (with Developer Tools installed) and also tested on a 64-bit Ubuntu box. I've put in switches to enable PIC whenever it has been necessary for me to get a working build. YMMV.
+
 BORING DISCLAIMER: This software is distributed as-is and I claim no warranties except that it "works for me," so don't blame me if it destroys your computer.
 
 Dependencies
@@ -25,25 +27,31 @@ Ruby stuff:
   * ruby
   * rake
 
-Tested on a 32-bit system with Mac OS X Leopard and also tested *very* lightly on a 64-bit Linux box. YMMV. I'd imagine some big changes would be needed for compiling successfully & consistently on a 64-bit system.
 
-Instructions:
+Instructions
+------------
 
-To install PHP and all dependencies:
+To install all dependencies and compile PHP:
 
     rake
 
-To clean up source (folders within "packages") and temporary (everything within "tmp") files:
+The following command is also equivalent to `rake`:
+
+    rake php:compile
+
+To install PHP after a successful build (PLEASE NOTE: if configured as an Apache module this command may overwrite an existing PHP module):
+
+    rake install
+
+To delete all source folders (folders within "packages") and temporary (everything within "tmp") files:
 
     rake clean
     
-To clean up source (folders within "packages"), temporary (everything within "tmp") and installed (everything within "local") files:
+To delete all source folders (folders within "packages"), temporary (everything within "tmp") and installed (everything within "local") files:
 
     rake clobber
 
 That's it.
-
-Possible TODO: "remove" method that could remove individual package's files. each package would need to implement a diff to enable removal of files later.
 
 Features
 --------
@@ -53,6 +61,8 @@ Features
 buildphp was designed to provide a build environment that operates as isolated as possible from the rest of the system. Of course if your system has common libraries such as `zlib` and your configuration flags don't explicitly disable functionality that depend on such libraries, then the configure scripts will pick up on those system-wide libraries, which may lead to unexpected results.
 
 The good news is that it is relatively trivial to add build scripts for these sorts of libraries and then have the version of PHP you're compiling depend on your compiled version of that library instead of the system version. See the existing build scripts for examples. Further detailed documentation is forthcoming.
+
+MAC USERS: For Mac OS X systems with MAMP installed, it has been requested that we include a MAMP-compatibility mode that compiles PHP against already existing dependencies within the MAMP package. This would involve changing the `@prefix` object variable to `/Applications/MAMP/Library` for each package that has a MAMP equivalent. This is forthcoming.
 
 ### Custom Path Configuration
 
@@ -80,21 +90,43 @@ This should be run only by those who know what they're doing. See boring disclai
 
 `BUILDPHP_INSTALL_TO=/usr/local sudo rake mysql`
 
-Your mileage may very. Disclaimer.
+Your mileage may vary. Repeat disclaimer here.
 
 ### Package Detection
 
-We remove the need for downloading packages multiple times by allowing archives to stay in the "packages" folder. As long as the package matches the `@filename` property and passes an MD5 digest check, it can stay. If developers package all necessary source packages with a buildphp distribution, it can significantly reduce network load when using buildphp to execute multiple builds at once.
+buildphp removes the need for downloading packages multiple times by allowing archives to stay in the "packages" folder. As long as the package matches the `@filename` property and passes an MD5 digest check, it can stay. If developers package all necessary source packages with a buildphp distribution, it can significantly reduce network load when using buildphp to execute multiple builds at once.
+
+### Compilation Detection
+
+For each package, buildphp runs the `is_compiled` method on each package to detect if there are any files that match the `*.o` glob. This is customized for some packages that don't fit a "standard" source folder structure. Since all packages contain build scripts that compile C and C++ code, this was the simplest (but not the most accurate) solution. Suggestions are welcome on how to improve. Fork and go.
 
 ### Installation Detection
 
-For each package, we run a static method `is_installed` to detect whether the package has been installed or not. The first iteration of this just detects one file that is installed when a `make install` command is issued for that package. This works for most packages by just checking to see if a binary file exists in `local/bin` or a library exists in `local/lib` Suggestions are welcome on how to improve this.
+For each package, buildphp runs the `is_installed` method to detect whether the package has been installed or not. The first iteration of this just detects one file that is installed when a `make install` command is issued for that package. This works for most packages by just checking to see if a binary file exists in `local/bin` or a library exists in `local/lib`. Forks are welcomed.
+
+### Force Mode
+
+buildphp uses some pretty basic methods to detect whether packages are compiled or installed. This is done to prevent duplicated work from build to build.
+
+An example: If the MySQL package has already been built and installed but the PHP package has not been (maybe the user threw a ^C mid-process) we don't want to compile and install MySQL all over again. That's a long wait.
+
+On the other hand, if we change some package options and need to recompile MySQL, we need to override this default behavior to do so. This is where a "force" mode comes in handy. A simple call to:
+
+    rake mysql:force:install
+
+will ignore the `is_installed` status and force a configure, compile and install of the MySQL package.
+
+- - -
 
 TODO
 ----
 
-  * Create build tasks for all packages below.
-  * Make work for both PHP 5.2 and 5.3 branches. Priority is 5.3 branch.
+TODO: "remove" method that could remove individual package's files. each package would need to implement a diff to enable removal of files later.
+
+TODO: Create build tasks for all packages below.
+
+Packages
+--------
 
 php
 	http://www.php.net/distributions/php-5.2.9.tar.gz
