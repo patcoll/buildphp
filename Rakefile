@@ -1,16 +1,10 @@
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
-
-TMP_DIR = ENV['BUILDPHP_TMP_DIR'] || File.join(File.dirname(__FILE__), 'tmp')
-EXTRACT_TO = ENV['BUILDPHP_EXTRACT_TO'] || File.join(File.dirname(__FILE__), 'src')
-INSTALL_TO = ENV['BUILDPHP_INSTALL_TO'] || File.join(File.dirname(__FILE__), 'local')
+$base_dir = File.dirname(__FILE__)
+$:.unshift File.join($base_dir, 'lib')
 
 require 'buildphp'
 require 'rake/clean'
 require 'rake/packagetask'
 
-# MAMP_MODE = ENV['MAMP'] # TODO: implement MAMP compatibility mode that would link the PHP build against libraries included with MAMP
-
-Dir['build/*.rb'].each { |build_task| require build_task }
 package_classes = Buildphp::Packages.constants
 
 # automate instantiation of all package classes
@@ -34,7 +28,7 @@ Rake::PackageTask.new("buildphp", Buildphp::VERSION) do |p|
   # p.package_dir = 'dist'
   p.need_tar_gz = true
   p.need_tar_bz2 = true
-  p.package_files.include %w( build/*.rb lib/**/** local src tmp * )
+  p.package_files.include %w( lib/**/** * )
 end
 
 # clean all "tmp" files and directories in the "packages" directory
