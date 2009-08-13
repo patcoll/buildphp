@@ -25,7 +25,6 @@ desc 'Download, configure, build and install PHP and all dependencies'
 task :install => 'php:install'
 
 Rake::PackageTask.new("buildphp", Buildphp::VERSION) do |p|
-  # p.package_dir = 'dist'
   p.need_tar_gz = true
   p.need_tar_bz2 = true
   p.package_files.include %w( lib/**/** * )
