@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Bz2 < Package
     def initialize
       super
@@ -55,5 +56,6 @@ module Buildphp
       Rake.application["#{underscored}:compile"].clear_prerequisites.enhance [(package_depends_on || []) + [:get]]
       Rake.application["#{underscored}:force:compile"].clear_prerequisites.enhance [(package_depends_on || []) + [:get]]
     end
+  end
   end
 end

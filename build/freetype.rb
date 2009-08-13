@@ -1,5 +1,6 @@
 # http://mirror.its.uidaho.edu/pub/savannah/freetype/freetype-2.3.9.tar.gz
 module Buildphp
+  module Packages
   class Freetype < Package
     def initialize
       super
@@ -39,5 +40,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libfreetype.*"].empty?
     end
+  end
   end
 end

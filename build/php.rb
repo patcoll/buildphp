@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Php < Package
     attr_reader :fpm
     attr_accessor :php_modules
@@ -13,37 +14,41 @@ module Buildphp
         '5.3.0' => { :md5 => 'f4905eca4497da3f0beb5c96863196b4' },
       }
       # install prefix
-      @prefix = "#{INSTALL_TO}/php5"
+      @prefix = "#{@prefix}/php5"
       # enable PHP-FPM? -- http://php-fpm.org/
       @fpm = false
       # php modules to enable
       @php_modules = [
+        # built-in
         # 'bcmath', # For arbitrary precision mathematics PHP offers the Binary Calculator which supports numbers of any size and precision, represented as strings.
-        # 'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
         # 'calendar', # The calendar extension presents a series of functions to simplify converting between different calendar formats.
         # 'ctype', # The functions provided by this extension check whether a character or string falls into a certain character class according to the current locale (see also setlocale()).
         # 'dba', # These functions build the foundation for accessing Berkeley DB style databases.
         # 'exif', # With the exif extension you are able to work with image meta data. For example, you may use exif functions to read meta data of pictures taken from digital cameras by working with information stored in the headers of the JPEG and TIFF images.
         # 'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
         # 'filter', # This extension filters data by either validating or sanitizing it. This is especially useful when the data source contains unknown (or foreign) data, like user supplied input. For example, this data may come from an HTML form.
-        # 'gettext', # requires expat, iconv, ncurses, xml
-        # 'gd', # requires iconv, freetype, jpeg, png, zlib, xpm
-        'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
-        # 'iconv',
-        'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
+        # 'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
+        # 'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
         # 'mbstring', # builtin
-        # 'mysql', # requires zlib, ncurses
         'mysqlnd', # builtin mysql native php driver
+        # 'pear', # requires xml explicitly (uncomment the xml line below)
+        'pcre',
+        # 'sqlite', # builtin
+        # 'soap',
+        
+        # require external libs
+        'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
+        # 'gd', # requires iconv, freetype, jpeg, png, zlib, xpm
+        # 'gettext', # requires expat, iconv, ncurses, xml
+        # 'iconv',
         # 'mcrypt',
         # 'mhash',
+        # 'mysql', # requires zlib, ncurses
         # 'openssl',
-        'pear', # requires xml explicitly (uncomment the xml line below)
-        # 'sqlite', # builtin
-        'soap',
-        'xml', # requires iconv, zlib
-        'xsl', # requires xml
-        # 'zip',
+        # 'xml', # requires iconv, zlib
+        # 'xsl', # requires xml
         'zlib',
+        'zip', # requires zlib
       
         # not yet implemented
         # 'ldap',
@@ -98,7 +103,7 @@ module Buildphp
     end
     
     def package_depends_on
-      dependencies = php_modules + [:get]
+      dependencies = php_modules + ["#{underscored}:get"]
       dependencies << 'php_fpm' if fpm
       dependencies
     end
@@ -144,7 +149,7 @@ module Buildphp
     end
     
     def install_cmd
-      %{ make install PHP_PEAR_DOWNLOAD_DIR="#{TMP_DIR}" && make install-cli PHP_PEAR_DOWNLOAD_DIR="#{TMP_DIR}" }
+      %{ make install PHP_PEAR_DOWNLOAD_DIR="#{Buildphp::TMP_DIR}" && make install-cli PHP_PEAR_DOWNLOAD_DIR="#{Buildphp::TMP_DIR}" }
     end
   
     def is_compiled
@@ -198,15 +203,15 @@ echo 'short_open_tag = On' >> #{new_default_config}
 
             # create fastcgi wrapper script
             sh %{
-rm -f #{INSTALL_TO}/php5.fcgi
-echo '#!/bin/bash' >> #{INSTALL_TO}/php5.fcgi
-echo 'PHPRC="#{config_file_path}"' >> #{INSTALL_TO}/php5.fcgi
-echo 'export PHPRC' >> #{INSTALL_TO}/php5.fcgi
-echo 'PHP_FCGI_CHILDREN=5' >> #{INSTALL_TO}/php5.fcgi
-echo 'export PHP_FCGI_CHILDREN' >> #{INSTALL_TO}/php5.fcgi
-echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{INSTALL_TO}/php5.fcgi
-echo 'export PHP_FCGI_MAX_REQUESTS' >> #{INSTALL_TO}/php5.fcgi
-echo 'exec "#{@prefix}/bin/php-cgi"' >> #{INSTALL_TO}/php5.fcgi
+rm -f #{@prefix}/php5.fcgi
+echo '#!/bin/bash' >> #{@prefix}/php5.fcgi
+echo 'PHPRC="#{config_file_path}"' >> #{@prefix}/php5.fcgi
+echo 'export PHPRC' >> #{@prefix}/php5.fcgi
+echo 'PHP_FCGI_CHILDREN=5' >> #{@prefix}/php5.fcgi
+echo 'export PHP_FCGI_CHILDREN' >> #{@prefix}/php5.fcgi
+echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{@prefix}/php5.fcgi
+echo 'export PHP_FCGI_MAX_REQUESTS' >> #{@prefix}/php5.fcgi
+echo 'exec "#{@prefix}/bin/php-cgi"' >> #{@prefix}/php5.fcgi
             }
           end
         end
@@ -644,5 +649,6 @@ echo 'exec "#{@prefix}/bin/php-cgi"' >> #{INSTALL_TO}/php5.fcgi
   # --enable-mbstr-enc-trans
   # --enable-mbregex
   # --with-xsl=shared,/usr/local
-  # 
+  #
+  end 
 end

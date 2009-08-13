@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Mbstring < Package
     def php_config_flags
       [
@@ -13,5 +14,6 @@ module Buildphp
     def rake
       task to_sym
     end
+  end
   end
 end

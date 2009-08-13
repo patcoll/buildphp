@@ -1,5 +1,6 @@
 # http://www.ijg.org/files/jpegsrc.v7.tar.gz
 module Buildphp
+  module Packages
   class Jpeg < Package
     def initialize
       super
@@ -34,5 +35,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libjpeg.*"].empty?
     end
+  end
   end
 end

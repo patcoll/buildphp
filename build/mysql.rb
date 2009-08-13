@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Mysql < Package
     def initialize
       super
@@ -6,7 +7,7 @@ module Buildphp
       @versions = {
         '5.1.36' => { :md5 => '18e694c4ecbe851fe8e21e1668116c46' },
       }
-      @prefix = "#{INSTALL_TO}/mysql"
+      @prefix = "#{@prefix}/mysql"
       # @prefix = "/Applications/MAMP/Library"
     end
   
@@ -59,5 +60,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/mysql/libmysqlclient.*"].empty?
     end
+  end
   end
 end

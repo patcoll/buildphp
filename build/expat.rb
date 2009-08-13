@@ -1,5 +1,6 @@
 # http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=voxel
 module Buildphp
+  module Packages
   class Expat < Package
     def initialize
       super
@@ -34,5 +35,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libexpat.*"].empty?
     end
+  end
   end
 end

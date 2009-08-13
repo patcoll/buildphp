@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Libtool < Package
     def initialize
       super
@@ -33,5 +34,6 @@ module Buildphp
     def is_installed
       File.exists?(File.join(@prefix, 'bin', 'libtool'))
     end
+  end
   end
 end

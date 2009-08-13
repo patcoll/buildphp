@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Sqlite < Package
     def package_depends_on
       [
@@ -18,5 +19,6 @@ module Buildphp
     def rake
       task to_sym
     end
+  end
   end
 end

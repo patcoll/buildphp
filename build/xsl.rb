@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Xsl < Package
     def initialize
       super
@@ -49,5 +50,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libxslt.*"].empty?
     end
+  end
   end
 end

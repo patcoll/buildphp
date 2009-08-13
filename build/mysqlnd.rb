@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Mysqlnd < Package
     def package_depends_on
       [
@@ -18,4 +19,5 @@ module Buildphp
       task to_sym
     end
   end
+end
 end

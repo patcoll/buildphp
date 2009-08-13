@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Zlib < Package
     def initialize
       super
@@ -40,5 +41,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libz.*"].empty?
     end
+  end
   end
 end

@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Png < Package
     def initialize
       super
@@ -33,5 +34,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libpng.*"].empty?
     end
+  end
   end
 end

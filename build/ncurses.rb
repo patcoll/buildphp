@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Ncurses < Package
     def initialize
       super
@@ -50,5 +51,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libncurses.*"].empty?
     end
+  end
   end
 end

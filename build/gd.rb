@@ -1,5 +1,6 @@
 # http://www.libgd.org/releases/gd-2.0.35.tar.gz
 module Buildphp
+  module Packages
   class Gd < Package
     def initialize
       super
@@ -61,5 +62,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libgd.*"].empty?
     end
+  end
   end
 end

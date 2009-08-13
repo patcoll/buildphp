@@ -2,8 +2,6 @@ require 'digest/md5'
 
 module Buildphp
   class Package
-    PACKAGE_PREFIX = INSTALL_TO
-    
     attr_accessor :version
     attr_accessor :versions
     attr_accessor :prefix
@@ -11,7 +9,7 @@ module Buildphp
     def initialize
       @versions = {}
       @version = self.class::PACKAGE_VERSION if self.class.const_defined?('PACKAGE_VERSION')
-      @prefix = self.class::PACKAGE_PREFIX
+      @prefix = Buildphp::INSTALL_TO
     end
   
     def to_s
@@ -33,7 +31,7 @@ module Buildphp
     def package_depends_on
       []
     end
-  
+    
     def package_name
       nil
     end
@@ -48,7 +46,7 @@ module Buildphp
     
     def package_path
       return nil if not package_name
-      File.join(EXTRACT_TO, package_name)
+      File.join(Buildphp::EXTRACT_TO, package_name)
     end
   
     def package_md5
@@ -61,7 +59,7 @@ module Buildphp
   
     def extract_dir
       return nil if not package_dir
-      File.join(EXTRACT_TO, package_dir)
+      File.join(Buildphp::EXTRACT_TO, package_dir)
     end
   
     def extract_cmd
@@ -86,7 +84,7 @@ module Buildphp
     
       out = []
       out << %{ CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}' } if f
-      out << %{ PATH="#{INSTALL_TO}/bin":$PATH }
+      out << %{ PATH="#{Buildphp::INSTALL_TO}/bin":$PATH }
     
       out.join(' ')
     end
@@ -137,9 +135,22 @@ module Buildphp
     end
   
     def get(force=false)
+      retrieve(force)
+      # if we get here we know the package has been downloaded
+      Dir.chdir(Buildphp::EXTRACT_TO) do
+        # remove folder if already extracted.
+        # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
+        
+        # only extract archive if not already extracted.
+        sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
+      end
+      return true
+    end # /get
+    
+    def retrieve(force=false)
       if not is_gotten or (not File.exist?(extract_dir) and force)
         notice "package not found. retrieving..." if not is_gotten
-        Dir.chdir(EXTRACT_TO) do
+        Dir.chdir(Buildphp::EXTRACT_TO) do
           # get
           unless is_md5_verified
             sh "rm -f #{package_name} && wget #{package_location}" do |ok,res|
@@ -153,16 +164,7 @@ module Buildphp
       else
         notice "already downloaded"
       end
-      # if we get here we know the package has been downloaded
-      Dir.chdir(EXTRACT_TO) do
-        # remove folder if already extracted.
-        # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
-        
-        # only extract archive if not already extracted.
-        sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
-      end
-      return true
-    end # /get
+    end
   
     def configure(force=false)
       if is_installed and not force
@@ -254,6 +256,10 @@ module Buildphp
         
         task :clobber do
           clobber
+        end
+        
+        task :retrieve do
+          retrieve
         end
         
         namespace :force do

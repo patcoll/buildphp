@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Soap < Package
     def package_depends_on
       [
@@ -17,5 +18,6 @@ module Buildphp
         abort "xml must be an included php module to install #{self}" if FACTORY.get('php').php_modules.index('xml') == nil
       end
     end
+  end
   end
 end

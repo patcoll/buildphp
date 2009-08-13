@@ -1,5 +1,6 @@
 # http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz
 module Buildphp
+  module Packages
   class Gettext < Package
     def initialize
       super
@@ -56,5 +57,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libgettextlib.*"].empty?
     end
+  end
   end
 end

@@ -1,5 +1,6 @@
 # http://web.mit.edu/kerberos/dist/krb5/1.7/krb5-1.7-signed.tar
 module Buildphp
+  module Packages
   class Kerberos < Package
     def initialize
       super
@@ -23,7 +24,7 @@ module Buildphp
     end
   
     def extract_dir
-      File.join(EXTRACT_TO, package_dir, 'src')
+      File.join(Buildphp::EXTRACT_TO, package_dir, 'src')
     end
   
     def extract_cmd
@@ -43,5 +44,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libkrb5.*"].empty?
     end
+  end
   end
 end

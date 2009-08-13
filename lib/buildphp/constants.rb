@@ -1,0 +1,5 @@
+module Buildphp
+  TMP_DIR = TMP_DIR
+  EXTRACT_TO = EXTRACT_TO
+  INSTALL_TO = INSTALL_TO
+end

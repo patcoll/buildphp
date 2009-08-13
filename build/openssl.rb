@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Openssl < Package
     def initialize
       super
@@ -47,5 +48,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libssl.*"].empty?
     end
+  end
   end
 end

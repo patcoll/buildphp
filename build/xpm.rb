@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Xpm < Package
     def initialize
       super
@@ -37,5 +38,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libXpm.*"].empty?
     end
+  end
   end
 end

@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class PhpFpm < Package
     def initialize
       super
@@ -36,7 +37,7 @@ module Buildphp
     end
 
     def is_installed
-      File.exists?(File.join(EXTRACT_TO, "#{package_name}.installed"))
+      File.exists?(File.join(Buildphp::EXTRACT_TO, "#{package_name}.installed"))
     end
   
     def rake
@@ -44,5 +45,6 @@ module Buildphp
         get
       end
     end
+  end
   end
 end

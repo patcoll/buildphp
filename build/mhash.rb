@@ -1,4 +1,5 @@
 module Buildphp
+  module Packages
   class Mhash < Package
     def initialize
       super
@@ -39,5 +40,6 @@ module Buildphp
     def is_installed
       not FileList["#{@prefix}/lib/libmhash.*"].empty?
     end
+  end
   end
 end
