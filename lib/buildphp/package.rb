@@ -167,9 +167,10 @@ module Buildphp
     end
   
     def configure(force=false)
+      clean if force
       if is_installed and not force
         notice "already installed so we won't configure. try #{underscored}:force:configure"
-      elsif not is_compiled or force
+      elsif not is_compiled
         notice "package not compiled. configuring..." if not is_compiled
         stop "extract folder does not exist" if not File.exists?(extract_dir)
         Dir.chdir(extract_dir) do
@@ -183,9 +184,10 @@ module Buildphp
     end # /configure
   
     def compile(force=false)
+      clean if force
       if is_installed and not force
         notice "already installed so we won't compile. try #{underscored}:force:compile"
-      elsif not is_compiled or force
+      elsif not is_compiled
         notice "package not compiled. compiling..." if not is_compiled
         Dir.chdir(extract_dir) do
           sh compile_cmd do |ok,res|
