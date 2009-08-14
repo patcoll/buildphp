@@ -3,6 +3,7 @@ module Buildphp
   class Php < Buildphp::Package
     attr_reader :fpm
     attr_accessor :php_modules
+    attr_accessor :pecl_modules
     
     def initialize
       super
@@ -37,7 +38,8 @@ module Buildphp
         # 'soap',
         
         # require external libs
-        'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
+        # 'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
+        # 'curl', 
         # 'gd', # requires iconv, freetype, jpeg, png, zlib, xpm
         # 'gettext', # requires expat, iconv, ncurses, xml
         # 'iconv',
@@ -47,12 +49,18 @@ module Buildphp
         # 'openssl',
         # 'xml', # requires iconv, zlib
         # 'xsl', # requires xml
-        'zlib',
-        'zip', # requires zlib
+        # 'zlib',
+        # 'zip', # requires zlib
       
         # not yet implemented
         # 'ldap',
       ]
+      
+      @pecl_modules = [
+        'apc',
+        'memcache',
+      ]
+      
       # which interface to build?
       # supported options:
       #   :fastcgi
@@ -88,6 +96,14 @@ module Buildphp
     
     def php_ini
       "#{config_file_path}/php.ini"
+    end
+    
+    def custom_ini(name='defaults')
+      "#{config_file_scan_dir}/#{name}.ini"
+    end
+    
+    def modules_ini
+      custom_ini('modules')
     end
     
     def package_name
@@ -159,6 +175,10 @@ module Buildphp
     def is_installed
       File.file?("#{@prefix}/bin/php")
     end
+    
+    def extension_dir
+      Dir["#{@prefix}/lib/php/extensions/*"][0]
+    end
   
     def rake
       super
@@ -171,33 +191,30 @@ module Buildphp
         task.enhance do
           if is_installed and not File.file?(php_ini)
             notice "no php.ini detected. installing ..."
-            extension_dir = Dir["#{@prefix}/lib/php/extensions/*"][0]
             sh %{
               mkdir -p #{config_file_path} #{config_file_scan_dir}
               cp "#{extract_dir}/php.ini-production" "#{php_ini}"
             }
             notice "enabling compiled modules ..."
-            new_modules_config = "#{config_file_scan_dir}/modules.ini"
             sh %{
-rm -f #{new_modules_config}
-echo '; Extension directory (buildphp)' >> #{new_modules_config}
-echo 'extension_dir="#{extension_dir}/"' >> #{new_modules_config}
-echo '' >> #{new_modules_config}
-echo '; Shared modules (buildphp)' >> #{new_modules_config}
+rm -f #{modules_ini}
+echo '; Extension directory (buildphp)' >> #{modules_ini}
+echo 'extension_dir="#{extension_dir}/"' >> #{modules_ini}
+echo '' >> #{modules_ini}
+echo '; Shared modules (buildphp)' >> #{modules_ini}
             }
             FileList["#{extension_dir}/*.so"].map{ |file| File.basename(file) }.each do |file|
-              sh "echo 'extension=#{file}' >> #{new_modules_config}"
+              sh "echo 'extension=#{file}' >> #{modules_ini}"
             end
             
-            new_default_config = "#{config_file_scan_dir}/defaults.ini"
             sh %{
-rm -f #{new_default_config}
-echo 'realpath_cache_size = 1024k' >> #{new_default_config}
-echo 'realpath_cache_ttl = 600' >> #{new_default_config}
-echo '' >> #{new_default_config}
-echo 'memory_limit = -1' >> #{new_default_config}
-echo '' >> #{new_default_config}
-echo 'short_open_tag = On' >> #{new_default_config}
+rm -f #{custom_ini}
+echo 'realpath_cache_size = 1024k' >> #{custom_ini}
+echo 'realpath_cache_ttl = 600' >> #{custom_ini}
+echo '' >> #{custom_ini}
+echo 'memory_limit = -1' >> #{custom_ini}
+echo '' >> #{custom_ini}
+echo 'short_open_tag = On' >> #{custom_ini}
             }
             
 

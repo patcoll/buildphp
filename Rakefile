@@ -23,6 +23,8 @@ desc 'Download, configure and build PHP and install all dependencies'
 task :default => :php
 desc 'Download, configure, build and install PHP and all dependencies'
 task :install => 'php:install'
+desc 'Download, configure, build and install configured PECL modules'
+task :pecl => FACTORY.get('php').pecl_modules
 
 Rake::PackageTask.new("buildphp", Buildphp::VERSION) do |p|
   p.need_tar_gz = true

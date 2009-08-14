@@ -283,5 +283,39 @@ module Buildphp
 
       task to_sym => "#{underscored}:install"
     end
+    
+    def is_pecl(name=false)
+      name = underscored if not name
+      stop "#{name} package does not exist" if name and not FACTORY.get(name)
+      
+      # notify user after installation to run activate to activate module
+      Rake.application["#{underscored}:install"].enhance do
+        notice "after installation, run #{underscored}:activate to activate the #{underscored.upcase} pecl module."
+      end
+      # activate task
+      # activates the module in a given php.ini file
+      Rake.application.in_namespace(underscored.to_sym) do
+        task :activate => :install do
+          new_line = "extension=#{name}.so"
+          modules_ini = FACTORY.get('php').modules_ini
+          already_activated = false
+          sh %[grep #{new_line} #{modules_ini}] do |ok,res|
+            already_activated = ok
+          end
+          if not already_activated then
+            sh %[echo '#{new_line}' >> #{modules_ini}] do |ok,res|
+              notice "#{underscored} activated!" if ok
+              stop "#{underscored} activation failed" if not ok
+            end
+          else
+            notice "#{underscored} already activated"
+          end
+        end
+      end
+      
+      # e.g. make :memcache run the "memcache:activate" task
+      Rake.application[underscored.to_sym].clear_prerequisites.enhance ["#{underscored}:activate"]
+      
+    end
   end
 end

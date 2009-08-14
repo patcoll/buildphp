@@ -1,4 +1,3 @@
-# http://curl.haxx.se/download/curl-7.19.6.tar.gz
 module Buildphp
   module Packages
   class Curl < Buildphp::Package
