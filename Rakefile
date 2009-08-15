@@ -19,11 +19,11 @@ package_classes.each do |class_name|
   FACTORY.get(class_name).rake if FACTORY.get(class_name).respond_to?(:rake)
 end
 
-desc 'Download, configure and build PHP and install all dependencies'
+desc 'Build PHP (requires dependencies)'
 task :default => :php
-desc 'Download, configure, build and install PHP and all dependencies'
+desc 'Install PHP (requires build)'
 task :install => 'php:install'
-desc 'Download, configure, build and install configured PECL modules'
+desc 'Install PECL modules (requires PHP install)'
 task :pecl => FACTORY.get('php').pecl_modules
 
 Rake::PackageTask.new("buildphp", Buildphp::VERSION) do |p|

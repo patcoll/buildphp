@@ -1,7 +1,7 @@
 buildphp
 ========
 
-Build script for PHP 5.2+
+Build script for PHP 5.2+, with a concentration on building a comprehensive build kit for PHP 5.3
 
 The goal is to create a script that will get, compile and install PHP 5.2+ and a list of desired dependencies. It was written to allow rapid builds of PHP and PHP modules.
 
