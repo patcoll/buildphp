@@ -58,6 +58,7 @@ module Buildphp
       
       @pecl_modules = [
         'apc',
+        'eaccelerator',
         'memcache',
       ]
       

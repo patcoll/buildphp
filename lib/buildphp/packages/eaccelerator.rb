@@ -1,46 +1,50 @@
 module Buildphp
   module Packages
-    class Apc < Buildphp::Package
+    class Eaccelerator < Buildphp::Package
       def initialize
         super
-        @version = '3.1.3p1'
+        @version = '0.9.6-rc1'
         @versions = {
-          '3.0.19' => { :md5 => '951f43d2873e3572f5d5ae71a9b66f90' },
-          '3.1.3p1' => { :md5 => '941cf59c3f8042c1d6961b7afb1002b9' }
+          '0.9.5.3' => { :md5 => '' },
+          '0.9.6-rc1' => { :md5 => 'af078c6cfb57fcd4fafaccbdd14cc05c' },
         }
         @is_pecl = true
       end
-
+    
       def package_depends_on
         [
           'php:install',
         ]
       end
-
+    
       def package_name
-        'APC-%s.tgz' % @version
+        'eaccelerator-%s.tar.bz2' % @version
       end
-
+    
+      def extract_cmd
+        "tar xfj %s" % package_name
+      end
+  
       def package_dir
-        'APC-%s' % @version
+        'eaccelerator-%s' % @version
       end
-
+  
       def package_location
-        'http://pecl.php.net/get/%s' % package_name
+        'http://bart.eaccelerator.net/source/0.9.6/%s' % package_name
       end
-
+    
       def configure_cmd
         %[export PHP_PREFIX="#{FACTORY.get('php').prefix}" && $PHP_PREFIX/bin/phpize && ./configure --enable-#{underscored}=shared --with-php-config=$PHP_PREFIX/bin/php-config]
       end
-
+    
       def is_compiled
         File.file?("#{extract_dir}/modules/#{underscored}.so")
       end
-
+  
       def is_installed
         File.file?("#{FACTORY.get('php').extension_dir}/#{underscored}.so")
       end
-
+      
       def rake
         super
         build_as_addon if @is_pecl
