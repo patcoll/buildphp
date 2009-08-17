@@ -7,7 +7,7 @@ module Buildphp
           "--enable-bcmath",
         ]
       end
-    
+
       def rake
         task to_sym
       end

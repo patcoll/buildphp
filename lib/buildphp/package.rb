@@ -12,15 +12,15 @@ module Buildphp
       @prefix = Buildphp::INSTALL_TO
       @is_pecl = false
     end
-  
+
     def to_s
       self.class.to_s.split('::')[-1]
     end
-  
+
     def underscored
       Inflect.underscore(self.to_s)
     end
-  
+
     def to_sym
       underscored.to_sym
     end
@@ -28,68 +28,68 @@ module Buildphp
     def console_prefix
       "[#{underscored}] "
     end
-  
+
     def package_depends_on
       []
     end
-    
+
     def package_name
       nil
     end
-  
+
     def package_dir
       nil
     end
-  
+
     def package_location
       nil
     end
-    
+
     def package_path
       return nil if not package_name
       File.join(Buildphp::EXTRACT_TO, package_name)
     end
-  
+
     def package_md5
       versions[@version][:md5]
     end
-  
+
     def php_config_flags
       []
     end
-  
+
     def extract_dir
       return nil if not package_dir
       File.join(Buildphp::EXTRACT_TO, package_dir)
     end
-  
+
     def extract_cmd
       "tar xfz %s" % package_name
     end
-  
+
     def flags
       f = []
-    
+
       # Mac Universal Binary flags? TODO: not tested
       # flags = "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
-    
+
       # enable PIC
       if RUBY_PLATFORM.index("x86_64") != nil
         f << "-fPIC"
       end
-    
+
       # -fno-common enables PIC on Darwin
       # f << "-fno-common"
-    
+
       f = f.join(' ')
-    
+
       out = []
       out << %{ CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}' } if f
       out << %{ PATH="#{Buildphp::INSTALL_TO}/bin":$PATH }
-    
+
       out.join(' ')
     end
-  
+
     def stop(msg)
       abort console_prefix + msg
     end
@@ -97,57 +97,57 @@ module Buildphp
     def notice(msg)
       puts console_prefix + msg
     end
-  
+
     def get_build_string
       "./configure --prefix=#{@prefix}"
     end
-    
+
     def configure_cmd
       get_build_string
     end
-    
+
     def compile_cmd
       'make'
     end
-    
+
     def install_cmd
       'make install'
     end
-    
+
     def clean_cmd
       'make clean'
     end
-  
+
     def is_gotten
       File.exist?(package_path) && is_md5_verified
     end
-  
+
     def is_compiled
       (not FileList["#{extract_dir}/*.o"].empty?) or (not FileList["#{extract_dir}/**/*.o"].empty?)
     end
-  
+
     def is_installed
       false
     end
-  
+
     def is_md5_verified
       return false if not File.exist?(package_path)
       package_md5 == Digest::MD5.file(package_path).hexdigest
     end
-  
+
     def get(force=false)
       retrieve(force)
       # if we get here we know the package has been downloaded
       Dir.chdir(Buildphp::EXTRACT_TO) do
         # remove folder if already extracted.
         # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
-        
+
         # only extract archive if not already extracted.
         sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
       end
       return true
     end # /get
-    
+
     def retrieve(force=false)
       if not is_gotten or (not File.exist?(extract_dir) and force)
         notice "package not found. retrieving..." if not is_gotten
@@ -166,7 +166,7 @@ module Buildphp
         notice "already downloaded"
       end
     end
-  
+
     def configure(force=false)
       clean if force
       if is_installed and not force
@@ -183,7 +183,7 @@ module Buildphp
       end
       return true
     end # /configure
-  
+
     def compile(force=false)
       clean if force
       if is_installed and not force
@@ -201,7 +201,7 @@ module Buildphp
       end
       return true
     end # /compile
-  
+
     def install(force=false)
       if is_installed and not force
         notice "already installed. to force install, try #{underscored}:force:install"
@@ -218,7 +218,7 @@ module Buildphp
       end
       return true
     end # /install
-  
+
     def clean
       notice "cleaning..."
       Dir.chdir(extract_dir) do
@@ -229,12 +229,12 @@ module Buildphp
       end
       return true
     end # /clean
-    
+
     def clobber
       notice "clobbering #{underscored}..."
       sh "rm -r #{extract_dir}" if extract_dir and File.exist?(extract_dir)
     end
-  
+
     def rake
       namespace to_sym do
         task :get do
@@ -248,23 +248,23 @@ module Buildphp
         task :compile => :configure do
           compile
         end
-      
+
         task :install => :compile do
           install
         end
-      
+
         task :clean do
           clean
         end
-        
+
         task :clobber do
           clobber
         end
-        
+
         task :retrieve do
           retrieve
         end
-        
+
         namespace :force do
           task :get do
             get(true)
@@ -279,12 +279,12 @@ module Buildphp
             install(true)
           end
         end
-        
+
       end
 
       task to_sym => "#{underscored}:install"
     end
-    
+
     def build_as_addon(options={})
       options = {
         :name => underscored,
@@ -292,7 +292,7 @@ module Buildphp
       }.merge(options)
       # p options
       # stop "#{name} package does not exist" if name and not FACTORY.get(name)
-      
+
       # notify user after installation to run activate to activate module
       Rake.application["#{underscored}:install"].enhance do
         notice "after installation, run #{underscored}:activate to activate the #{underscored.upcase} pecl module."
@@ -316,10 +316,10 @@ module Buildphp
           end
         end
       end
-      
+
       # e.g. make :memcache run the "memcache:activate" task
       Rake.application[underscored.to_sym].clear_prerequisites.enhance ["#{underscored}:activate"]
-      
+
     end
   end
 end
