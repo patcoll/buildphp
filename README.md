@@ -53,6 +53,19 @@ To delete all source folders (folders within "packages"), temporary (everything 
 
 That's it.
 
+PECL Modules
+------------
+
+PECL modules are PHP extensions written in C that are distributed separately from the core PHP distribution. Some popular PECL modules include APC and Memcache. To see a list of PECL packages that have been configured to work with buildphp, type:
+
+    rake pecl
+    
+These modules need an installation of PHP to work, so the `php:install` task is a prerequisite for each of them. For example, to build and activate the `memcache` PECL module:
+
+    rake memcache
+
+
+
 Features
 --------
 

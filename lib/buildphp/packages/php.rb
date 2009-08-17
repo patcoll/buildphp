@@ -3,7 +3,6 @@ module Buildphp
     class Php < Buildphp::Package
       attr_reader :fpm
       attr_accessor :php_modules
-      attr_accessor :pecl_modules
 
       def initialize
         super
@@ -58,17 +57,15 @@ module Buildphp
           # 'odbc',
         ]
 
-        @pecl_modules = [
-          'apc',
-          'eaccelerator',
-          'memcache',
-        ]
-
         # which interface to build?
         # supported options:
         #   :fastcgi
         #   :apache2
         @sapi = :fastcgi
+      end
+      
+      def pecl_modules
+        FACTORY.packages.find_all { |package| package.is_pecl }
       end
 
       def sapi_flags
@@ -122,7 +119,7 @@ module Buildphp
       end
 
       def package_depends_on
-        dependencies = php_modules + ["#{underscored}:get"]
+        dependencies = php_modules + ["#{self}:get"]
         dependencies << 'php_fpm' if fpm
         dependencies
       end
@@ -186,11 +183,11 @@ module Buildphp
       def rake
         super
 
-        ["#{underscored}:configure", "#{underscored}:force:configure"].map { |t| Rake.application.lookup(t) }.each do |task|
+        ["#{self}:configure", "#{self}:force:configure"].map { |t| Rake.application.lookup(t) }.each do |task|
           task.clear_prerequisites.enhance package_depends_on
         end
 
-        ["#{underscored}:install", "#{underscored}:force:install"].map { |t| Rake.application.lookup(t) }.each do |task|
+        ["#{self}:install", "#{self}:force:install"].map { |t| Rake.application.lookup(t) }.each do |task|
           task.enhance do
             if is_installed and not File.file?(php_ini)
               notice "no php.ini detected. installing ..."
@@ -200,43 +197,43 @@ module Buildphp
               }
               notice "enabling compiled modules ..."
               sh %{
-  rm -f #{modules_ini}
-  echo '; Extension directory (buildphp)' >> #{modules_ini}
-  echo 'extension_dir="#{extension_dir}/"' >> #{modules_ini}
-  echo '' >> #{modules_ini}
-  echo '; Shared modules (buildphp)' >> #{modules_ini}
+rm -f #{modules_ini}
+echo '; Extension directory (buildphp)' >> #{modules_ini}
+echo 'extension_dir="#{extension_dir}/"' >> #{modules_ini}
+echo '' >> #{modules_ini}
+echo '; Shared modules (buildphp)' >> #{modules_ini}
               }
               FileList["#{extension_dir}/*.so"].map{ |file| File.basename(file) }.each do |file|
                 sh "echo 'extension=#{file}' >> #{modules_ini}"
               end
 
               sh %{
-  rm -f #{custom_ini}
-  echo 'realpath_cache_size = 1024k' >> #{custom_ini}
-  echo 'realpath_cache_ttl = 600' >> #{custom_ini}
-  echo '' >> #{custom_ini}
-  echo 'memory_limit = -1' >> #{custom_ini}
-  echo '' >> #{custom_ini}
-  echo 'short_open_tag = On' >> #{custom_ini}
+rm -f #{custom_ini}
+echo 'realpath_cache_size = 1024k' >> #{custom_ini}
+echo 'realpath_cache_ttl = 600' >> #{custom_ini}
+echo '' >> #{custom_ini}
+echo 'memory_limit = -1' >> #{custom_ini}
+echo '' >> #{custom_ini}
+echo 'short_open_tag = On' >> #{custom_ini}
               }
 
               # create fastcgi wrapper script
               sh %{
-  rm -f #{@prefix}/php5.fcgi
-  echo '#!/bin/bash' >> #{@prefix}/php5.fcgi
-  echo 'PHPRC="#{config_file_path}"' >> #{@prefix}/php5.fcgi
-  echo 'export PHPRC' >> #{@prefix}/php5.fcgi
-  echo 'PHP_FCGI_CHILDREN=5' >> #{@prefix}/php5.fcgi
-  echo 'export PHP_FCGI_CHILDREN' >> #{@prefix}/php5.fcgi
-  echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{@prefix}/php5.fcgi
-  echo 'export PHP_FCGI_MAX_REQUESTS' >> #{@prefix}/php5.fcgi
-  echo 'exec "#{@prefix}/bin/php-cgi"' >> #{@prefix}/php5.fcgi
+rm -f #{@prefix}/php5.fcgi
+echo '#!/bin/bash' >> #{@prefix}/php5.fcgi
+echo 'PHPRC="#{config_file_path}"' >> #{@prefix}/php5.fcgi
+echo 'export PHPRC' >> #{@prefix}/php5.fcgi
+echo 'PHP_FCGI_CHILDREN=5' >> #{@prefix}/php5.fcgi
+echo 'export PHP_FCGI_CHILDREN' >> #{@prefix}/php5.fcgi
+echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{@prefix}/php5.fcgi
+echo 'export PHP_FCGI_MAX_REQUESTS' >> #{@prefix}/php5.fcgi
+echo 'exec "#{@prefix}/bin/php-cgi"' >> #{@prefix}/php5.fcgi
               }
             end
           end
         end
 
-        Rake.application[to_sym].clear_prerequisites.enhance(["#{underscored}:compile"])
+        Rake.application[to_sym].clear_prerequisites.enhance(["#{self}:compile"])
       end
     end
 

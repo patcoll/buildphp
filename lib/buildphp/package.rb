@@ -5,6 +5,7 @@ module Buildphp
     attr_accessor :version
     attr_accessor :versions
     attr_accessor :prefix
+    attr_accessor :is_pecl
 
     def initialize
       @versions = {}
@@ -12,21 +13,21 @@ module Buildphp
       @prefix = Buildphp::INSTALL_TO
       @is_pecl = false
     end
-
-    def to_s
+    
+    def __class__
       self.class.to_s.split('::')[-1]
     end
 
-    def underscored
-      Inflect.underscore(self.to_s)
+    def to_s
+      Inflect.underscore(__class__)
     end
 
     def to_sym
-      underscored.to_sym
+      to_s.to_sym
     end
 
     def console_prefix
-      "[#{underscored}] "
+      "[#{self}] "
     end
 
     def package_depends_on
@@ -170,7 +171,7 @@ module Buildphp
     def configure(force=false)
       clean if force
       if is_installed and not force
-        notice "already installed so we won't configure. try #{underscored}:force:configure"
+        notice "already installed so we won't configure. try #{self}:force:configure"
       elsif not is_compiled
         notice "package not compiled. configuring..." if not is_compiled
         stop "extract folder does not exist" if not File.exists?(extract_dir)
@@ -187,7 +188,7 @@ module Buildphp
     def compile(force=false)
       clean if force
       if is_installed and not force
-        notice "already installed so we won't compile. try #{underscored}:force:compile"
+        notice "already installed so we won't compile. try #{self}:force:compile"
       elsif not is_compiled
         notice "package not compiled. compiling..." if not is_compiled
         Dir.chdir(extract_dir) do
@@ -204,7 +205,7 @@ module Buildphp
 
     def install(force=false)
       if is_installed and not force
-        notice "already installed. to force install, try #{underscored}:force:install"
+        notice "already installed. to force install, try #{self}:force:install"
       elsif not is_installed or force
         notice "package not installed. installing..." if not is_installed
         Dir.chdir(extract_dir) do
@@ -231,7 +232,7 @@ module Buildphp
     end # /clean
 
     def clobber
-      notice "clobbering #{underscored}..."
+      notice "clobbering #{self}..."
       sh "rm -r #{extract_dir}" if extract_dir and File.exist?(extract_dir)
     end
 
@@ -269,37 +270,37 @@ module Buildphp
           task :get do
             get(true)
           end
-          task :configure => "#{underscored}:force:get" do
+          task :configure => "#{self}:force:get" do
             configure(true)
           end
-          task :compile => "#{underscored}:force:configure" do
+          task :compile => "#{self}:force:configure" do
             compile(true)
           end
-          task :install => "#{underscored}:force:compile" do
+          task :install => "#{self}:force:compile" do
             install(true)
           end
         end
 
       end
 
-      task to_sym => "#{underscored}:install"
+      task to_sym => "#{self}:install"
     end
 
     def build_as_addon(options={})
       options = {
-        :name => underscored,
-        :ini_file => FACTORY.get('php').custom_ini(underscored)
+        :name => self.to_s,
+        :ini_file => FACTORY.get('php').custom_ini(self.to_s)
       }.merge(options)
       # p options
       # stop "#{name} package does not exist" if name and not FACTORY.get(name)
 
       # notify user after installation to run activate to activate module
-      Rake.application["#{underscored}:install"].enhance do
-        notice "after installation, run #{underscored}:activate to activate the #{underscored.upcase} pecl module."
+      Rake.application["#{self}:install"].enhance do
+        notice "after installation, run #{self}:activate to activate the #{self.to_s.upcase} pecl module."
       end
       # activate task
       # activates the module in a given php.ini file
-      Rake.application.in_namespace(underscored.to_sym) do
+      Rake.application.in_namespace(self.to_sym) do
         task :activate => :install do
           new_line = "extension=#{options[:name]}.so"
           already_activated = false
@@ -308,17 +309,17 @@ module Buildphp
           end
           if not already_activated then
             sh %[echo '#{new_line}' >> #{options[:ini_file]}] do |ok,res|
-              notice "#{underscored} activated!" if ok
-              stop "#{underscored} activation failed" if not ok
+              notice "#{self} activated!" if ok
+              stop "#{self} activation failed" if not ok
             end
           else
-            notice "#{underscored} already activated"
+            notice "#{self} already activated"
           end
         end
       end
 
       # e.g. make :memcache run the "memcache:activate" task
-      Rake.application[underscored.to_sym].clear_prerequisites.enhance ["#{underscored}:activate"]
+      Rake.application[self.to_sym].clear_prerequisites.enhance ["#{self}:activate"]
 
     end
   end

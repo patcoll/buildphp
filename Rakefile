@@ -8,7 +8,10 @@ require 'rake/packagetask'
 package_classes = Buildphp::Packages.constants
 
 # automate instantiation of all package classes
-FACTORY = Buildphp::PackageFactory.new
+FACTORY = Buildphp::PackageFactory.new do |f|
+  # f.mamp_mode = true
+end
+
 package_classes.each do |class_name|
   klass = Buildphp::Packages.const_get(class_name)
   abort "Could not instantiate #{klass}." if not FACTORY.add(klass.new)
@@ -24,8 +27,16 @@ task :default => 'php:compile'
 desc 'Equivalent to php:install (requires php:compile)'
 task :install => 'php:install'
 
-desc 'Install PECL modules (requires PHP install)'
-task :pecl => FACTORY.get('php').pecl_modules
+desc 'List PECL or add-on modules available to install (requires PHP install)'
+task :pecl do
+  puts "To install and activate any of the following modules, run `rake <module>`"
+  p FACTORY.get('php').pecl_modules.map { |m| m.to_s }
+end
+
+namespace :pecl do
+  desc "Install all available PECL or add-on modules"
+  task :install_all => FACTORY.get('php').pecl_modules.map { |m| m.to_s }
+end
 
 Rake::PackageTask.new("buildphp", Buildphp::VERSION) do |p|
   p.need_tar_gz = true
