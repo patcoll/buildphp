@@ -16,13 +16,14 @@ end
 
 # load rake tasks for each package
 package_classes.each do |class_name|
-  FACTORY.get(class_name).rake if FACTORY.get(class_name).respond_to?(:rake)
+  FACTORY.get(class_name).rake
 end
 
-desc 'Build PHP (requires dependencies)'
-task :default => :php
-desc 'Install PHP (requires build)'
+desc 'Equivalent to php:compile (requires dependencies)'
+task :default => 'php:compile'
+desc 'Equivalent to php:install (requires php:compile)'
 task :install => 'php:install'
+
 desc 'Install PECL modules (requires PHP install)'
 task :pecl => FACTORY.get('php').pecl_modules
 
