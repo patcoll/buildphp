@@ -3,11 +3,18 @@ module Buildphp
     class Png < Buildphp::Package
       def initialize
         super
-        @version = '1.2.38'
+        @version = '1.2.39'
         @versions = {
           '1.2.38' => { :md5 => '99900634a47041607a031aa597d51e65' },
+          '1.2.39' => { :md5 => 'ddfeaf19b690985910c42e41974e8d65' },
         }
         # @prefix = "/Applications/MAMP/Library"
+      end
+      
+      def package_depends_on
+        [
+          'zlib',
+        ]
       end
 
       def package_name
@@ -19,7 +26,7 @@ module Buildphp
       end
 
       def package_location
-        'http://downloads.sourceforge.net/project/libpng/00-libpng-stable/%s/%s?use_mirror=voxel' % [@version, package_name]
+        'ftp://ftp.simplesystems.org/pub/libpng/png/src/%s' % package_name
       end
 
       def get_build_string
