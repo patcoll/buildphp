@@ -124,7 +124,7 @@ module Buildphp
       end
 
       def package_depends_on
-        dependencies = php_modules + ["#{self}:get"]
+        dependencies = [:m4, :autoconf, :automake, :libtool] + php_modules + ["#{self}:get"]
         dependencies << 'php_fpm' if fpm
         dependencies
       end
