@@ -13,7 +13,6 @@ module Buildphp
 
       def package_depends_on
         [
-          'iconv',
           'odbc',
         ]
       end
@@ -45,10 +44,9 @@ module Buildphp
         parts += [
           "--prefix=#{@prefix}",
           "--with-tdsver=8.0",
-          "--enable-libiconv",
-          "--with-libiconv-prefix=#{FACTORY.get('iconv').prefix}",
           "--enable-odbc",
           "--with-unixodbc=#{FACTORY.get('odbc').prefix}",
+          "--disable-libiconv",
         ]
         parts.join(' ')
       end
