@@ -10,6 +10,12 @@ module Buildphp
         }
         # @prefix = "/Applications/MAMP/Library"
       end
+      
+      def package_depends_on
+        [
+          'ncurses',
+        ]
+      end
 
       def package_name
         'krb5-%s-signed.tar' % @version
