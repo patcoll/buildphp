@@ -12,7 +12,7 @@ module Buildphp
 
       def package_depends_on
         [
-          'kerberos',
+          # 'kerberos',
         ]
       end
 
@@ -41,7 +41,7 @@ module Buildphp
         [
           "--with-openssl=shared,#{@prefix}",
           "--with-openssl-dir=#{@prefix}",
-          "--with-kerberos=#{FACTORY.get('Kerberos').prefix}",
+          # "--with-kerberos=#{FACTORY.get('Kerberos').prefix}",
         ]
       end
 
