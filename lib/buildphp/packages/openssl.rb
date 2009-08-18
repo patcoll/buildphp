@@ -12,7 +12,7 @@ module Buildphp
 
       def package_depends_on
         [
-          'kerberos',
+          # 'kerberos',
         ]
       end
 
