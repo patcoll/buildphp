@@ -1,37 +1,39 @@
 module Buildphp
   module Packages
-    class Odbc < Buildphp::Package
+    class Mssql < Buildphp::Package
       def initialize
         super
-        @version = '2.2.14'
+        @version = '0.82'
         @versions = {
-          '2.2.14' => { :md5 => 'f47c2efb28618ecf5f33319140a7acd0' },
+          '0.82' => { :md5 => '3df6b2e83fd420e90f1becbd1162990a' },
         }
+        # @prefix = "#{@prefix}/mysql"
         # @prefix = "/Applications/MAMP/Library"
       end
 
       def package_depends_on
         [
           'iconv',
+          'odbc',
         ]
       end
 
       def package_name
-        'unixODBC-%s.tar.gz' % @version
+        'freetds-%s.tar.gz' % @version
       end
 
       def package_dir
-        'unixODBC-%s' % @version
+        'freetds-%s' % @version
       end
 
       def package_location
-        'http://www.unixodbc.org/%s' % package_name
+        'http://ibiblio.org/pub/Linux/ALPHA/freetds/stable/%s' % package_name
       end
 
       def php_config_flags
         [
-          "--with-unixODBC=shared,#{@prefix}",
-          "--with-pdo-odbc=shared,unixODBC,#{FACTORY.get('odbc').prefix}",
+          "--with-mssql=shared,#{@prefix}",
+          "--with-pdo-dblib=shared,#{@prefix}",
         ]
       end
 
@@ -42,16 +44,17 @@ module Buildphp
         parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
         parts += [
           "--prefix=#{@prefix}",
-          "--disable-gui",
-          "--enable-iconv",
+          "--with-tdsver=8.0",
+          "--enable-libiconv",
           "--with-libiconv-prefix=#{FACTORY.get('iconv').prefix}",
-          "--enable-drivers",
+          "--enable-odbc",
+          "--with-unixodbc=#{FACTORY.get('odbc').prefix}",
         ]
         parts.join(' ')
       end
 
       def is_installed
-        not FileList["#{@prefix}/lib/libodbc.*"].empty?
+        not FileList["#{@prefix}/lib/libtds.*"].empty?
       end
     end
   end
