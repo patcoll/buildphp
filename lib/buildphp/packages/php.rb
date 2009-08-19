@@ -36,7 +36,6 @@ module Buildphp
           # 'pear', # requires xml explicitly (uncomment the xml line below)
           # 'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
           # 'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
-          'tidy', 
 
           ### these packages require external libs.
           ### only put packages here if PHP has a direct dependency on the package.
