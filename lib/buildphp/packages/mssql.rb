@@ -47,12 +47,13 @@ module Buildphp
           "--enable-odbc",
           "--with-unixodbc=#{FACTORY.get('odbc').prefix}",
           "--disable-libiconv",
+          "--enable-msdblib",
         ]
         parts.join(' ')
       end
 
       def is_installed
-        not FileList["#{@prefix}/lib/libtds.*"].empty?
+        not FileList["#{@prefix}/lib/libtdsodbc.*"].empty?
       end
     end
   end
