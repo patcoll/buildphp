@@ -22,40 +22,41 @@ module Buildphp
         @php_modules = [
           ### built-ins.
           ### these packages have code which is packaged with the PHP core distribution.
-          'bcmath', # For arbitrary precision mathematics PHP offers the Binary Calculator which supports numbers of any size and precision, represented as strings.
-          'calendar', # The calendar extension presents a series of functions to simplify converting between different calendar formats.
-          'ctype', # The functions provided by this extension check whether a character or string falls into a certain character class according to the current locale (see also setlocale()).
-          'dba', # These functions build the foundation for accessing Berkeley DB style databases.
-          'exif', # With the exif extension you are able to work with image meta data. For example, you may use exif functions to read meta data of pictures taken from digital cameras by working with information stored in the headers of the JPEG and TIFF images.
-          'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
-          'filter', # This extension filters data by either validating or sanitizing it. This is especially useful when the data source contains unknown (or foreign) data, like user supplied input. For example, this data may come from an HTML form.
-          'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
-          'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
-          'mbstring', # mbstring provides multibyte specific string functions that help you deal with multibyte encodings in PHP.
-          'mysqlnd', # builtin mysql native php driver
-          'pear', # requires xml explicitly (uncomment the xml line below)
-          'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
-          'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
+          # 'bcmath', # For arbitrary precision mathematics PHP offers the Binary Calculator which supports numbers of any size and precision, represented as strings.
+          # 'calendar', # The calendar extension presents a series of functions to simplify converting between different calendar formats.
+          # 'ctype', # The functions provided by this extension check whether a character or string falls into a certain character class according to the current locale (see also setlocale()).
+          # 'dba', # These functions build the foundation for accessing Berkeley DB style databases.
+          # 'exif', # With the exif extension you are able to work with image meta data. For example, you may use exif functions to read meta data of pictures taken from digital cameras by working with information stored in the headers of the JPEG and TIFF images.
+          # 'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
+          # 'filter', # This extension filters data by either validating or sanitizing it. This is especially useful when the data source contains unknown (or foreign) data, like user supplied input. For example, this data may come from an HTML form.
+          # 'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
+          # 'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
+          # 'mbstring', # mbstring provides multibyte specific string functions that help you deal with multibyte encodings in PHP.
+          # 'mysqlnd', # builtin mysql native php driver
+          # 'pear', # requires xml explicitly (uncomment the xml line below)
+          # 'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
+          # 'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
+          'tidy', 
 
           ### these packages require external libs.
           ### only put packages here if PHP has a direct dependency on the package.
           ### a good example of this is "png" which only the "gd" package has a direct dependency on.
-          'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
-          'curl', # PHP supports libcurl, a library created by Daniel Stenberg, that allows you to connect and communicate to many different types of servers with many different types of protocols.
-          'gd', # PHP can output image streams directly to a browser. You will need to compile PHP with the GD library of image functions for this to work. requires iconv, freetype, jpeg, png, zlib, xpm
-          'gettext', # The gettext functions implement an NLS (Native Language Support) API which can be used to internationalize your PHP applications. requires expat, iconv, ncurses, xml
+          # 'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
+          # 'curl', # PHP supports libcurl, a library created by Daniel Stenberg, that allows you to connect and communicate to many different types of servers with many different types of protocols.
+          # 'gd', # PHP can output image streams directly to a browser. You will need to compile PHP with the GD library of image functions for this to work. requires iconv, freetype, jpeg, png, zlib, xpm
+          # 'gettext', # The gettext functions implement an NLS (Native Language Support) API which can be used to internationalize your PHP applications. requires expat, iconv, ncurses, xml
           'iconv', # This module contains an interface to iconv character set conversion facility.
-          'mcrypt', # This is an interface to the mcrypt library, which supports a wide variety of block algorithms
-          'mhash', # This is an interface to the mhash library. mhash supports a wide variety of hash algorithms such as MD5, SHA1, GOST, and many others.
+          # 'mcrypt', # This is an interface to the mcrypt library, which supports a wide variety of block algorithms
+          # 'mhash', # This is an interface to the mhash library. mhash supports a wide variety of hash algorithms such as MD5, SHA1, GOST, and many others.
           # 'mysql', # not needed if 'mysqlnd' is included from above. requires zlib, ncurses.
-          'mssql', # These functions allow you to access MS SQL Server database.
-          'odbc',
-          'openssl',
-          'soap', # requires xml. The SOAP extension can be used to write SOAP Servers and Clients. It supports subsets of SOAP 1.1, SOAP 1.2 and WSDL 1.1 specifications.
-          'xml', # requires iconv, zlib
-          'xsl', # requires xml
-          'zlib',
-          'zip', # requires zlib
+          # 'mssql', # These functions allow you to access MS SQL Server database.
+          # 'odbc',
+          # 'openssl',
+          # 'soap', # requires xml. The SOAP extension can be used to write SOAP Servers and Clients. It supports subsets of SOAP 1.1, SOAP 1.2 and WSDL 1.1 specifications.
+          # 'xml', # requires iconv, zlib
+          # 'xsl', # requires xml
+          # 'zlib',
+          # 'zip', # requires zlib
 
           ### not yet implemented
           # 'imap',
