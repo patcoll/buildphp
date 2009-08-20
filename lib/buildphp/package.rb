@@ -30,8 +30,8 @@ module Buildphp
       "[#{self}] "
     end
     
-    def package_dependencies
-      return [] if is_installed
+    def package_dependencies(force=false)
+      return [] if is_installed unless force
       return package_depends_on
     end
 
@@ -283,7 +283,7 @@ module Buildphp
           task :get do
             get(true)
           end
-          task :configure => "#{self}:force:get" do
+          task :configure => ((package_dependencies(true) || []) + ["#{self}:force:get"]) do
             configure(true)
           end
           task :compile => "#{self}:force:configure" do
