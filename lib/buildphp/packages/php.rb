@@ -2,11 +2,12 @@ module Buildphp
   module Packages
     class Php < Buildphp::Package
       attr_reader :fpm
+      attr_reader :sapi
       attr_accessor :php_modules
 
       def initialize
         super
-        @version = '5.3.0'
+        @version = '5.2.10'
         @versions = {
           '5.2.8' => { :md5 => 'e748cace3cfecb66fb6de9a945f98e2a' },
           '5.2.9' => { :md5 => '98b647561dc664adefe296106056cf11' },
@@ -22,40 +23,40 @@ module Buildphp
         @php_modules = [
           ### built-ins.
           ### these packages have code which is packaged with the PHP core distribution.
-          # 'bcmath', # For arbitrary precision mathematics PHP offers the Binary Calculator which supports numbers of any size and precision, represented as strings.
-          # 'calendar', # The calendar extension presents a series of functions to simplify converting between different calendar formats.
-          # 'ctype', # The functions provided by this extension check whether a character or string falls into a certain character class according to the current locale (see also setlocale()).
-          # 'dba', # These functions build the foundation for accessing Berkeley DB style databases.
-          # 'exif', # With the exif extension you are able to work with image meta data. For example, you may use exif functions to read meta data of pictures taken from digital cameras by working with information stored in the headers of the JPEG and TIFF images.
-          # 'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
-          # 'filter', # This extension filters data by either validating or sanitizing it. This is especially useful when the data source contains unknown (or foreign) data, like user supplied input. For example, this data may come from an HTML form.
-          # 'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
-          # 'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
-          # 'mbstring', # mbstring provides multibyte specific string functions that help you deal with multibyte encodings in PHP.
+          'bcmath', # For arbitrary precision mathematics PHP offers the Binary Calculator which supports numbers of any size and precision, represented as strings.
+          'calendar', # The calendar extension presents a series of functions to simplify converting between different calendar formats.
+          'ctype', # The functions provided by this extension check whether a character or string falls into a certain character class according to the current locale (see also setlocale()).
+          'dba', # These functions build the foundation for accessing Berkeley DB style databases.
+          'exif', # With the exif extension you are able to work with image meta data. For example, you may use exif functions to read meta data of pictures taken from digital cameras by working with information stored in the headers of the JPEG and TIFF images.
+          'fileinfo', # The functions in this module try to guess the content type and encoding of a file by looking for certain magic byte sequences at specific positions within the file. While this is not a bullet proof approach the heuristics used do a very good job.
+          'filter', # This extension filters data by either validating or sanitizing it. This is especially useful when the data source contains unknown (or foreign) data, like user supplied input. For example, this data may come from an HTML form.
+          'hash', # Message Digest (hash) engine. Allows direct or incremental processing of arbitrary length messages using a variety of hashing algorithms.
+          'iconv', # This module contains an interface to iconv character set conversion facility.
+          'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
+          'mbstring', # mbstring provides multibyte specific string functions that help you deal with multibyte encodings in PHP.
           # 'mysqlnd', # builtin mysql native php driver
-          # 'pear', # requires xml explicitly (uncomment the xml line below)
-          # 'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
-          # 'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
+          'pear', # requires xml explicitly (uncomment the xml line below)
+          'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
+          'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
 
           ### these packages require external libs.
           ### only put packages here if PHP has a direct dependency on the package.
           ### a good example of this is "png" which only the "gd" package has a direct dependency on.
-          # 'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
-          # 'curl', # PHP supports libcurl, a library created by Daniel Stenberg, that allows you to connect and communicate to many different types of servers with many different types of protocols.
-          # 'gd', # PHP can output image streams directly to a browser. You will need to compile PHP with the GD library of image functions for this to work. requires iconv, freetype, jpeg, png, zlib, xpm
-          # 'gettext', # The gettext functions implement an NLS (Native Language Support) API which can be used to internationalize your PHP applications. requires expat, iconv, ncurses, xml
-          'iconv', # This module contains an interface to iconv character set conversion facility.
-          # 'mcrypt', # This is an interface to the mcrypt library, which supports a wide variety of block algorithms
-          # 'mhash', # This is an interface to the mhash library. mhash supports a wide variety of hash algorithms such as MD5, SHA1, GOST, and many others.
-          # 'mysql', # not needed if 'mysqlnd' is included from above. requires zlib, ncurses.
-          # 'mssql', # These functions allow you to access MS SQL Server database.
-          # 'odbc',
-          # 'openssl',
-          # 'soap', # requires xml. The SOAP extension can be used to write SOAP Servers and Clients. It supports subsets of SOAP 1.1, SOAP 1.2 and WSDL 1.1 specifications.
-          # 'xml', # requires iconv, zlib
-          # 'xsl', # requires xml
-          # 'zlib',
-          # 'zip', # requires zlib
+          'bz2', # The bzip2 functions are used to transparently read and write bzip2 (.bz2) compressed files.
+          'curl', # PHP supports libcurl, a library created by Daniel Stenberg, that allows you to connect and communicate to many different types of servers with many different types of protocols.
+          'gd', # PHP can output image streams directly to a browser. You will need to compile PHP with the GD library of image functions for this to work. requires iconv, freetype, jpeg, png, zlib, xpm
+          'gettext', # The gettext functions implement an NLS (Native Language Support) API which can be used to internationalize your PHP applications. requires expat, iconv, ncurses, xml
+          'mcrypt', # This is an interface to the mcrypt library, which supports a wide variety of block algorithms
+          'mhash', # This is an interface to the mhash library. mhash supports a wide variety of hash algorithms such as MD5, SHA1, GOST, and many others.
+          'mysql', # not needed if 'mysqlnd' is included from above. requires zlib, ncurses.
+          'mssql', # These functions allow you to access MS SQL Server database.
+          'odbc',
+          'openssl',
+          'soap', # requires xml. The SOAP extension can be used to write SOAP Servers and Clients. It supports subsets of SOAP 1.1, SOAP 1.2 and WSDL 1.1 specifications.
+          'xml', # requires iconv, zlib
+          'xsl', # requires xml
+          'zlib',
+          'zip', # requires zlib
 
           ### not yet implemented
           # 'imap',
@@ -66,7 +67,7 @@ module Buildphp
         # supported options:
         #   :fastcgi
         #   :apache2
-        @sapi = :fastcgi
+        @sapi = :apache2
       end
       
       def pecl_modules
@@ -74,21 +75,10 @@ module Buildphp
       end
 
       def sapi_flags
-        flags = {
-          # FastCGI
-          # It seems you don't need these for 5.3.0
-          :fastcgi => [
-            # "--enable-fastcgi",
-            # "--enable-discard-path",
-            # "--enable-force-cgi-redirect",
-          ],
-          # Apache2
-          :apache2 => [
-            # "--with-apxs2=/Applications/MAMP/Library/bin/apxs",
-            "--with-apxs2",
-          ],
-        }
-        flags[@sapi]
+        return ["--with-apxs2=/Applications/MAMP/Library/bin/apxs"] if @sapi == :apache2 and Buildphp::MAMP_MODE
+        return ["--enable-fastcgi", "--enable-discard-path", "--enable-force-cgi-redirect"] if @sapi == :fastcgi
+        return ["--with-apxs2"] if @sapi == :apache2
+        []
       end
 
       def config_file_path
@@ -152,6 +142,7 @@ module Buildphp
           "--enable-phar",
           "--enable-posix",
           "--enable-session",
+          "--enable-spl",
           "--enable-short-tags",
           "--enable-tokenizer",
           "--enable-zend-multibyte",
@@ -191,50 +182,69 @@ module Buildphp
         ["#{self}:configure", "#{self}:force:configure"].map { |t| Rake.application.lookup(t) }.each do |task|
           task.clear_prerequisites.enhance package_depends_on
         end
+        
+        Rake.application.in_namespace(self.to_sym) do
+          task :httpdconf do
+            if @sapi == :apache2 then
+              sh %[ln -nfs /Applications/MAMP/conf/apache/httpd.conf /Applications/MAMP/Library/conf/httpd.conf]
+            end
+          end
+        end
 
         ["#{self}:install", "#{self}:force:install"].map { |t| Rake.application.lookup(t) }.each do |task|
-          task.enhance do
+          task.enhance [:httpdconf] do
+            Rake.application["#{self}:ini"].invoke
+            Rake.application["#{self}:fastcgi_script"].invoke
+          end
+        end
+        
+        Rake.application.in_namespace(self.to_sym) do
+          # 
+          task :ini do
             if is_installed and not File.file?(php_ini)
               notice "no php.ini detected. installing ..."
               sh %{
                 mkdir -p #{config_file_path} #{config_file_scan_dir}
-                cp "#{extract_dir}/php.ini-production" "#{php_ini}"
+                cp "#{extract_dir}/php.ini-production" "#{php_ini}" || cp "#{extract_dir}/php.ini-recommended" "#{php_ini}"
               }
               notice "enabling compiled modules ..."
               sh %{
-rm -f #{modules_ini}
-echo '; Extension directory (buildphp)' >> #{modules_ini}
-echo 'extension_dir="#{extension_dir}/"' >> #{modules_ini}
-echo '' >> #{modules_ini}
-echo '; Shared modules (buildphp)' >> #{modules_ini}
+                rm -f #{modules_ini}
+                echo '; Extension directory (buildphp)' >> #{modules_ini}
+                echo 'extension_dir="#{extension_dir}/"' >> #{modules_ini}
+                echo '' >> #{modules_ini}
+                echo '; Shared modules (buildphp)' >> #{modules_ini}
               }
               FileList["#{extension_dir}/*.so"].map{ |file| File.basename(file) }.each do |file|
                 sh "echo 'extension=#{file}' >> #{modules_ini}"
               end
 
               sh %{
-rm -f #{custom_ini}
-echo 'realpath_cache_size = 1024k' >> #{custom_ini}
-echo 'realpath_cache_ttl = 600' >> #{custom_ini}
-echo '' >> #{custom_ini}
-echo 'memory_limit = -1' >> #{custom_ini}
-echo '' >> #{custom_ini}
-echo 'short_open_tag = On' >> #{custom_ini}
+                rm -f #{custom_ini}
+                echo 'realpath_cache_size = 1024k' >> #{custom_ini}
+                echo 'realpath_cache_ttl = 600' >> #{custom_ini}
+                echo '' >> #{custom_ini}
+                echo 'memory_limit = -1' >> #{custom_ini}
+                echo '' >> #{custom_ini}
+                echo 'short_open_tag = On' >> #{custom_ini}
               }
 
+            end
+          end
+          #
+          task :fastcgi_script do
               # create fastcgi wrapper script
               sh %{
-rm -f #{@prefix}/php5.fcgi
-echo '#!/bin/bash' >> #{@prefix}/php5.fcgi
-echo 'PHPRC="#{config_file_path}"' >> #{@prefix}/php5.fcgi
-echo 'export PHPRC' >> #{@prefix}/php5.fcgi
-echo 'PHP_FCGI_CHILDREN=5' >> #{@prefix}/php5.fcgi
-echo 'export PHP_FCGI_CHILDREN' >> #{@prefix}/php5.fcgi
-echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{@prefix}/php5.fcgi
-echo 'export PHP_FCGI_MAX_REQUESTS' >> #{@prefix}/php5.fcgi
-echo 'exec "#{@prefix}/bin/php-cgi"' >> #{@prefix}/php5.fcgi
-              }
-            end
+                rm -f #{@prefix}/php5.fcgi
+                echo '#!/bin/bash' >> #{@prefix}/php5.fcgi
+                echo 'PHPRC="#{config_file_path}"' >> #{@prefix}/php5.fcgi
+                echo 'export PHPRC' >> #{@prefix}/php5.fcgi
+                echo 'PHP_FCGI_CHILDREN=5' >> #{@prefix}/php5.fcgi
+                echo 'export PHP_FCGI_CHILDREN' >> #{@prefix}/php5.fcgi
+                echo 'PHP_FCGI_MAX_REQUESTS=5000' >> #{@prefix}/php5.fcgi
+                echo 'export PHP_FCGI_MAX_REQUESTS' >> #{@prefix}/php5.fcgi
+                echo 'exec "#{@prefix}/bin/php-cgi"' >> #{@prefix}/php5.fcgi
+              } if @sapi == :fastcgi
           end
         end
 

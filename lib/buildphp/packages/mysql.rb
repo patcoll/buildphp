@@ -15,7 +15,6 @@ module Buildphp
         [
           'zlib',
           'ncurses',
-          'pdo',
         ]
       end
 

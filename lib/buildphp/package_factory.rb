@@ -1,5 +1,6 @@
 module Buildphp
   class PackageFactory
+    @@mamp_packages = []
     attr_reader :packages
     attr_accessor :mamp_mode
     def initialize
@@ -9,6 +10,8 @@ module Buildphp
     end
     def add(package)
       return nil if not package.is_a?(Buildphp::Package)
+      # TODO: the only way to include real support for building against libraries included with MAMP is to copy development headers for all packages into /Applications/MAMP/Library/include
+      package.prefix = "/Applications/MAMP/Library" if Buildphp::MAMP_MODE and @@mamp_packages.find { |p| p == package.to_s }
       @packages.push(package)
     end
     def get(class_name)

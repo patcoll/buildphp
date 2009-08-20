@@ -29,6 +29,11 @@ module Buildphp
     def console_prefix
       "[#{self}] "
     end
+    
+    def package_dependencies
+      return [] if is_installed
+      return package_depends_on
+    end
 
     def package_depends_on
       []
@@ -193,7 +198,11 @@ module Buildphp
         notice "package not compiled. compiling..." if not is_compiled
         Dir.chdir(extract_dir) do
           sh compile_cmd do |ok,res|
-            stop "compile failed" if not ok
+            if not ok then
+              # do a  make clean if the compile fails. we don't want a half-compiled package.
+              clean
+              stop "compile failed"
+            end
             notice "compile succeeded!"
           end
         end
@@ -223,6 +232,10 @@ module Buildphp
     def clean
       notice "cleaning..."
       Dir.chdir(extract_dir) do
+        if not File.file?(File.join(extract_dir, "Makefile")) then
+          notice "No Makefile; cannot clean..."
+          return true
+        end
         sh clean_cmd do |ok,res|
           stop "clean failed" if not ok
           notice "clean succeeded!"
@@ -242,7 +255,7 @@ module Buildphp
           get
         end
 
-        task :configure => ((package_depends_on || []) + [:get]) do
+        task :configure => ((package_dependencies || []) + [:get]) do
           configure
         end
 
