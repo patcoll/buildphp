@@ -149,19 +149,19 @@ module Buildphp
         ]
 
         # PHP-FPM
-        parts += FACTORY.get('PhpFpm').php_config_flags if fpm
+        parts += FACTORY['php_fpm'].php_config_flags if fpm
 
         # Extensions that depend on external libraries
         # Get config flags from dependencies
         php_modules.map { |ext| Inflect.camelize(ext) }.each do |ext|
-          parts += FACTORY.get(ext).php_config_flags || []
+          parts += FACTORY[ext].php_config_flags || []
         end
 
         parts.join(' ')
       end
 
       def install_cmd
-        %{ make install PHP_PEAR_DOWNLOAD_DIR="#{Buildphp::TMP_DIR}" && make install-cli PHP_PEAR_DOWNLOAD_DIR="#{Buildphp::TMP_DIR}" }
+        %[make install PHP_PEAR_DOWNLOAD_DIR="#{Buildphp::TMP_DIR}" && make install-cli PHP_PEAR_DOWNLOAD_DIR="#{Buildphp::TMP_DIR}"]
       end
 
       def is_compiled
@@ -185,7 +185,7 @@ module Buildphp
         
         Rake.application.in_namespace(self.to_sym) do
           task :httpdconf do
-            if @sapi == :apache2 then
+            if @sapi == :apache2 and Buildphp::MAMP_MODE then
               sh %[ln -nfs /Applications/MAMP/conf/apache/httpd.conf /Applications/MAMP/Library/conf/httpd.conf]
             end
           end

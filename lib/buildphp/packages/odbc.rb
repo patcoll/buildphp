@@ -31,7 +31,7 @@ module Buildphp
       def php_config_flags
         [
           "--with-unixODBC=shared,#{@prefix}",
-          "--with-pdo-odbc=shared,unixODBC,#{FACTORY.get('odbc').prefix}",
+          "--with-pdo-odbc=shared,unixODBC,#{FACTORY['odbc'].prefix}",
         ]
       end
 
@@ -44,7 +44,7 @@ module Buildphp
           "--prefix=#{@prefix}",
           "--disable-gui",
           "--enable-iconv",
-          "--with-libiconv-prefix=#{FACTORY.get('iconv').prefix}",
+          "--with-libiconv-prefix=#{FACTORY['iconv'].prefix}",
           "--enable-drivers",
         ]
         parts.join(' ')

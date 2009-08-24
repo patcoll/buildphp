@@ -50,8 +50,8 @@ module Buildphp
           "--with-collation=utf8_general_ci",
           "--with-extra-charsets=latin1",
           "--without-uca",
-          "--with-zlib-dir=#{FACTORY.get('Zlib').prefix}",
-          "--with-named-curses-libs=#{FACTORY.get('Ncurses').prefix}/lib/libncurses.a",
+          "--with-zlib-dir=#{FACTORY['Zlib'].prefix}",
+          "--with-named-curses-libs=#{FACTORY['Ncurses'].prefix}/lib/libncurses.a",
         ]
         parts.join(' ')
       end

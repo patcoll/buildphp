@@ -45,7 +45,7 @@ module Buildphp
           "--prefix=#{@prefix}",
           "--with-tdsver=8.0",
           "--enable-odbc",
-          "--with-unixodbc=#{FACTORY.get('odbc').prefix}",
+          "--with-unixodbc=#{FACTORY['odbc'].prefix}",
           "--disable-libiconv",
           "--enable-msdblib",
         ]

@@ -41,10 +41,10 @@ module Buildphp
         parts << "--disable-java"
         parts << "--disable-native-java"
         parts << "--disable-threads"
-        parts << "--with-libexpat-prefix=#{FACTORY.get('Expat').prefix}"
-        parts << "--with-libiconv-prefix=#{FACTORY.get('Iconv').prefix}"
-        parts << "--with-libncurses-prefix=#{FACTORY.get('Ncurses').prefix}"
-        parts << "--with-libxml2-prefix=#{FACTORY.get('Xml').prefix}"
+        parts << "--with-libexpat-prefix=#{FACTORY['expat'].prefix}"
+        parts << "--with-libiconv-prefix=#{FACTORY['iconv'].prefix}"
+        parts << "--with-libncurses-prefix=#{FACTORY['ncurses'].prefix}"
+        parts << "--with-libxml2-prefix=#{FACTORY['xml'].prefix}"
         parts.join(' ')
       end
 

@@ -41,7 +41,7 @@ module Buildphp
         [
           "--with-openssl=shared,#{@prefix}",
           "--with-openssl-dir=#{@prefix}",
-          # "--with-kerberos=#{FACTORY.get('Kerberos').prefix}",
+          # "--with-kerberos=#{FACTORY['kerberos'].prefix}",
         ]
       end
 

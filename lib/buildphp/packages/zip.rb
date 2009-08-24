@@ -11,7 +11,7 @@ module Buildphp
       def php_config_flags
         [
           "--enable-zip=shared",
-          "--with-zlib-dir=#{FACTORY.get('zlib').prefix}",
+          "--with-zlib-dir=#{FACTORY['zlib'].prefix}",
         ]
       end
 

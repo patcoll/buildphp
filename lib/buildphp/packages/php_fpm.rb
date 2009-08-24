@@ -27,7 +27,7 @@ module Buildphp
       end
 
       def extract_cmd
-        "gzip -cd #{package_name} | patch -d #{FACTORY.get('Php').package_dir} -p1 && echo '' > #{package_name}.installed"
+        "gzip -cd #{package_name} | patch -d #{FACTORY['php'].package_dir} -p1 && echo '' > #{package_name}.installed"
       end
 
       def php_config_flags

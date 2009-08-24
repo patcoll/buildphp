@@ -40,22 +40,22 @@ module Buildphp
         parts << './configure'
         parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "--prefix=#{@prefix}"
-        parts << "--with-libiconv-prefix=#{FACTORY.get('Iconv').prefix}"
-        parts << "--with-freetype=#{FACTORY.get('Freetype').prefix}"
-        parts << "--with-jpeg=#{FACTORY.get('Jpeg').prefix}"
-        parts << "--with-png=#{FACTORY.get('Png').prefix}"
-        # parts << "--with-xpm=#{FACTORY.get('Xpm').prefix}"
+        parts << "--with-libiconv-prefix=#{FACTORY['iconv'].prefix}"
+        parts << "--with-freetype=#{FACTORY['freetype'].prefix}"
+        parts << "--with-jpeg=#{FACTORY['jpeg'].prefix}"
+        parts << "--with-png=#{FACTORY['png'].prefix}"
+        # parts << "--with-xpm=#{FACTORY['xpm'].prefix}"
         parts.join(' ')
       end
 
       def php_config_flags
         [
           "--with-gd=shared,#{@prefix}",
-          "--with-freetype-dir=#{FACTORY.get('Freetype').prefix}",
-          "--with-jpeg-dir=#{FACTORY.get('Jpeg').prefix}",
-          "--with-png-dir=#{FACTORY.get('Png').prefix}",
-          "--with-zlib-dir=#{FACTORY.get('Zlib').prefix}",
-          # "--with-xpm-dir=#{FACTORY.get('Xpm').prefix}",
+          "--with-freetype-dir=#{FACTORY['freetype'].prefix}",
+          "--with-jpeg-dir=#{FACTORY['jpeg'].prefix}",
+          "--with-png-dir=#{FACTORY['png'].prefix}",
+          "--with-zlib-dir=#{FACTORY['zlib'].prefix}",
+          # "--with-xpm-dir=#{FACTORY['xpm'].prefix}",
         ]
       end
 

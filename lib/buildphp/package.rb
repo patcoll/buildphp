@@ -302,10 +302,10 @@ module Buildphp
     def build_as_addon(options={})
       options = {
         :name => self.to_s,
-        :ini_file => FACTORY.get('php').custom_ini(self.to_s)
+        :ini_file => FACTORY['php'].custom_ini(self.to_s)
       }.merge(options)
       # p options
-      # stop "#{name} package does not exist" if name and not FACTORY.get(name)
+      # stop "#{name} package does not exist" if name and not FACTORY[name]
 
       # notify user after installation to run activate to activate module
       Rake.application["#{self}:install"].enhance do
