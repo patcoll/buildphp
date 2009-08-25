@@ -7,7 +7,7 @@ module Buildphp
 
       def initialize
         super
-        @version = '5.2.10'
+        @version = '5.3.0'
         @versions = {
           '5.2.8' => { :md5 => 'e748cace3cfecb66fb6de9a945f98e2a' },
           '5.2.9' => { :md5 => '98b647561dc664adefe296106056cf11' },
@@ -34,7 +34,7 @@ module Buildphp
           'iconv', # This module contains an interface to iconv character set conversion facility.
           'json', # This extension implements the JavaScript Object Notation (JSON) data-interchange format.
           'mbstring', # mbstring provides multibyte specific string functions that help you deal with multibyte encodings in PHP.
-          # 'mysqlnd', # builtin mysql native php driver
+          'mysqlnd', # builtin mysql native php driver
           'pear', # requires xml explicitly (uncomment the xml line below)
           'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
           'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
@@ -48,7 +48,7 @@ module Buildphp
           'gettext', # The gettext functions implement an NLS (Native Language Support) API which can be used to internationalize your PHP applications. requires expat, iconv, ncurses, xml
           'mcrypt', # This is an interface to the mcrypt library, which supports a wide variety of block algorithms
           'mhash', # This is an interface to the mhash library. mhash supports a wide variety of hash algorithms such as MD5, SHA1, GOST, and many others.
-          'mysql', # not needed if 'mysqlnd' is included from above. requires zlib, ncurses.
+          # 'mysql', # not needed if 'mysqlnd' is included from above. requires zlib, ncurses.
           'mssql', # These functions allow you to access MS SQL Server database.
           'odbc',
           'openssl',

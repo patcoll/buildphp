@@ -32,8 +32,8 @@ Ruby stuff:
   * rake
 
 
-Instructions
-------------
+Quick Start
+-----------
 
 To install all dependencies and compile PHP:
 
@@ -56,6 +56,15 @@ To delete all source folders (folders within "src"), temporary (everything withi
     rake clobber
 
 That's it.
+
+
+Further Installation Notes
+--------------------------
+
+The supported versions for PHP are in `lib/buildphp/packages/php.rb`. The versions of the rest of the packages should build for 5.2 or 5.3. YMMV.
+
+For 5.3, it's recommended to uncomment the MySQL Native Driver (`mysqlnd`) in `Mysql::@php_modules` and to comment out the `mysql` package, which downloads and compiles the entire MySQL package. Not really necessary.
+
 
 PECL Modules
 ------------
