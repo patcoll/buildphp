@@ -1,4 +1,3 @@
-# http://www.ijg.org/files/jpegsrc.v7.tar.gz
 module Buildphp
   module Packages
     class Jpeg < Buildphp::Package

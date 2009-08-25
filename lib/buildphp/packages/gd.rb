@@ -1,4 +1,3 @@
-# http://www.libgd.org/releases/gd-2.0.35.tar.gz
 module Buildphp
   module Packages
     class Gd < Buildphp::Package

@@ -1,4 +1,3 @@
-# http://ftp.gnu.org/gnu/m4/m4-1.4.13.tar.gz
 module Buildphp
   module Packages
     class M4 < Buildphp::Package

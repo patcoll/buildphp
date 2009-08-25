@@ -76,7 +76,7 @@ module Buildphp
     def flags
       f = []
 
-      # Mac Universal Binary flags? TODO: not tested
+      # Mac Universal Binary flags? TODO: test Mac Universal Binary flags
       # flags = "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
 
       # enable PIC

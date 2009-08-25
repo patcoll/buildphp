@@ -1,4 +1,3 @@
-# http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz
 module Buildphp
   module Packages
     class Gettext < Buildphp::Package

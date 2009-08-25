@@ -1,15 +1,19 @@
 buildphp
 ========
 
-Build script for PHP 5.2+, with a concentration on building a comprehensive build kit for PHP 5.3
+buildphp is a customizable build system, based on Rake, that compiles PHP and supported modules and extensions.
 
-The goal is to create a script that will get, compile and install PHP 5.2+ and a list of desired dependencies. It was written to allow rapid builds of PHP and PHP modules.
+The goal is to create a script that will get, compile and install PHP 5.2+ and a list of desired dependencies. It was written to allow rapid builds of PHP and PHP modules, with a concentration on building a comprehensive build kit for PHP 5.3.
 
 By default, script builds PHP as a FastCGI binary, though this can obviously be changed by editing PHP's configuration flags.
 
 Tested on an Intel Core 2 Duo iMac with Mac OS X Leopard (with Developer Tools installed) and also tested on a 64-bit Ubuntu box. I've put in switches to enable PIC whenever it has been necessary for me to get a working build. YMMV.
 
 BORING DISCLAIMER: This software is distributed as-is and I claim no warranties except that it "works for me," so don't blame me if it destroys your computer.
+
+  * Homepage: http://github.com/patcoll/buildphp
+  * Author: [Pat Collins](http://burned.com)
+
 
 Dependencies
 ------------
@@ -43,11 +47,11 @@ To install PHP after a successful build (PLEASE NOTE: if configured as an Apache
 
     rake install
 
-To delete all source folders (folders within "packages") and temporary (everything within "tmp") files:
+To delete all source folders (folders within "src") and temporary (everything within "tmp") files:
 
     rake clean
     
-To delete all source folders (folders within "packages"), temporary (everything within "tmp") and installed (everything within "local") files:
+To delete all source folders (folders within "src"), temporary (everything within "tmp") and installed (everything within "local") files:
 
     rake clobber
 
@@ -75,43 +79,43 @@ buildphp was designed to provide a build environment that operates as isolated a
 
 The good news is that it is relatively trivial to add build scripts for these sorts of libraries and then have the version of PHP you're compiling depend on your compiled version of that library instead of the system version. See the existing build scripts for examples. Further detailed documentation is forthcoming.
 
-MAC USERS: For Mac OS X systems with MAMP installed, it has been requested that we include a MAMP-compatibility mode that compiles PHP against already existing dependencies within the MAMP package. This would involve changing the `@prefix` object variable to `/Applications/MAMP/Library` for each package that has a MAMP equivalent. This is forthcoming.
-
 ### Custom Path Configuration
 
 Some environment variables you can tweak:
 
-`BUILDPHP_TMP_DIR`
+`TMP_DIR`
 
-You may change `BUILDPHP_TMP_DIR` if you wish to change where temporary files are stored. Current this is only used for grabbing PEAR packages for installation. Default is the "tmp" folder, which is empty in a standard distribution of buildphp. Another good option could be "/tmp".
+You may change this variable if you wish to change where temporary files are stored. Current this is only used for grabbing PEAR packages for installation. Default is the "tmp" folder, which is empty in a standard distribution of buildphp. Another good option could be "/tmp".
 
-`BUILDPHP_EXTRACT_TO`
+`EXTRACT_TO`
 
-You may change `BUILDPHP_EXTRACT_TO` if you wish to change which directory packages are downloaded to and extracted. Default is the "packages" folder, which is empty in a standard distribution of buildphp.
+You may change this variable if you wish to change which directory packages are downloaded to and extracted. Default is the "packages" folder, which is empty in a standard distribution of buildphp.
 
-`BUILDPHP_INSTALL_TO`
+`INSTALL_TO`
 
-You may change `BUILDPHP_INSTALL_TO` if you wish to change which directory buildphp installs all packages into. *There is currently no support for per-package installation directories.* Default is the "local" folder, which is empty in a standard distribution of buildphp.
+You may change this variable if you wish to change which directory buildphp installs all packages into. *There is currently no support for per-package installation directories.* Default is the "local" folder, which is empty in a standard distribution of buildphp.
 
 For example, to install all files into `/usr/local`:
 
-`BUILDPHP_INSTALL_TO=/usr/local sudo rake`
+`INSTALL_TO=/usr/local sudo rake php:install`
 
 This should be run only by those who know what they're doing. See boring disclaimer above.
 
 **Please note:** It is also possible to perform installations of dependencies individually as well. For example, it is possible to install the configured MySQL package in `/usr/local` by doing the following:
 
-`BUILDPHP_INSTALL_TO=/usr/local sudo rake mysql`
+`INSTALL_TO=/usr/local sudo rake mysql:install`
 
 Your mileage may vary. Repeat disclaimer here.
 
 ### Package Detection
 
-buildphp removes the need for downloading packages multiple times by allowing archives to stay in the "packages" folder. As long as the package matches the `@filename` property and passes an MD5 digest check, it can stay. If developers package all necessary source packages with a buildphp distribution, it can significantly reduce network load when using buildphp to execute multiple builds at once.
+buildphp removes the need for downloading packages multiple times by allowing archives to stay in the "packages" folder. As long as the existing package passes an MD5 digest check, it can stay. If developers package all necessary source packages with a buildphp distribution, it can significantly reduce network load when using buildphp to execute multiple builds at once. (Good for creating server farms?)
 
 ### Compilation Detection
 
 For each package, buildphp runs the `is_compiled` method on each package to detect if there are any files that match the `*.o` glob. This is customized for some packages that don't fit a "standard" source folder structure. Since all packages contain build scripts that compile C and C++ code, this was the simplest (but not the most accurate) solution. Suggestions are welcome on how to improve. Fork and go.
+
+One thing to note: when a build of a certain package fails for any reason (exit status greater than zero, or a ^C user interrupt) then an attempt is made to clean the source directory using a "make clean" command, which in theory brings the source directory back to the state it was before the build was attempted.
 
 ### Installation Detection
 
@@ -123,7 +127,7 @@ buildphp uses some pretty basic methods to detect whether packages are compiled 
 
 An example: If the MySQL package has already been built and installed but the PHP package has not been (maybe the user threw a ^C mid-process) we don't want to compile and install MySQL all over again. That's a long wait.
 
-On the other hand, if we change some package options and need to recompile MySQL, we need to override this default behavior to do so. This is where a "force" mode comes in handy. A simple call to:
+On the other hand, if we change some package options and need to recompile and reinstall MySQL, we need to override this default behavior to do so. This is where a "force" mode comes in handy. A simple call to:
 
     rake mysql:force:install
 
@@ -131,71 +135,29 @@ will ignore the `is_installed` status and force a configure, compile and install
 
 - - -
 
-TODO
-----
+Bugs, Issues, Comments, Contributions, TODO
+----------------------------
 
-TODO: "remove" method that could remove individual package's files. each package would need to implement a diff to enable removal of files later.
+http://github.com/patcoll/buildphp/issues
 
-TODO: Create build tasks for all packages below.
+License
+-------
 
-Packages
---------
+Copyright (c) 2009 Pat Collins <[burned.com](http://burned.com/)\>
 
-php
-	http://www.php.net/distributions/php-5.2.9.tar.gz
-	http://www.php.net/distributions/php-5.3.0.tar.gz
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to
+deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+sell copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-### PHP dependencies for this build:
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-<!-- # bcmath built in -->
-bz2
-	http://www.bzip.org/1.0.5/bzip2-1.0.5.tar.gz
-db4
-	http://download.oracle.com/berkeley-db/db-4.7.25.tar.gz
-curl
-	http://curl.haxx.se/download/curl-7.19.4.tar.gz
-freetype
-	http://nongnu.askapache.com/freetype/freetype-2.3.9.tar.gz
-gd
-	http://www.libgd.org/releases/gd-2.0.35.tar.gz
-jpeg
-	ftp://ftp.uu.net/graphics/jpeg/jpegsrc.v6b.tar.gz
-png
-	ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.2.35.tar.gz
-gettext
-	http://ftp.gnu.org/pub/gnu/gettext/gettext-0.17.tar.gz
-imap
-	ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
-<!-- # kerberos built in -->
-ncurses
-	ftp://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
-gmp
-	ftp://ftp.gnu.org/gnu/gmp/gmp-4.3.0.tar.gz
-iconv
-	http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.12.tar.gz
-ldap
-	ftp://ftp.openldap.org/pub/OpenLDAP/openldap-stable/openldap-stable-20090411.tgz
-mysql
-pdo_mysql
-	http://mysql.mirrors.pair.com/Downloads/MySQL-5.1/mysql-5.1.33.tar.gz
-	42493187729677cf8f77faeeebd5b3c2
-openssl
-	http://www.openssl.org/source/openssl-0.9.8k.tar.gz
-	http://www.openssl.org/source/openssl-0.9.8k.tar.gz.md5
-pgsql
-	ftp://ftp5.us.postgresql.org/pub/PostgreSQL/source/v8.3.7/postgresql-8.3.7.tar.gz
-pspell
-	ftp://ftp.gnu.org/gnu/aspell/aspell-0.60.6.tar.gz
-<!-- # xmlrpc built in -->
-pcre
-	ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-7.9.tar.gz
-unixODBC
-	http://www.unixodbc.org/unixODBC-2.2.14.tar.gz
-xml
-	ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/libxml2-2.6.30.tar.gz
-<!-- # expat libraries not needed. built in. -->
-<!-- # dom libraries not needed. built in. -->
-xsl
-	ftp://ftp.gnome.org/pub/GNOME/sources/libxslt/1.1/libxslt-1.1.22.tar.gz
-zlib
-	http://www.zlib.net/zlib-1.2.3.tar.gz
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

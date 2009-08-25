@@ -19,7 +19,6 @@ module Buildphp
     
     def add(package)
       raise "Not a package." if not package.is_a?(Buildphp::Package)
-      # TODO: the only way to include real support for building against libraries included with MAMP is to copy development headers for all packages into /Applications/MAMP/Library/include
       # package.prefix = "/Applications/MAMP/Library" if Buildphp::MAMP_MODE and @@mamp_packages.find { |p| p == package.to_s }
       @packages.push(package)
     end

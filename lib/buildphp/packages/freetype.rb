@@ -1,4 +1,3 @@
-# http://mirror.its.uidaho.edu/pub/savannah/freetype/freetype-2.3.9.tar.gz
 module Buildphp
   module Packages
     class Freetype < Buildphp::Package

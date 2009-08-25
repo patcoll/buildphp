@@ -1,4 +1,3 @@
-# http://web.mit.edu/kerberos/dist/krb5/1.7/krb5-1.7-signed.tar
 module Buildphp
   module Packages
     class Kerberos < Buildphp::Package

@@ -1,4 +1,3 @@
-# http://ftp.gnu.org/gnu/autoconf/autoconf-2.64.tar.gz
 module Buildphp
   module Packages
     class Autoconf < Buildphp::Package

@@ -1,4 +1,3 @@
-# http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz?use_mirror=voxel
 module Buildphp
   module Packages
     class Expat < Buildphp::Package
