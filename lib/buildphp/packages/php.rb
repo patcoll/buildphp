@@ -67,7 +67,7 @@ module Buildphp
         # supported options:
         #   :fastcgi
         #   :apache2
-        @sapi = :apache2
+        @sapi = :fastcgi
       end
       
       def pecl_modules
