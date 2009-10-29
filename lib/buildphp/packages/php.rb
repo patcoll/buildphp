@@ -17,6 +17,7 @@ module Buildphp
         # install prefix
         @prefix = "#{@prefix}/php5"
         # enable PHP-FPM? -- http://php-fpm.org/
+        # TODO: update build script for newest PHP-FPM version, which is a separate compile now, not a patch.
         @fpm = false
         ### php modules to enable.
         ### all optional.
@@ -65,9 +66,9 @@ module Buildphp
 
         # which interface to build?
         # supported options:
-        #   :fastcgi
         #   :apache2
-        @sapi = :fastcgi
+        #   :fastcgi
+        @sapi = :apache2
       end
       
       def pecl_modules
