@@ -138,7 +138,7 @@ module Buildphp
 
     def is_md5_verified
       return false if not File.exist?(package_path)
-      package_md5 == Digest::MD5.file(package_path).hexdigest
+      package_md5 == Digest::MD5.hexdigest(File.read(package_path))
     end
 
     def get(force=false)
