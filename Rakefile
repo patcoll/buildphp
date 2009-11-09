@@ -1,8 +1,8 @@
 $base_dir = File.dirname(__FILE__)
 $:.unshift File.join($base_dir, 'lib')
 
-$INSTALL_TO = '/buildphp52'
-$MAMP_MODE = true
+# $INSTALL_TO = '/buildphp52'
+# $MAMP_MODE = true
 
 require 'buildphp'
 require 'rake/clean'
