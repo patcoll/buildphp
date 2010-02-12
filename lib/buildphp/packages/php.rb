@@ -7,13 +7,14 @@ module Buildphp
 
       def initialize
         super
-        @version = '5.3.0'
+        @version = '5.3.1'
         @versions = {
           '5.2.6' => { :md5 => '1720f95f26c506338f0dba3a51906bbd' },
           '5.2.8' => { :md5 => 'e748cace3cfecb66fb6de9a945f98e2a' },
           '5.2.9' => { :md5 => '98b647561dc664adefe296106056cf11' },
           '5.2.10' => { :md5 => '85753ba2909ac9fae5bca516adbda9e9' },
           '5.3.0' => { :md5 => 'f4905eca4497da3f0beb5c96863196b4' },
+          '5.3.1' => { :md5 => '41fbb368d86acb13fc3519657d277681' },
         }
         # install prefix
         @prefix = "#{@prefix}/php5"
@@ -70,6 +71,9 @@ module Buildphp
         #   :apache2
         #   :fastcgi
         @sapi = :apache2
+
+        # build apache as a dependency?
+        @build_apache = true
       end
       
       def pecl_modules
@@ -77,10 +81,21 @@ module Buildphp
       end
 
       def sapi_flags
-        return ["--with-apxs2=/Applications/MAMP/Library/bin/apxs"] if @sapi == :apache2 and Buildphp::MAMP_MODE
-        return ["--enable-fastcgi", "--enable-discard-path", "--enable-force-cgi-redirect"] if @sapi == :fastcgi
-        return ["--with-apxs2"] if @sapi == :apache2
-        []
+        flags = []
+        if @sapi == :apache2
+          if Buildphp::MAMP_MODE
+            flags << "--with-apxs2=/Applications/MAMP/Library/bin/apxs"
+          elsif @build_apache
+            flags << "--with-apxs2=#{FACTORY['Apache'].prefix}/bin/apxs"
+          else
+            flags << "--with-apxs2"
+          end
+        elsif @sapi == :fastcgi
+          flags << "--enable-fastcgi"
+          flags << "--enable-discard-path"
+          flags << "--enable-force-cgi-redirect"
+        end
+        return flags
       end
 
       def config_file_path
@@ -118,6 +133,7 @@ module Buildphp
       def package_depends_on
         dependencies = [:m4, :autoconf, :automake, :libtool] + php_modules + ["#{self}:get"]
         dependencies << 'php_fpm' if fpm
+        dependencies << 'apache' if @build_apache
         dependencies
       end
 
