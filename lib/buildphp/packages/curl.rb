@@ -12,7 +12,7 @@ module Buildphp
 
       def package_depends_on
         [
-          'openssl',
+          # 'openssl',
           'zlib',
         ]
       end
@@ -41,7 +41,7 @@ module Buildphp
         parts << './configure'
         parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "--prefix=#{@prefix}"
-        parts << "--with-ssl=#{FACTORY['openssl'].prefix}"
+        # parts << "--with-ssl=#{FACTORY['openssl'].prefix}"
         parts << "--with-zlib=#{FACTORY['zlib'].prefix}"
         parts.join(' ')
       end
