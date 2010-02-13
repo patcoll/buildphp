@@ -26,7 +26,7 @@ module Buildphp
       end
 
       def package_location
-        'ftp://ftp.simplesystems.org/pub/libpng/png/src/%s' % package_name
+        'http://superb-sea2.dl.sourceforge.net/project/libpng/libpng-stable/%s/%s' % [@version, package_name]
       end
 
       def get_build_string
