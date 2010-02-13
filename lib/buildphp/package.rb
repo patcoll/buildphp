@@ -113,7 +113,7 @@ module Buildphp
     end
 
     def compile_cmd
-      'make'
+      'make -j'
     end
 
     def install_cmd
