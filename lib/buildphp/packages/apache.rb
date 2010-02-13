@@ -10,6 +10,12 @@ module Buildphp
         @prefix = "#{@prefix}/apache2"
       end
 
+      def package_depends_on
+        [
+          'zlib',
+        ]
+      end
+
       def package_name
         'httpd-%s.tar.gz' % @version
       end
@@ -30,6 +36,7 @@ module Buildphp
         parts += [
           "--prefix=#{@prefix}",
           "--enable-mods-shared=all",
+          "--with-z=#{FACTORY['Zlib'].prefix}",
           "--with-included-apr",
         ]
         parts.join(' ')
