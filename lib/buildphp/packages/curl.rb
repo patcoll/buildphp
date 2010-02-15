@@ -11,6 +11,7 @@ module Buildphp
 
       def package_depends_on
         [
+          'pkg_config',
           'openssl',
           'zlib',
         ]
