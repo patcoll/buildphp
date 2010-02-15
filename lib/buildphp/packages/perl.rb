@@ -25,7 +25,7 @@ module Buildphp
         parts = []
         parts << flags
         parts << 'sh Configure -de'
-        parts << "-fPIC" if RUBY_PLATFORM.index("x86_64") != nil
+        parts << "-Duse64bitall" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "-Dprefix='#{@prefix}'"
         parts.join(' ')
       end
