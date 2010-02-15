@@ -13,6 +13,8 @@ module Buildphp
       def package_depends_on
         [
           # 'kerberos',
+          'perl',
+          'zlib',
         ]
       end
 
@@ -34,6 +36,8 @@ module Buildphp
         parts << './config'
         parts << "-fPIC" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "--prefix=#{@prefix}"
+        parts << "zlib-dynamic"
+        parts << "no-krb5"
         parts.join(' ')
       end
 

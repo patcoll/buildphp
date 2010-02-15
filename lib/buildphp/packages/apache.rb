@@ -12,6 +12,7 @@ module Buildphp
 
       def package_depends_on
         [
+          'openssl',
           'zlib',
         ]
       end
@@ -35,9 +36,11 @@ module Buildphp
         parts << "--enable-pie" if RUBY_PLATFORM.index("x86_64") != nil
         parts += [
           "--prefix=#{@prefix}",
-          "--enable-mods-shared=all",
-          "--with-z=#{FACTORY['Zlib'].prefix}",
           "--with-included-apr",
+          "--enable-mods-shared=all",
+          "--enable-ssl",
+          "--with-ssl=#{FACTORY['Openssl'].prefix}",
+          "--with-z=#{FACTORY['Zlib'].prefix}",
         ]
         parts.join(' ')
       end

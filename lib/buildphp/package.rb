@@ -84,6 +84,9 @@ module Buildphp
         f << "-fPIC"
       end
 
+      f << "-I#{Buildphp::INSTALL_TO}/include"
+      f << "-L#{Buildphp::INSTALL_TO}/lib"
+
       # -fno-common enables PIC on Darwin
       # f << "-fno-common"
 
@@ -113,7 +116,7 @@ module Buildphp
     end
 
     def compile_cmd
-      'make -j'
+      'make -s -j2'
     end
 
     def install_cmd
