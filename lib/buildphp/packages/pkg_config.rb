@@ -5,7 +5,7 @@ module Buildphp
         super
         @version = '0.23'
         @versions = {
-          '0.23' => { :md5 => '6625de9d42d1b8d3af372d3241a576fd' },
+          '0.23' => { :md5 => 'd922a88782b64441d06547632fd85744' },
         }
       end
 
