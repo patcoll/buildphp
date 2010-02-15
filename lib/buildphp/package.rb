@@ -98,7 +98,7 @@ module Buildphp
       out << "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}'" if f
       out << "PATH='#{prefix}/bin':$PATH"
 
-      out << "PKG_CONFIG_PATH='#{Buildphp::INSTALL_TO}/pkgconfig'"
+      out << "PKG_CONFIG_PATH='#{Buildphp::INSTALL_TO}/lib/pkgconfig'"
 
       out.join(' ')
     end
