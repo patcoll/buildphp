@@ -120,7 +120,7 @@ module Buildphp
     end
 
     def compile_cmd
-      'make -s -j4'
+      'make -j2'
     end
 
     def install_cmd
