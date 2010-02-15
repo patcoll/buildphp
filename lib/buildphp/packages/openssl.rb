@@ -39,6 +39,7 @@ module Buildphp
         parts << "--prefix=#{@prefix}"
         parts << "zlib-dynamic"
         parts << "no-krb5"
+        parts << "no-asm"
         parts.join(' ')
       end
 
