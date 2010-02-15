@@ -77,24 +77,28 @@ module Buildphp
       f = []
 
       # Mac Universal Binary flags? TODO: test Mac Universal Binary flags
-      # flags = "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
+      # if RUBY_PLATFORM =~ /darwin/i
+      #   f << "-O3 -arch i386 -arch x86_64 -arch ppc7400 -arch ppc64"
+      # end
 
       # enable PIC
       if RUBY_PLATFORM.index("x86_64") != nil
         f << "-fPIC"
+      elsif RUBY_PLATFORM =~ /darwin/i
+        # -fno-common enables PIC on Mac OS
+        f << "-fno-common"
       end
 
-      f << "-I#{Buildphp::INSTALL_TO}/include"
-      f << "-L#{Buildphp::INSTALL_TO}/lib"
-
-      # -fno-common enables PIC on Darwin
-      # f << "-fno-common"
+      f << "-I#{prefix}/include"
+      f << "-L#{prefix}/lib"
 
       f = f.join(' ')
 
       out = []
-      out << %{ CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}' } if f
-      out << %{ PATH="#{Buildphp::INSTALL_TO}/bin":$PATH }
+      out << "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}'" if f
+      out << "PATH='#{prefix}/bin':$PATH"
+
+      out << "PKG_CONFIG_PATH='#{Buildphp::INSTALL_TO}/pkgconfig'"
 
       out.join(' ')
     end
