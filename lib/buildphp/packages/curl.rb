@@ -7,12 +7,11 @@ module Buildphp
         @versions = {
           '7.19.6' => { :md5 => '6625de9d42d1b8d3af372d3241a576fd' },
         }
-        # @prefix = "/Applications/MAMP/Library"
       end
 
       def package_depends_on
         [
-          # 'openssl',
+          'openssl',
           'zlib',
         ]
       end
@@ -41,7 +40,7 @@ module Buildphp
         parts << './configure'
         parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "--prefix=#{@prefix}"
-        parts << "--with-ssl"
+        parts << "--with-ssl=#{FACTORY['Openssl'].prefix}"
         parts << "--with-zlib=#{FACTORY['zlib'].prefix}"
         parts.join(' ')
       end

@@ -17,7 +17,6 @@ module Buildphp
           'jpeg',
           'png',
           'zlib',
-          # 'xpm',
         ]
       end
 
@@ -43,7 +42,8 @@ module Buildphp
         parts << "--with-freetype=#{FACTORY['freetype'].prefix}"
         parts << "--with-jpeg=#{FACTORY['jpeg'].prefix}"
         parts << "--with-png=#{FACTORY['png'].prefix}"
-        # parts << "--with-xpm=#{FACTORY['xpm'].prefix}"
+        parts << "--without-fontconfig"
+        parts << "--without-xpm"
         parts.join(' ')
       end
 
@@ -54,7 +54,6 @@ module Buildphp
           "--with-jpeg-dir=#{FACTORY['jpeg'].prefix}",
           "--with-png-dir=#{FACTORY['png'].prefix}",
           "--with-zlib-dir=#{FACTORY['zlib'].prefix}",
-          # "--with-xpm-dir=#{FACTORY['xpm'].prefix}",
         ]
       end
 

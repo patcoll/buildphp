@@ -116,7 +116,7 @@ module Buildphp
     end
 
     def compile_cmd
-      'make -s -j2'
+      'make -s -j4'
     end
 
     def install_cmd

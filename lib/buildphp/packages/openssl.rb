@@ -7,7 +7,6 @@ module Buildphp
         @versions = {
           '0.9.8k' => { :md5 => 'e555c6d58d276aec7fdc53363e338ab3' },
         }
-        # @prefix = "/Applications/MAMP/Library"
       end
 
       def package_depends_on
@@ -47,6 +46,10 @@ module Buildphp
           "--with-openssl-dir=#{@prefix}",
           # "--with-kerberos=#{FACTORY['kerberos'].prefix}",
         ]
+      end
+
+      def compile_cmd
+        'make'
       end
 
       def is_installed

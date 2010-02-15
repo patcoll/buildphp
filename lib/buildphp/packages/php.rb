@@ -39,7 +39,6 @@ module Buildphp
           'mbstring', # mbstring provides multibyte specific string functions that help you deal with multibyte encodings in PHP.
           'mysqlnd', # builtin mysql native php driver
           'pear', # requires xml explicitly (uncomment the xml line below)
-          'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
           'sqlite', # This is an extension for the SQLite Embeddable SQL Database Engine.
           # 
           # ### these packages require external libs.
@@ -54,7 +53,8 @@ module Buildphp
           # 'mysql', # not needed if 'mysqlnd' is included from above. requires zlib, ncurses.
           'mssql', # These functions allow you to access MS SQL Server database.
           'odbc',
-          # 'openssl',
+          'openssl',
+          'pcre', # Perl-compatible regular expressions. The syntax for patterns used in these functions closely resembles Perl.
           'soap', # requires xml. The SOAP extension can be used to write SOAP Servers and Clients. It supports subsets of SOAP 1.1, SOAP 1.2 and WSDL 1.1 specifications.
           'xml', # requires iconv, zlib
           'xsl', # requires xml
