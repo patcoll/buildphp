@@ -13,7 +13,6 @@ module Buildphp
       def package_depends_on
         [
           'openssl',
-          'pcre',
           'zlib',
         ]
       end
@@ -41,7 +40,6 @@ module Buildphp
           "--enable-mods-shared=all",
           "--enable-ssl",
           "--with-ssl=#{FACTORY['Openssl'].prefix}",
-          "--with-pcre=#{FACTORY['Pcre'].prefix}",
           "--with-z=#{FACTORY['Zlib'].prefix}",
         ]
         parts.join(' ')

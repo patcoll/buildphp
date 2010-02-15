@@ -40,7 +40,7 @@ module Buildphp
         parts << './configure'
         parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "--prefix=#{@prefix}"
-        parts << "--with-ssl=#{FACTORY['Openssl'].prefix}"
+        parts << "--with-ssl"
         parts << "--with-zlib=#{FACTORY['zlib'].prefix}"
         parts.join(' ')
       end

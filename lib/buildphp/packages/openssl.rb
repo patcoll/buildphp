@@ -31,8 +31,10 @@ module Buildphp
 
       def get_build_string
         parts = []
-        parts << flags
+        # parts << flags
         parts << './config'
+        parts << "-I#{Buildphp::INSTALL_TO}/include"
+        parts << "-L#{Buildphp::INSTALL_TO}/lib"
         parts << "-fPIC" if RUBY_PLATFORM.index("x86_64") != nil
         parts << "--prefix=#{@prefix}"
         parts << "zlib-dynamic"
