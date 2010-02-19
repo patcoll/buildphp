@@ -1,23 +1,21 @@
 :jpeg.version '7', :md5 => '382ef33b339c299b56baf1296cda9785'
 
-package :jpeg do |jpeg|
-  jpeg.version = '7'
-  jpeg.file = "jpegsrc.v#{jpeg.version}.tar.gz"
-  jpeg.location = "http://www.ijg.org/files/#{jpeg.file}"
+package :jpeg do
+  @version = '7'
+  @file = "jpegsrc.v#{@version}.tar.gz"
+  @location = "http://www.ijg.org/files/#{@file}"
   
-  jpeg.create_method :package_dir do
-    "jpeg-#{jpeg.version}"
+  def package_dir
+    "jpeg-#{@version}"
   end
   
-  jpeg.configure do |c|
+  configure do |c|
     c << "./configure"
-    c << "--with-pic" if system_is_64_bit?
-    c << "--prefix=#{jpeg.prefix}"
+    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--prefix=#{@prefix}"
   end
 
-  jpeg.create_method :is_installed do
-    not FileList["#{jpeg.prefix}/lib/libjpeg.*"].empty?
+  def is_installed
+    not FileList["#{@prefix}/lib/libjpeg.*"].empty?
   end
-
-  jpeg.rake
 end

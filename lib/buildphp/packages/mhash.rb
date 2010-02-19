@@ -1,23 +1,21 @@
 :mhash.version '0.9.9.9', :md5 => 'ee66b7d5947deb760aeff3f028e27d25'
 
-package :mhash do |mhash|
-  mhash.version = '0.9.9.9'
-  mhash.file = "mhash-#{mhash.version}.tar.gz"
-  mhash.location = "http://downloads.sourceforge.net/project/mhash/mhash/#{mhash.version}/#{mhash.file}"
+package :mhash do
+  @version = '0.9.9.9'
+  @file = "mhash-#{@version}.tar.gz"
+  @location = "http://downloads.sourceforge.net/project/mhash/mhash/#{@version}/#{@file}"
   
-  mhash.configure do |c|
+  configure do |c|
     c << "./configure"
-    c << "--with-pic" if system_is_64_bit?
-    c << "--prefix=#{mhash.prefix}"
+    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--prefix=#{@prefix}"
   end
   
-  mhash.configure :php do |c|
-    c << "--with-mhash=shared,#{mhash.prefix}"
+  configure :php do |c|
+    c << "--with-mhash=shared,#{@prefix}"
   end
 
-  mhash.create_method :is_installed do
-    not FileList["#{mhash.prefix}/lib/libmhash.*"].empty?
+  def is_installed
+    not FileList["#{@prefix}/lib/libmhash.*"].empty?
   end
-  
-  mhash.rake
 end

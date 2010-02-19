@@ -1,14 +1,14 @@
 :gettext.version '0.17', :md5 => '58a2bc6d39c0ba57823034d55d65d606'
 
-package :gettext => %w(expat iconv ncurses xml) do |gettext|
-  gettext.version = '0.17'
-  gettext.file = "gettext-#{gettext.version}.tar.gz"
-  gettext.location = "http://ftp.gnu.org/pub/gnu/gettext/#{gettext.file}"
+package :gettext => %w(expat iconv ncurses xml) do
+  @version = '0.17'
+  @file = "gettext-#{@version}.tar.gz"
+  @location = "http://ftp.gnu.org/pub/gnu/gettext/#{@file}"
   
-  gettext.configure do |c|
+  configure do |c|
     c << "./configure"
-    c << "--with-pic" if system_is_64_bit?
-    c << "--prefix=#{gettext.prefix}"
+    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--prefix=#{@prefix}"
     c << "--disable-java"
     c << "--disable-native-java"
     c << "--disable-threads"
@@ -18,13 +18,11 @@ package :gettext => %w(expat iconv ncurses xml) do |gettext|
     c << "--with-libxml2-prefix=#{FACTORY.xml.prefix}"
   end
   
-  gettext.configure :php do |c|
-    c << "--with-gettext=shared,#{gettext.prefix}"
+  configure :php do |c|
+    c << "--with-gettext=shared,#{@prefix}"
   end
   
-  gettext.create_method :is_installed do
-    not FileList["#{gettext.prefix}/lib/libgettextlib.*"].empty?
+  def is_installed
+    not FileList["#{@prefix}/lib/libgettextlib.*"].empty?
   end
-  
-  gettext.rake
 end

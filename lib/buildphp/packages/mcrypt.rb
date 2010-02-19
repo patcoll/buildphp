@@ -1,23 +1,21 @@
 :mcrypt.version '2.5.8', :md5 => '0821830d930a86a5c69110837c55b7da'
 
-package :mcrypt do |mcrypt|
-  mcrypt.version = '2.5.8'
-  mcrypt.file = "libmcrypt-#{mcrypt.version}.tar.gz"
-  mcrypt.location = "http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/#{mcrypt.version}/#{mcrypt.file}"
+package :mcrypt do
+  @version = '2.5.8'
+  @file = "libmcrypt-#{@version}.tar.gz"
+  @location = "http://downloads.sourceforge.net/project/mcrypt/Libmcrypt/#{@version}/#{@file}"
   
-  mcrypt.configure do |c|
+  configure do |c|
     c << "./configure"
-    c << "--with-pic" if system_is_64_bit?
-    c << "--prefix=#{mcrypt.prefix}"
+    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--prefix=#{@prefix}"
   end
   
-  mcrypt.configure :php do |c|
-    c << "--with-mcrypt=shared,#{mcrypt.prefix}"
+  configure :php do |c|
+    c << "--with-mcrypt=shared,#{@prefix}"
   end
 
-  mcrypt.create_method :is_installed do
-    not FileList["#{mcrypt.prefix}/lib/libmcrypt.*"].empty?
+  def is_installed
+    not FileList["#{@prefix}/lib/libmcrypt.*"].empty?
   end
-  
-  mcrypt.rake
 end

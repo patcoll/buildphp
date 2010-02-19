@@ -8,7 +8,7 @@ require 'buildphp/version'
 FileUtils.mkdir_p [Buildphp::INSTALL_TO, Buildphp::EXTRACT_TO, Buildphp::TMP_DIR]
 FACTORY = Buildphp::PackageFactory.new
 
-def package(name)
+def package(name, &block)
   if name.is_a?(String)
     name = name
   elsif name.is_a?(Hash)
@@ -24,58 +24,23 @@ def package(name)
   depends_on.map! { |dp| dp.to_s } unless depends_on.nil?
 
   pkg = FACTORY[name]
-  inject_new = false
-  if pkg.nil?
-    pkg = Buildphp::Package.new
-    pkg.name = name
-    inject_new = true
-  end
   pkg.depends_on += depends_on if depends_on.is_a?(Array)
 
-  yield pkg if block_given?
-  abort 'must provide a package name' if pkg.name.nil?
-  # abort "must provide a version for package #{pkg.name}" if pkg.version.nil?
-  # puts "#{pkg.name} => [#{pkg.depends_on.join(', ')}]"
-  # puts "  version: #{pkg.version}"
+  pkg.instance_eval(&block) if block_given?
+  pkg.rake unless pkg.rake_tasks_declared?
 
-  if inject_new
-    FACTORY[pkg.name] = pkg
+  ["#{pkg}:configure", "#{pkg}:force:configure"].map { |t| Rake.application.lookup(t) }.each do |task|
+    # "configure" depends on "get" for all packages.
+    task.enhance pkg.depends_on
   end
-  # p pkg.name
-  # unless pkg.rake_tasks_declared?
-  #   pkg.rake
-  # end
-  # p pkg.rake_tasks_declared?
 end
-
-# def method_missing(symbol, *args)
-#   Dir[File.expand_path(File.join(File.dirname(__FILE__), "buildphp/packages/#{symbol}.rb"))].each do |t|
-#     p t
-#     require t
-#   end
-#   FACTORY[symbol.to_s]
-# end
-
-# package :newpkg do |pkg|
-#   pkg.version = '1.0'
-# end
-
-# package 'asd' do |pkg|
-#   pkg.version = '1.2'
-# end
-
-# package 'asd' => 'a'
-# package 'asd' => 's'
-# package 'asd' => 'as'
-# p FACTORY['asd']
-
-# p FACTORY.to_a
-# p FACTORY.to_hash
-# p FACTORY['php']
-# p FACTORY['hi']
 
 def system_is_64_bit?
   system("sysctl hw.cpu64bit_capable > /dev/null 2>&1")
+end
+
+def is_linux?
+  RUBY_PLATFORM =~ /linux/i
 end
 
 module VersionShortcut
@@ -95,10 +60,5 @@ class Symbol
 end
 
 Dir[File.expand_path(File.join(File.dirname(__FILE__), 'buildphp/packages/*.rb'))].each do |t|
-  pkg = File.basename(t).chomp(File.extname(t))
-  package pkg
   require t
-  # FACTORY[pkg].rake
 end
-
-# abort

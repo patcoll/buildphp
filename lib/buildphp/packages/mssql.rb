@@ -1,14 +1,14 @@
 :mssql.version '0.82', :md5 => '3df6b2e83fd420e90f1becbd1162990a'
 
-package :mssql => :odbc do |mssql|
-  mssql.version = '0.82'
-  mssql.file = "freetds-#{mssql.version}.tar.gz"
-  mssql.location = "http://ibiblio.org/pub/Linux/ALPHA/freetds/stable/#{mssql.file}"
+package :mssql => :odbc do
+  @version = '0.82'
+  @file = "freetds-#{@version}.tar.gz"
+  @location = "http://ibiblio.org/pub/Linux/ALPHA/freetds/stable/#{@file}"
   
-  mssql.configure do |c|
+  configure do |c|
     c << "./configure"
-    c << "--with-pic" if system_is_64_bit?
-    c << "--prefix=#{mssql.prefix}"
+    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--prefix=#{@prefix}"
     c << "--with-tdsver=8.0"
     c << "--enable-odbc"
     c << "--with-unixodbc=#{FACTORY.odbc.prefix}"
@@ -16,14 +16,12 @@ package :mssql => :odbc do |mssql|
     c << "--enable-msdblib"
   end
   
-  mssql.configure :php do |c|
-    c << "--with-mssql=shared,#{mssql.prefix}"
-    c << "--with-pdo-dblib=shared,#{mssql.prefix}"
+  configure :php do |c|
+    c << "--with-mssql=shared,#{@prefix}"
+    c << "--with-pdo-dblib=shared,#{@prefix}"
   end
 
-  mssql.create_method :is_installed do
-    not FileList["#{mssql.prefix}/lib/libtdsodbc.*"].empty?
+  def is_installed
+    not FileList["#{@prefix}/lib/libtdsodbc.*"].empty?
   end
-  
-  mssql.rake
 end

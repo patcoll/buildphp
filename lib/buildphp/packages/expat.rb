@@ -1,19 +1,17 @@
 :expat.version '2.0.1', :md5 => 'ee8b492592568805593f81f8cdf2a04c'
 
-package :expat do |expat|
-  expat.version = '2.0.1'
-  expat.file = "expat-#{expat.version}.tar.gz"
-  expat.location = "http://downloads.sourceforge.net/project/expat/expat/#{expat.version}/#{expat.file}?use_mirror=voxel"
+package :expat do
+  @version = '2.0.1'
+  @file = "expat-#{@version}.tar.gz"
+  @location = "http://downloads.sourceforge.net/project/expat/expat/#{@version}/#{@file}?use_mirror=voxel"
   
-  expat.configure do |c|
+  configure do |c|
     c << "./configure"
-    c << "--with-pic" if system_is_64_bit?
-    c << "--prefix=#{expat.prefix}"
+    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--prefix=#{@prefix}"
   end
-  
-  expat.create_method :is_installed do
-    not FileList["#{expat.prefix}/lib/libexpat.*"].empty?
+
+  def is_installed
+    not FileList["#{@prefix}/lib/libexpat.*"].empty?
   end
-  
-  expat.rake
 end
