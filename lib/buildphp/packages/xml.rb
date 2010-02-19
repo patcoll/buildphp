@@ -1,62 +1,33 @@
-module Buildphp
-  module Packages
-    class Xml < Buildphp::Package
-      def initialize
-        super
-        @version = '2.6.30'
-        @versions = {
-          '2.6.30' => { :md5 => '460e6d853e824da700d698532e57316b' },
-        }
-        # @prefix = "/Applications/MAMP/Library"
-      end
+:xml.version '2.6.30', :md5 => '460e6d853e824da700d698532e57316b'
 
-      def package_depends_on
-        [
-          'iconv',
-          'zlib',
-        ]
-      end
-
-      def package_name
-        'libxml2-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'libxml2-%s' % @version
-      end
-
-      def package_location
-        'ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/%s' % package_name
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << './configure'
-        parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "--prefix=#{@prefix}"
-        parts << "--with-iconv=#{@prefix}"
-        parts << "--with-zlib=#{@prefix}"
-        parts << "--without-python"
-        parts.join(' ')
-      end
-
-      def php_config_flags
-        [
-          "--enable-xml=shared",
-          "--with-libxml-dir=#{@prefix}",
-          "--enable-libxml",
-          "--with-xmlrpc=shared",
-          "--enable-dom",
-          "--enable-simplexml",
-          "--enable-xmlreader",
-          "--enable-xmlwriter",
-        ]
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libxml2.*"].empty?
-      end
-    end
+package :xml => [:iconv, :zlib] do |xml|
+  xml.version = '2.6.30'
+  xml.file = "libxml2-#{xml.version}.tar.gz"
+  xml.location = "ftp://ftp.gnome.org/pub/GNOME/sources/libxml2/2.6/#{xml.file}"
+  
+  xml.configure do |c|
+    c << './configure'
+    c << "--with-pic" if system_is_64_bit?
+    c << "--prefix=#{xml.prefix}"
+    c << "--with-iconv=#{FACTORY.iconv.prefix}"
+    c << "--with-zlib=#{FACTORY.zlib.prefix}"
+    c << "--without-python"
   end
+  
+  xml.configure :php do |c|
+    c << "--enable-xml=shared"
+    c << "--with-libxml-dir=#{xml.prefix}"
+    c << "--enable-libxml"
+    c << "--with-xmlrpc=shared"
+    c << "--enable-dom"
+    c << "--enable-simplexml"
+    c << "--enable-xmlreader"
+    c << "--enable-xmlwriter"
+  end
+  
+  xml.create_method :is_installed do
+    not FileList["#{xml.prefix}/lib/libxml2.*"].empty?
+  end
+  
+  xml.rake
 end

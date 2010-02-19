@@ -2,24 +2,65 @@ require 'digest/md5'
 
 module Buildphp
   class Package
-    attr_accessor :version
-    attr_accessor :versions
-    attr_accessor :prefix
-    attr_accessor :is_pecl
+    attr_accessor :name, :versions, :version, :depends_on, :file, :location, :prefix
+    attr_accessor :compile_cmd, :install_cmd, :clean_cmd
 
     def initialize
-      @versions = {}
+      @name = ''
+      @versions = Hash.new
       @version = self.class::PACKAGE_VERSION if self.class.const_defined?('PACKAGE_VERSION')
+      @depends_on = Array.new
+      @file = ''
+      @location = ''
       @prefix = Buildphp::INSTALL_TO
-      @is_pecl = false
+      @configure = Array.new
+      
+      @compile_cmd = 'make -j2'
+      @install_cmd = 'make install'
+      @clean_cmd = 'make clean'
+      @rake_tasks_declared = false
+      yield self if block_given?
     end
     
-    def __class__
-      self.class.to_s.split('::')[-1]
-    end
+    def add_attr(*attrs)
+      attrs.each do |attr|
+        instance_eval %Q{
+          def #{attr}
+            @#{attr}
+          end
 
+          def #{attr}=(val)
+            @#{attr} = val
+          end
+        }
+      end
+    end
+    
+    def create_method(name, &block)
+      self.class.send(:define_method, name, &block)
+    end
+    # allows appending of configure flags for the current package (default)
+    # 
+    # gd.configure do |c|
+    #   c << '--with-whatever=prefix'
+    # end
+    # 
+    # or alternatively append configure flags for other packages:
+    # 
+    # gd.configure :php do |c|
+    #   c << '--with-gd=prefix'
+    # end
+    def configure(*args)
+      conf_target = self
+      if args[0].is_a?(String) or args[0].is_a?(Symbol)
+        conf_target = FACTORY.send(args[0].to_sym)
+      end
+      yield conf_target.instance_variable_get("@configure") if block_given?
+      conf_target.instance_variable_get("@configure").join(' ')
+    end
+    
     def to_s
-      Inflect.underscore(__class__)
+      name
     end
 
     def to_sym
@@ -36,41 +77,46 @@ module Buildphp
     end
 
     def package_depends_on
-      []
+      depends_on
     end
 
     def package_name
-      nil
+      file
     end
-
+    
     def package_dir
-      nil
+      dots = case package_name
+        when /\.tar\.(gz|bz2)$/: 2
+        when /\.(tar|tgz|tbz2)$/: 1
+      end
+      s = package_name.split('.')
+      s.slice(0,s.length-dots).join('.')
     end
-
+    
     def package_location
-      nil
+      location
     end
-
+    
     def package_path
-      return nil if not package_name
-      File.join(Buildphp::EXTRACT_TO, package_name)
+      File.join(Buildphp::EXTRACT_TO, file)
     end
 
-    def package_md5
-      versions[@version][:md5]
-    end
-
-    def php_config_flags
-      []
+    def md5
+      versions[version][:md5]
     end
 
     def extract_dir
-      return nil if not package_dir
       File.join(Buildphp::EXTRACT_TO, package_dir)
     end
 
     def extract_cmd
-      "tar xfz %s" % package_name
+      tar_flags = case package_name
+        when /\.(tar\.gz|tgz)$/: 'xfz'
+        when /\.(tar\.bz2|tbz2)$/: 'xfj'
+        when /\.tar$/: 'xf'
+      end
+      return nil if tar_flags.nil?
+      "tar #{tar_flags} #{file}"
     end
 
     def flags
@@ -82,24 +128,24 @@ module Buildphp
       # end
 
       # enable PIC
-      if RUBY_PLATFORM.index("x86_64") != nil
+      if system_is_64_bit?
         f << "-fPIC"
       elsif RUBY_PLATFORM =~ /darwin/i
         # -fno-common enables PIC on Mac OS
         f << "-fno-common"
       end
 
-      f << "-I#{prefix}/include"
-      f << "-L#{prefix}/lib"
+      f << "-I#{Buildphp::INSTALL_TO}/include"
+      f << "-L#{Buildphp::INSTALL_TO}/lib"
 
       f = f.join(' ')
-
+    end
+    
+    def configure_prefix
       out = []
-      out << "CFLAGS='#{f}' LDFLAGS='#{f}' CXXFLAGS='#{f}'" if f
-      out << "PATH='#{prefix}/bin':$PATH"
-
+      out << "CFLAGS='#{flags}' LDFLAGS='#{flags}' CXXFLAGS='#{flags}'" if flags
+      out << "PATH='#{Buildphp::INSTALL_TO}/bin':$PATH"
       out << "PKG_CONFIG_PATH='#{Buildphp::INSTALL_TO}/lib/pkgconfig'"
-
       out.join(' ')
     end
 
@@ -112,24 +158,24 @@ module Buildphp
     end
 
     def get_build_string
-      "./configure --prefix=#{@prefix}"
+      [configure_prefix, configure].join(' ')
     end
 
     def configure_cmd
       get_build_string
     end
 
-    def compile_cmd
-      'make -j2'
-    end
-
-    def install_cmd
-      'make install'
-    end
-
-    def clean_cmd
-      'make clean'
-    end
+    # def compile_cmd
+    #   'make -j2'
+    # end
+    # 
+    # def install_cmd
+    #   'make install'
+    # end
+    # 
+    # def clean_cmd
+    #   'make clean'
+    # end
 
     def is_gotten
       File.exist?(package_path) && is_md5_verified
@@ -144,166 +190,59 @@ module Buildphp
     end
 
     def is_md5_verified
-      return false if not File.exist?(package_path)
-      package_md5 == Digest::MD5.hexdigest(File.read(package_path))
-    end
-
-    def get(force=false)
-      retrieve(force)
-      # if we get here we know the package has been downloaded
-      Dir.chdir(Buildphp::EXTRACT_TO) do
-        # remove folder if already extracted.
-        # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
-
-        # only extract archive if not already extracted.
-        sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
-      end
-      return true
-    end # /get
-
-    def retrieve(force=false)
-      if not is_gotten or (not File.exist?(extract_dir) and force)
-        notice "package not found. retrieving..." if not is_gotten
-        Dir.chdir(Buildphp::EXTRACT_TO) do
-          # get
-          unless is_md5_verified
-            sh "rm -f #{package_name} && wget #{package_location}" do |ok,res|
-              stop "download failed" if not ok
-              notice "download succeeded!"
-            end
-          end
-          # verify
-          stop 'md5 does not match' if not is_md5_verified
-        end
-      else
-        notice "already downloaded"
-      end
-    end
-
-    def configure(force=false)
-      clean if force
-      if is_installed and not force
-        notice "already installed so we won't configure. try #{self}:force:configure"
-      elsif not is_compiled
-        notice "package not compiled. configuring..." if not is_compiled
-        stop "extract folder does not exist" if not File.exists?(extract_dir)
-        Dir.chdir(extract_dir) do
-          sh configure_cmd do |ok,res|
-            stop "configure failed" if not ok
-            notice "configure succeeded!"
-          end
-        end
-      end
-      return true
-    end # /configure
-
-    def compile(force=false)
-      clean if force
-      if is_installed and not force
-        notice "already installed so we won't compile. try #{self}:force:compile"
-      elsif not is_compiled
-        notice "package not compiled. compiling..." if not is_compiled
-        Dir.chdir(extract_dir) do
-          sh compile_cmd do |ok,res|
-            if not ok then
-              # do a  make clean if the compile fails. we don't want a half-compiled package.
-              clean
-              stop "compile failed"
-            end
-            notice "compile succeeded!"
-          end
-        end
-      else
-        notice "already compiled"
-      end
-      return true
-    end # /compile
-
-    def install(force=false)
-      if is_installed and not force
-        notice "already installed. to force install, try #{self}:force:install"
-      elsif not is_installed or force
-        notice "package not installed. installing..." if not is_installed
-        Dir.chdir(extract_dir) do
-          sh install_cmd do |ok,res|
-            stop "install failed" if not ok
-            notice "install succeeded!"
-          end
-        end
-      else
-        notice "already installed"
-      end
-      return true
-    end # /install
-
-    def clean
-      notice "cleaning..."
-      Dir.chdir(extract_dir) do
-        if not File.file?(File.join(extract_dir, "Makefile")) then
-          notice "No Makefile; cannot clean..."
-          return true
-        end
-        sh clean_cmd do |ok,res|
-          stop "clean failed" if not ok
-          notice "clean succeeded!"
-        end
-      end
-      return true
-    end # /clean
-
-    def clobber
-      notice "clobbering #{self}..."
-      sh "rm -r #{extract_dir}" if extract_dir and File.exist?(extract_dir)
+      return false unless File.exist?(package_path)
+      md5 == Digest::MD5.hexdigest(File.read(package_path))
     end
 
     def rake
-      namespace to_sym do
+      namespace self.to_sym do
         task :get do
-          get
+          _get
         end
 
         task :configure => ((package_dependencies || []) + [:get]) do
-          configure
+          _configure
         end
 
         task :compile => :configure do
-          compile
+          _compile
         end
 
         task :install => :compile do
-          install
+          _install
         end
 
         task :clean do
-          clean
+          _clean
         end
 
         task :clobber do
-          clobber
+          _clobber
         end
 
         task :retrieve do
-          retrieve
+          _retrieve
         end
 
         namespace :force do
           task :get do
-            get(true)
+            _get(true)
           end
           task :configure => ((package_dependencies(true) || []) + ["#{self}:force:get"]) do
-            configure(true)
+            _configure(true)
           end
           task :compile => "#{self}:force:configure" do
-            compile(true)
+            _compile(true)
           end
           task :install => "#{self}:force:compile" do
-            install(true)
+            _install(true)
           end
         end
 
       end
 
-      task to_sym => "#{self}:install"
+      task self.to_sym => "#{self}:install"
+      yield self if block_given?
     end
 
     def build_as_addon(options={})
@@ -327,20 +266,135 @@ module Buildphp
           sh %[grep #{new_line} #{options[:ini_file]}] do |ok,res|
             already_activated = ok
           end
-          if not already_activated then
+          unless already_activated then
             sh %[echo '#{new_line}' >> #{options[:ini_file]}] do |ok,res|
               notice "#{self} activated!" if ok
-              stop "#{self} activation failed" if not ok
+              stop "#{self} activation failed" unless ok
             end
           else
             notice "#{self} already activated"
           end
         end
       end
-
       # e.g. make :memcache run the "memcache:activate" task
       Rake.application[self.to_sym].clear_prerequisites.enhance ["#{self}:activate"]
-
+      @rake_tasks_declared = true
     end
+    
+    def rake_tasks_declared?
+      @rake_tasks_declared
+    end
+    
+    private
+    
+    def _get(force=false)
+      _retrieve(force)
+      # if we get here we know the package has been downloaded
+      Dir.chdir(Buildphp::EXTRACT_TO) do
+        # remove folder if already extracted.
+        # sh "rm -rf #{extract_dir}" if extract_dir and File.exist?(extract_dir) and options[:force]
+
+        # only extract archive unless already extracted.
+        sh extract_cmd if (not is_installed or force) and extract_dir and not File.exist?(extract_dir)
+      end
+      return true
+    end # /get
+
+    def _retrieve(force=false)
+      unless is_gotten or (not File.exist?(extract_dir) and force)
+        notice "package not found. retrieving..." unless is_gotten
+        Dir.chdir(Buildphp::EXTRACT_TO) do
+          # get
+          unless is_md5_verified
+            sh "rm -f #{package_name} && wget #{package_location}" do |ok,res|
+              stop "download failed" unless ok
+              notice "download succeeded!"
+            end
+          end
+          # verify
+          stop 'md5 does not match' unless is_md5_verified
+        end
+      else
+        notice "already downloaded"
+      end
+    end
+
+    def _configure(force=false)
+      _clean if force
+      if is_installed and not force
+        notice "already installed so we won't configure. try #{self}:force:configure"
+      elsif not is_compiled
+        notice "package not compiled. configuring..." unless is_compiled
+        stop "extract folder does not exist" unless File.exists?(extract_dir)
+        Dir.chdir(extract_dir) do
+          sh configure_cmd do |ok,res|
+            stop "configure failed" unless ok
+            notice "configure succeeded!"
+          end
+        end
+      end
+      return true
+    end # /configure
+
+    def _compile(force=false)
+      _clean if force
+      if is_installed and not force
+        notice "already installed so we won't compile. try #{self}:force:compile"
+      elsif not is_compiled
+        notice "package not compiled. compiling..." unless is_compiled
+        Dir.chdir(extract_dir) do
+          sh compile_cmd do |ok,res|
+            unless ok then
+              # do a  make clean if the compile fails. we don't want a half-compiled package.
+              _clean
+              stop "compile failed"
+            end
+            notice "compile succeeded!"
+          end
+        end
+      else
+        notice "already compiled"
+      end
+      return true
+    end # /compile
+
+    def _install(force=false)
+      if is_installed and not force
+        notice "already installed. to force install, try #{self}:force:install"
+      elsif not is_installed or force
+        notice "package not installed. installing..." unless is_installed
+        Dir.chdir(extract_dir) do
+          sh install_cmd do |ok,res|
+            stop "install failed" unless ok
+            notice "install succeeded!"
+          end
+        end
+      else
+        notice "already installed"
+      end
+      return true
+    end # /install
+
+    def _clean
+      notice "cleaning..."
+      Dir.chdir(extract_dir) do
+        unless File.file?(File.join(extract_dir, "Makefile")) then
+          notice "No Makefile; cannot clean..."
+          return true
+        end
+        sh clean_cmd do |ok,res|
+          stop "clean failed" unless ok
+          notice "clean succeeded!"
+        end
+      end
+      return true
+    end # /clean
+
+    def _clobber
+      notice "clobbering #{self}..."
+      sh "rm -r #{extract_dir}" if extract_dir and File.exist?(extract_dir)
+    end
+
+    
   end
 end

@@ -1,54 +1,31 @@
-module Buildphp
-  module Packages
-    class Kerberos < Buildphp::Package
-      def initialize
-        super
-        @version = '1.7'
-        @versions = {
-          '1.7' => { :md5 => '9f7b3402b4731a7fa543db193bf1b564' },
-        }
-        # @prefix = "/Applications/MAMP/Library"
-      end
-      
-      def package_depends_on
-        [
-          'ncurses',
-        ]
-      end
-
-      def package_name
-        'krb5-%s-signed.tar' % @version
-      end
-
-      def package_dir
-        'krb5-%s' % @version
-      end
-
-      def package_location
-        'http://web.mit.edu/kerberos/dist/krb5/%s/%s' % [@version, package_name]
-      end
-
-      def extract_dir
-        File.join(Buildphp::EXTRACT_TO, package_dir, 'src')
-      end
-
-      def extract_cmd
-        "tar xf %s && tar xfz krb5-%s.tar.gz" % [package_name, @version]
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << './configure'
-        # parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "--prefix=#{@prefix}"
-        parts << "--disable-thread-support"
-        parts.join(' ')
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libkrb5.*"].empty?
-      end
-    end
-  end
-end
+# :kerberos.version '1.7', :md5 => '9f7b3402b4731a7fa543db193bf1b564'
+# 
+# package :kerberos => :ncurses do |kerberos|
+#   kerberos.version = '1.7'
+#   kerberos.file = "krb5-#{kerberos.version}-signed.tar"
+#   kerberos.location = "http://web.mit.edu/kerberos/dist/krb5/#{kerberos.version}/#{kerberos.file}"
+# 
+#   kerberos.create_method :package_dir do
+#     "krb5-#{kerberos.version}"
+#   end
+#   
+#   kerberos.create_method :extract_dir do
+#     File.join(kerberos.extract_dir, 'src')
+#   end
+#   
+#   kerberos.create_method :extract_cmd do
+#     "tar xf #{kerberos.file} && tar xfz krb5-#{kerberos.version}.tar.gz"
+#   end
+#   
+#   kerberos.configure do |c|
+#     c << "./configure"
+#     c << "--prefix=#{kerberos.prefix}"
+#     c << "--disable-thread-support"
+#   end
+#   
+#   kerberos.create_method :is_installed do
+#     not FileList["#{kerberos.prefix}/lib/libkrb5.*"].empty?
+#   end
+#   
+#   kerberos.rake
+# end

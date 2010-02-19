@@ -1,48 +1,26 @@
-# http://us2.php.net/manual/en/intro.pcre.php
-module Buildphp
-  module Packages
-    class Pcre < Buildphp::Package
-      def initialize
-        super
-        @version = '8.01'
-        @versions = {
-          '8.01' => { :md5 => 'def40e944d2c429cbf563357e61c1ad2' },
-        }
-      end
+:pcre.version '8.01', :md5 => 'def40e944d2c429cbf563357e61c1ad2'
 
-      def package_name
-        'pcre-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'pcre-%s' % @version
-      end
-
-      def package_location
-        'http://downloads.sourceforge.net/project/pcre/pcre/%s/%s?use_mirror=cdnetworks-us-1' % [@version, package_name]
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << './configure'
-        parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "--prefix=#{@prefix}"
-        parts << "--enable-utf8"
-        parts << "--enable-unicode-properties"
-        parts.join(' ')
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libpcre.*"].empty?
-      end
-      
-      def php_config_flags
-        [
-          "--with-pcre-regex=#{@prefix}",
-          "--with-pcre-dir=#{@prefix}",
-        ]
-      end
-    end
+package :pcre do |pcre|
+  pcre.version = '8.01'
+  pcre.file = "pcre-#{pcre.version}.tar.gz"
+  pcre.location = "http://downloads.sourceforge.net/project/pcre/pcre/#{pcre.version}/#{pcre.file}?use_mirror=cdnetworks-us-1"
+  
+  pcre.configure do |c|
+    c << './configure'
+    c << "--with-pic" if system_is_64_bit?
+    c << "--prefix=#{pcre.prefix}"
+    c << "--enable-utf8"
+    c << "--enable-unicode-properties"
   end
+  
+  pcre.configure :php do |c|
+    c << "--with-pcre-regex=#{pcre.prefix}"
+    c << "--with-pcre-dir=#{pcre.prefix}"
+  end
+  
+  pcre.create_method :is_installed do
+    not FileList["#{pcre.prefix}/lib/libpcre.*"].empty?
+  end
+  
+  pcre.rake
 end

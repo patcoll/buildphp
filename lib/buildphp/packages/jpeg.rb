@@ -1,39 +1,23 @@
-module Buildphp
-  module Packages
-    class Jpeg < Buildphp::Package
-      def initialize
-        super
-        @version = '7'
-        @versions = {
-          '7' => { :md5 => '382ef33b339c299b56baf1296cda9785' },
-        }
-        # @prefix = "/Applications/MAMP/Library"
-      end
+:jpeg.version '7', :md5 => '382ef33b339c299b56baf1296cda9785'
 
-      def package_name
-        'jpegsrc.v%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'jpeg-%s' % @version
-      end
-
-      def package_location
-        'http://www.ijg.org/files/%s' % package_name
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << './configure'
-        parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "--prefix=#{@prefix}"
-        parts.join(' ')
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libjpeg.*"].empty?
-      end
-    end
+package :jpeg do |jpeg|
+  jpeg.version = '7'
+  jpeg.file = "jpegsrc.v#{jpeg.version}.tar.gz"
+  jpeg.location = "http://www.ijg.org/files/#{jpeg.file}"
+  
+  jpeg.create_method :package_dir do
+    "jpeg-#{jpeg.version}"
   end
+  
+  jpeg.configure do |c|
+    c << "./configure"
+    c << "--with-pic" if system_is_64_bit?
+    c << "--prefix=#{jpeg.prefix}"
+  end
+
+  jpeg.create_method :is_installed do
+    not FileList["#{jpeg.prefix}/lib/libjpeg.*"].empty?
+  end
+
+  jpeg.rake
 end

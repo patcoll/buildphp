@@ -1,54 +1,25 @@
-module Buildphp
-  module Packages
-    class Curl < Buildphp::Package
-      def initialize
-        super
-        @version = '7.19.6'
-        @versions = {
-          '7.19.6' => { :md5 => '6625de9d42d1b8d3af372d3241a576fd' },
-        }
-      end
+:curl.version '7.19.6', :md5 => '6625de9d42d1b8d3af372d3241a576fd'
 
-      def package_depends_on
-        [
-          'pkg_config',
-          'openssl',
-          'zlib',
-        ]
-      end
-
-      def php_config_flags
-        [
-          "--with-curl=shared,#{@prefix}"
-        ]
-      end
-
-      def package_name
-        'curl-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'curl-%s' % @version
-      end
-
-      def package_location
-        'http://curl.haxx.se/download/%s' % package_name
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << './configure'
-        parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "--prefix=#{@prefix}"
-        parts << "--with-ssl"
-        parts << "--with-zlib=#{FACTORY['zlib'].prefix}"
-        parts.join(' ')
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libcurl.*"].empty?
-      end
-    end
+package :curl => [:pkg_config, :openssl, :zlib] do |curl|
+  curl.version = '7.19.6'
+  curl.file = "curl-#{curl.version}.tar.gz"
+  curl.location = "http://curl.haxx.se/download/#{curl.file}"
+  
+  curl.configure do |c|
+    c << "./configure"
+    c << "--with-pic" if system_is_64_bit?
+    c << "--prefix=#{curl.prefix}"
+    c << "--with-ssl"
+    c << "--with-zlib=#{FACTORY.zlib.prefix}"
   end
+  
+  curl.configure :php do |c|
+    c << "--with-curl=shared,#{curl.prefix}"
+  end
+
+  curl.create_method :is_installed do
+    not FileList["#{curl.prefix}/lib/libcurl.*"].empty?
+  end
+  
+  curl.rake
 end

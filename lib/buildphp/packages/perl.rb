@@ -1,38 +1,19 @@
-module Buildphp
-  module Packages
-    class Perl < Buildphp::Package
-      def initialize
-        super
-        @version = '5.10.1'
-        @versions = {
-          '5.10.1' => { :md5 => 'b9b2fdb957f50ada62d73f43ee75d044' },
-        }
-      end
+:perl.version '5.10.1', :md5 => 'b9b2fdb957f50ada62d73f43ee75d044'
 
-      def package_name
-        'perl-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'perl-%s' % @version
-      end
-
-      def package_location
-        'http://www.cpan.org/src/%s' % package_name
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << 'sh Configure -de'
-        parts << "-Duse64bitall" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "-Dprefix='#{@prefix}'"
-        parts.join(' ')
-      end
-
-      def is_installed
-        File.file? "#{@prefix}/bin/perl"
-      end
-    end
+package :perl do |perl|
+  perl.version = '5.10.1'
+  perl.file = "perl-#{perl.version}.tar.gz"
+  perl.location = "http://www.cpan.org/src/#{perl.file}"
+  
+  perl.configure do |c|
+    c << 'sh Configure -de'
+    c << "-Duse64bitall" if system_is_64_bit?
+    c << "-Dprefix='#{perl.prefix}'"
   end
+  
+  perl.create_method :is_installed do
+    File.file? "#{perl.prefix}/bin/perl"
+  end
+  
+  perl.rake
 end

@@ -1,63 +1,31 @@
-module Buildphp
-  module Packages
-    class Openssl < Buildphp::Package
-      def initialize
-        super
-        @version = '0.9.8k'
-        @versions = {
-          '0.9.8k' => { :md5 => 'e555c6d58d276aec7fdc53363e338ab3' },
-        }
-      end
+:openssl.version '0.9.8k', :md5 => 'e555c6d58d276aec7fdc53363e338ab3'
 
-      def package_depends_on
-        [
-          # 'kerberos',
-          'perl',
-          'zlib',
-        ]
-      end
-
-      def package_name
-        'openssl-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'openssl-%s' % @version
-      end
-
-      def package_location
-        'http://www.openssl.org/source/%s' % package_name
-      end
-
-      def get_build_string
-        parts = []
-        # parts << flags
-        parts << './config'
-        parts << "-I#{Buildphp::INSTALL_TO}/include"
-        parts << "-L#{Buildphp::INSTALL_TO}/lib"
-        parts << "-fPIC" if RUBY_PLATFORM.index("x86_64") != nil
-        parts << "--prefix=#{@prefix}"
-        parts << "zlib-dynamic"
-        parts << "no-krb5"
-        parts << "no-asm"
-        parts.join(' ')
-      end
-
-      def php_config_flags
-        [
-          "--with-openssl=shared,#{@prefix}",
-          "--with-openssl-dir=#{@prefix}",
-          # "--with-kerberos=#{FACTORY['kerberos'].prefix}",
-        ]
-      end
-
-      def compile_cmd
-        'make'
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libssl.*"].empty?
-      end
-    end
+package :openssl => [:perl, :zlib] do |openssl|
+  openssl.version = '0.9.8k'
+  openssl.file = "openssl-#{openssl.version}.tar.gz"
+  openssl.location = "http://www.openssl.org/source/#{openssl.file}"
+  
+  openssl.configure do |c|
+    c << './config'
+    c << "-I#{Buildphp::INSTALL_TO}/include"
+    c << "-L#{Buildphp::INSTALL_TO}/lib"
+    c << "-fPIC" if system_is_64_bit?
+    c << "--prefix=#{openssl.prefix}"
+    c << "zlib-dynamic"
+    c << "no-krb5"
+    c << "no-asm"
   end
+  
+  openssl.configure :php do |c|
+    c << "--with-openssl=shared,#{openssl.prefix}"
+    c << "--with-openssl-dir=#{openssl.prefix}"
+  end
+  
+  openssl.compile_cmd = 'make'
+  
+  openssl.create_method :is_installed do
+    not FileList["#{openssl.prefix}/lib/libssl.*"].empty?
+  end
+  
+  openssl.rake
 end

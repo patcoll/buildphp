@@ -1,58 +1,28 @@
-module Buildphp
-  module Packages
-    class Odbc < Buildphp::Package
-      def initialize
-        super
-        @version = '2.2.14'
-        @versions = {
-          '2.2.14' => { :md5 => 'f47c2efb28618ecf5f33319140a7acd0' },
-        }
-        # @prefix = "/Applications/MAMP/Library"
-      end
+:odbc.version '2.2.14', :md5 => 'f47c2efb28618ecf5f33319140a7acd0'
 
-      def package_depends_on
-        [
-          'iconv',
-        ]
-      end
-
-      def package_name
-        'unixODBC-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'unixODBC-%s' % @version
-      end
-
-      def package_location
-        'http://www.unixodbc.org/%s' % package_name
-      end
-
-      def php_config_flags
-        [
-          "--with-unixODBC=shared,#{@prefix}",
-          "--with-pdo-odbc=shared,unixODBC,#{FACTORY['odbc'].prefix}",
-        ]
-      end
-
-      def configure_cmd
-        parts = []
-        parts << flags
-        parts << './configure'
-        parts << "--with-pic" if RUBY_PLATFORM.index("x86_64") != nil
-        parts += [
-          "--prefix=#{@prefix}",
-          "--disable-gui",
-          "--enable-iconv",
-          "--with-libiconv-prefix=#{FACTORY['iconv'].prefix}",
-          "--enable-drivers",
-        ]
-        parts.join(' ')
-      end
-
-      def is_installed
-        not FileList["#{@prefix}/lib/libodbc.*"].empty?
-      end
-    end
+package :odbc => :iconv do |odbc|
+  odbc.version = '2.2.14'
+  odbc.file = "unixODBC-#{odbc.version}.tar.gz"
+  odbc.location = "http://www.unixodbc.org/#{odbc.file}"
+  
+  odbc.configure do |c|
+    c << "./configure"
+    c << "--with-pic" if system_is_64_bit?
+    c << "--prefix=#{odbc.prefix}"
+    c << "--disable-gui"
+    c << "--enable-iconv"
+    c << "--with-libiconv-prefix=#{FACTORY.iconv.prefix}"
+    c << "--enable-drivers"
   end
+  
+  odbc.configure :php do |c|
+    c << "--with-unixODBC=shared,#{odbc.prefix}"
+    c << "--with-pdo-odbc=shared,unixODBC,#{odbc.prefix}"
+  end
+  
+  odbc.create_method :is_installed do
+    not FileList["#{odbc.prefix}/lib/libodbc.*"].empty?
+  end
+  
+  odbc.rake
 end

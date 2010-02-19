@@ -1,34 +1,34 @@
 module Buildphp
   class PackageFactory
-    include Enumerable
-    
-    attr_reader :packages
-    
-    def initialize
-      @packages = []
-      yield self if block_given?
+    def packages
+      @packages ||= Hash.new
+    end
+
+    def packages=(hash)
+      @packages = hash
+    end
+
+    def [](name)
+      packages[name.to_s] || nil
+    end
+
+    def []=(name, package)
+      packages[name.to_s] = package
     end
     
-    def [](pkg_name)
-      get(pkg_name)
+    def to_a
+      packages.keys
     end
     
-    def each
-      @packages.each { |i| yield i }
+    def to_hash
+      packages
     end
     
-    def add(package)
-      raise "Not a package." if not package.is_a?(Buildphp::Package)
-      # package.prefix = "/Applications/MAMP/Library" if Buildphp::MAMP_MODE and @@mamp_packages.find { |p| p == package.to_s }
-      @packages.push(package)
-    end
-    
-    def get(pkg_name)
-      pkg_name = pkg_name.to_s
-      @packages.find do |package|
-        package = package.to_s
-        package == pkg_name || package == Inflect.underscore(pkg_name)
+    def method_missing(symbol, *args)
+      Dir[File.expand_path(File.join(File.dirname(__FILE__), "packages/#{symbol}.rb"))].each do |t|
+        require t
       end
+      self[symbol.to_s]
     end
   end
 end

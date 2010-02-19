@@ -1,53 +1,29 @@
-module Buildphp
-  module Packages
-    class Apache < Buildphp::Package
-      def initialize
-        super
-        @version = '2.2.14'
-        @versions = {
-          '2.2.14' => { :md5 => '2c1e3c7ba00bcaa0163da7b3e66aaa1e' },
-        }
-        @prefix = "#{@prefix}/apache2"
-      end
+:apache.version '2.2.14', :md5 => '2c1e3c7ba00bcaa0163da7b3e66aaa1e'
 
-      def package_depends_on
-        [
-          'openssl',
-          'zlib',
-        ]
-      end
-
-      def package_name
-        'httpd-%s.tar.gz' % @version
-      end
-
-      def package_dir
-        'httpd-%s' % @version
-      end
-
-      def package_location
-        'http://www.ecoficial.com/apachemirror/httpd/%s' % package_name
-      end
-
-      def get_build_string
-        parts = []
-        parts << flags
-        parts << './configure'
-        parts << "--enable-pie" if RUBY_PLATFORM.index("x86_64") != nil
-        parts += [
-          "--prefix=#{@prefix}",
-          "--with-included-apr",
-          "--enable-mods-shared=all",
-          "--enable-ssl",
-          "--with-ssl=#{FACTORY['Openssl'].prefix}",
-          "--with-z=#{FACTORY['Zlib'].prefix}",
-        ]
-        parts.join(' ')
-      end
-
-      def is_installed
-        File.file?("#{@prefix}/bin/apachectl")
-      end
-    end
+package :apache => [:openssl, :zlib] do |apache|
+  # p "apache rake tasks declared:"
+  # p apache.rake_tasks_declared?
+  apache.version = '2.2.14'
+  apache.file = "httpd-#{apache.version}.tar.gz"
+  apache.location = "http://www.ecoficial.com/apachemirror/httpd/#{apache.file}"
+  apache.prefix = "#{apache.prefix}/apache2"
+  
+  apache.configure do |c|
+    c << "./configure"
+    c << "--enable-pie" if system_is_64_bit?
+    c << %W(
+      --prefix="#{apache.prefix}"
+      --with-included-apr
+      --enable-mods-shared=all
+      --enable-ssl
+      --with-ssl="#{FACTORY.openssl.prefix}"
+      --with-z="#{FACTORY.zlib.prefix}"
+    )
   end
+  
+  apache.create_method :is_installed do
+    File.file? "#{apache.prefix}/bin/apachectl"
+  end
+  
+  apache.rake
 end

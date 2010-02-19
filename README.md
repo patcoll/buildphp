@@ -149,6 +149,13 @@ Bugs, Issues, Comments, Contributions, TODO
 
 http://github.com/patcoll/buildphp/issues
 
+TODO
+----
+
+  * Remove separate package files for bundled PHP extensions. Put their configure flags directly into `Php::get_build_string`
+  * Put PECL extension package files into a new `packages/pecl` folder.
+  * Rewrite packages to use a simpler DSL syntax.
+
 License
 -------
 
