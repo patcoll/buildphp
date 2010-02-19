@@ -1,7 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__), 'lib')
 
 # the folder where we'll handle local, src and tmp
-$base_dir = '/Users/patcoll/testbuildphp53'
+$base_dir = File.dirname(__FILE__)
 
 require 'buildphp'
 require 'rake/clean'
