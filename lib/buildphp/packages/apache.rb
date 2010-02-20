@@ -8,7 +8,7 @@ package :apache => [:openssl, :zlib] do
   
   configure do |c|
     c << "./configure"
-    c << "--enable-pie" if is_linux? and system_is_64_bit?
+    c << "--enable-pie" if x86_64?
     c << %W(
       --prefix="#{@prefix}"
       --with-included-apr

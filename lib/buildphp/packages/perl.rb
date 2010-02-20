@@ -7,7 +7,7 @@ package :perl do
   
   configure do |c|
     c << 'sh Configure -de'
-    c << "-Duse64bitall" if is_linux? and system_is_64_bit?
+    c << "-Duse64bitall" if system_is_64_bit?
     c << "-Dprefix='#{@prefix}'"
   end
   

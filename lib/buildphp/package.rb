@@ -139,7 +139,7 @@ module Buildphp
       # end
 
       # enable PIC
-      if is_linux? and system_is_64_bit?
+      if x86_64?
         f << "-fPIC"
       elsif RUBY_PLATFORM =~ /darwin/i
         # -fno-common enables PIC on Mac OS

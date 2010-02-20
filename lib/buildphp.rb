@@ -39,8 +39,12 @@ def system_is_64_bit?
   system("sysctl hw.cpu64bit_capable > /dev/null 2>&1")
 end
 
-def is_linux?
-  RUBY_PLATFORM =~ /linux/i
+def x86_64?
+  RUBY_PLATFORM =~ /x86_64/i
+end
+
+def mac?
+  RUBY_PLATFORM =~ /darwin/i
 end
 
 module VersionShortcut

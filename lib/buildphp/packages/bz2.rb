@@ -20,7 +20,7 @@ package :bz2 do
   # Ideally, we should detect the platform and use the appropriate PIC flag for that platform.
   # 
   # If we don't do this, while compiling PHP will complain that bz2 was not compiled with PIC.
-  if is_linux? and system_is_64_bit?
+  if x86_64?
     # use GNU sed options because we're on linux
     @compile_cmd = "sed -r -i.bak -e 's/^(CFLAGS=)(.+)$/\\1-fPIC \\2/' Makefile && #{@compile_cmd}"
   end

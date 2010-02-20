@@ -57,7 +57,7 @@ package :php => %w(bz2 curl gd gettext iconv mcrypt mhash mssql odbc openssl pea
   
   configure do |parts|
     parts << './configure'
-    parts << "--with-pic" if is_linux? and system_is_64_bit?
+    parts << "--with-pic" if x86_64?
     parts << "--with-gnu-ld"
 
     # add configuration flags based on which interface we're building

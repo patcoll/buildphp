@@ -9,7 +9,7 @@ package :openssl => [:perl, :zlib] do
     c << './config'
     c << "-I#{Buildphp::INSTALL_TO}/include"
     c << "-L#{Buildphp::INSTALL_TO}/lib"
-    c << "-fPIC" if is_linux? and system_is_64_bit?
+    c << "-fPIC" if x86_64?
     c << "--prefix=#{@prefix}"
     c << "zlib-dynamic"
     c << "no-krb5"

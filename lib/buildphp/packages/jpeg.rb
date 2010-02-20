@@ -11,7 +11,7 @@ package :jpeg do
   
   configure do |c|
     c << "./configure"
-    c << "--with-pic" if is_linux? and system_is_64_bit?
+    c << "--with-pic" if x86_64?
     c << "--prefix=#{@prefix}"
   end
 
